@@ -211,3 +211,43 @@ export function getRoadmapBySlugs(slugs: string[]) {
   // Esta função será usada para criar roadmaps dinamicamente
   return slugs;
 }
+
+// Adicione estes tipos ao arquivo existente
+export interface UserProgress {
+  id: string;
+  userId: string;
+  certificationId: string;
+  status:
+    | 'INTERESTED'
+    | 'STUDYING'
+    | 'SCHEDULED'
+    | 'PASSED'
+    | 'FAILED'
+    | 'EXPIRED';
+  progressPercent: number;
+  studyHours: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  expiresAt: string | null;
+  examScore: number | null;
+  attempts: number;
+  notes: string | null;
+  certification: {
+    id: string;
+    name: string;
+    slug: string;
+    level: string;
+    provider: {
+      name: string;
+    };
+  };
+}
+
+export interface UserStats {
+  totalCertifications: number;
+  inProgress: number;
+  completed: number;
+  totalStudyHours: number;
+  averageProgress: number;
+  upcomingExams: number;
+}
