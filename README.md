@@ -21,6 +21,7 @@ CyberSec Hub é uma plataforma completa para profissionais que desejam fazer tra
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **Next.js 15** - React framework com App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS
@@ -29,16 +30,19 @@ CyberSec Hub é uma plataforma completa para profissionais que desejam fazer tra
 - **Recharts** - Gráficos e visualizações
 
 ### Backend
+
 - **Prisma ORM** - Database toolkit
 - **PostgreSQL** - Relational database
 - **Next.js API Routes** - Serverless API endpoints
 
 ### DevOps
+
 - **Docker** - Containerização do PostgreSQL
 - **ESLint + Prettier** - Code quality
 - **TypeScript** - Type checking
 
 ## 📦 Estrutura do Projeto
+
 ```
 cybersec-hub/
 ├── app/
@@ -73,51 +77,59 @@ cybersec-hub/
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - Docker e Docker Compose
 - npm ou yarn
 
 ### Instalação
 
 1. Clone o repositório:
+
 ```bash
 git clone https://github.com/seu-usuario/cybersec-hub.git
 cd cybersec-hub
 ```
 
 2. Instale as dependências:
+
 ```bash
 npm install
 ```
 
 3. Configure as variáveis de ambiente:
+
 ```bash
 cp .env.example .env
 ```
 
 Edite `.env` com suas configurações:
+
 ```env
 DATABASE_URL="postgresql://cybersec:cybersec123@localhost:5432/cybersec_hub"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
 4. Inicie o PostgreSQL:
+
 ```bash
 docker-compose up -d
 ```
 
 5. Execute as migrations:
+
 ```bash
 npx prisma generate
 npx prisma migrate dev --name init
 ```
 
 6. Popule o banco com dados de exemplo:
+
 ```bash
 npx prisma db seed
 ```
 
 7. Inicie o servidor de desenvolvimento:
+
 ```bash
 npm run dev
 ```
@@ -138,12 +150,14 @@ Acesse: http://localhost:3000
 ## 🎨 Features Principais
 
 ### 1. Catálogo de Certificações
+
 - Listagem com filtros (nível, categoria, região)
 - Busca por nome
 - Paginação
 - Cards com informações essenciais
 
 ### 2. Detalhes da Certificação
+
 - Informações completas (exame, objetivos, validade)
 - Custos por região
 - Skills necessárias
@@ -152,6 +166,7 @@ Acesse: http://localhost:3000
 - Pré-requisitos e próximos passos
 
 ### 3. Roadmap Visual
+
 - Grafo interativo com React Flow
 - 3 roadmaps predefinidos:
   - Developer → Security Engineer
@@ -161,18 +176,21 @@ Acesse: http://localhost:3000
 - Zoom, pan, clique para navegar
 
 ### 4. Análise de Mercado
+
 - Gráficos de demanda por região
 - Impacto salarial
 - Top empresas contratando
 - Filtros por certificação e região
 
 ### 5. Biblioteca de Recursos
+
 - 100+ recursos curados
 - Filtros: tipo, custo, rating, idioma
 - Ordenação por relevância
 - Links diretos para materiais
 
 ### 6. Perfil e Tracking
+
 - Dashboard personalizado
 - Progresso por certificação
 - Estatísticas de estudo
@@ -180,12 +198,14 @@ Acesse: http://localhost:3000
 - Recomendações personalizadas
 
 ### 7. Comparação
+
 - Compare até 3 certificações
 - Tabela comparativa
 - Calculadora de ROI
 - Análise custo-benefício
 
 ## 🧪 Scripts Disponíveis
+
 ```bash
 npm run dev          # Desenvolvimento
 npm run build        # Build para produção
@@ -225,8 +245,17 @@ Este projeto é licenciado sob a MIT License.
 ## 👤 Autor
 
 **Merlin**
+
 - GitHub: [@merlin](https://github.com/merlinfachetti)
 - LinkedIn: [Merlin](https://linkedin.com/in/merlin-fachetti)
+
+**Quote**
+
+- PERGUNTA:
+  <i>Com essa aplicação eu consigo ser um profissional da área de cybersecurity?</i>
+
+- RESPOSTA HONESTA:
+  <i>NÃO DIRETAMENTE, mas ela é uma ferramenta ESSENCIAL no esse caminho.</i>
 
 ## 🙏 Agradecimentos
 

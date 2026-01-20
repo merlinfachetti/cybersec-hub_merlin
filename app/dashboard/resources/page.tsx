@@ -22,7 +22,7 @@ export default function ResourcesPage() {
     page: 1,
   });
 
-  const [certifications, setCertifications] = useState
+  const [certifications, setCertifications] = useState<
     Array<{ id: string; name: string }>
   >([]);
 
@@ -121,9 +121,14 @@ export default function ResourcesPage() {
 
   // Calcular estatísticas
   const freeCount = data?.data.filter((r) => r.isFree).length || 0;
-  const avgRating =
-    data?.data.reduce((sum, r) => sum + (r.rating || 0), 0) /
-      (data?.data.filter((r) => r.rating).length || 1) || 0;
+  const avgRating = (() => {
+    if (!data?.data || data.data.length === 0) return 0;
+
+    const total = data.data.reduce((sum, r) => sum + (r.rating || 0), 0);
+    const count = data.data.filter((r) => r.rating).length || 1;
+
+    return total / count;
+  })();
   const totalHours =
     data?.data.reduce((sum, r) => sum + (r.durationHours || 0), 0) || 0;
 
@@ -161,9 +166,7 @@ export default function ResourcesPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <BookOpen className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tight">
-            Study Resources
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight">Study Resources</h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Curated learning materials from the best providers
@@ -181,9 +184,7 @@ export default function ResourcesPage() {
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {data.pagination.total}
-              </div>
+              <div className="text-2xl font-bold">{data.pagination.total}</div>
               <p className="text-xs text-muted-foreground">
                 Across all certifications
               </p>
@@ -219,9 +220,7 @@ export default function ResourcesPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Hours
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>

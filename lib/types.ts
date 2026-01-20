@@ -140,6 +140,7 @@ export interface RoadmapNode {
   level: string;
   category: string;
   position?: { x: number; y: number };
+  highlighted?: boolean;
 }
 
 export interface RoadmapEdge {

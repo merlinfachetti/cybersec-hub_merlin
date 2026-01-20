@@ -9,12 +9,12 @@ import { MarketFilters } from '@/components/market/market-filters';
 import { MarketSkeleton } from '@/components/market/market-skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Globe2, 
+import {
+  BarChart3,
+  TrendingUp,
+  Globe2,
   Award,
-  AlertCircle 
+  AlertCircle,
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api-client';
 
@@ -24,7 +24,7 @@ export default function MarketPage() {
     region: '',
   });
 
-  const [certifications, setCertifications] = useState
+  const [certifications, setCertifications] = useState<
     Array<{ id: string; name: string }>
   >([]);
 
@@ -98,9 +98,7 @@ export default function MarketPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <BarChart3 className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tight">
-            Market Analysis
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight">Market Analysis</h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Explore demand, salaries, and hiring trends across regions
@@ -120,9 +118,7 @@ export default function MarketPage() {
             <div className="text-2xl font-bold">
               {data.summary.totalJobs.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Across all regions
-            </p>
+            <p className="text-xs text-muted-foreground">Across all regions</p>
           </CardContent>
         </Card>
 
@@ -137,9 +133,7 @@ export default function MarketPage() {
             <div className="text-2xl font-bold">
               +{data.summary.avgSalaryImpact}%
             </div>
-            <p className="text-xs text-muted-foreground">
-              With certification
-            </p>
+            <p className="text-xs text-muted-foreground">With certification</p>
           </CardContent>
         </Card>
 
@@ -154,9 +148,7 @@ export default function MarketPage() {
             <div className="text-2xl font-bold">
               {data.summary.regionsTracked}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Global coverage
-            </p>
+            <p className="text-xs text-muted-foreground">Global coverage</p>
           </CardContent>
         </Card>
 
@@ -171,9 +163,7 @@ export default function MarketPage() {
             <div className="text-2xl font-bold">
               {data.summary.certificationsTracked}
             </div>
-            <p className="text-xs text-muted-foreground">
-              With market data
-            </p>
+            <p className="text-xs text-muted-foreground">With market data</p>
           </CardContent>
         </Card>
       </div>
@@ -183,10 +173,10 @@ export default function MarketPage() {
         {/* Charts */}
         <div className="lg:col-span-3 space-y-6">
           <MarketDemandChart data={data.byRegion} />
-          
+
           <div className="grid gap-6 md:grid-cols-2">
             <SalaryImpactChart data={data.byRegion} />
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Top Demand Certifications</CardTitle>

@@ -96,18 +96,17 @@ export async function GET(request: Request) {
         id: string;
         source: string;
         target: string;
-        type: string;
+        type: 'prerequisite' | 'recommended'; // ✅ ESPECIFICAR O TIPO CORRETO
       }> = [];
 
       certifications.forEach((cert) => {
         cert.prerequisites.forEach((prereq) => {
-          // Apenas incluir edges se ambos nós estão no roadmap
           if (certifications.find((c) => c.id === prereq.id)) {
             edges.push({
               id: `${prereq.id}-${cert.id}`,
               source: prereq.id,
               target: cert.id,
-              type: 'prerequisite',
+              type: 'prerequisite' as const, // ✅ USAR 'as const'
             });
           }
         });

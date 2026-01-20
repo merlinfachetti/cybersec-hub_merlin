@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import type { RoadmapData } from '@/lib/types';
 
 interface RoadmapViewerProps {
-  data: RoadmapData & {
+  data: {
     nodes: Array<{
       id: string;
       certificationId: string;
@@ -26,6 +26,12 @@ interface RoadmapViewerProps {
       level: string;
       category: string;
       highlighted?: boolean;
+    }>;
+    edges: Array<{
+      id: string;
+      source: string;
+      target: string;
+      type: string; // ✅ ACEITAR STRING GENÉRICO
     }>;
   };
 }
@@ -131,7 +137,7 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
   );
 
   return (
-    <div className="w-full h-[700px] border rounded-lg bg-background">
+    <div className="w-full h-175 border rounded-lg bg-background">
       <ReactFlow
         nodes={nodes}
         edges={edges}
