@@ -18,10 +18,19 @@ import { useRouter } from 'next/navigation';
 import type { RoadmapData } from '@/lib/types';
 
 interface RoadmapViewerProps {
-  data: RoadmapData;
+  data: RoadmapData & {
+    nodes: Array<{
+      id: string;
+      certificationId: string;
+      name: string;
+      level: string;
+      category: string;
+      highlighted?: boolean;
+    }>;
+  };
 }
 
-// Layout automático simples (vertical)
+// Layout automático melhorado
 function autoLayout(nodes: Node[], edges: Edge[]) {
   const levelGroups: Record<string, Node[]> = {
     ENTRY: [],
@@ -38,15 +47,17 @@ function autoLayout(nodes: Node[], edges: Edge[]) {
     }
   });
 
-  // Posicionar
+  // Posicionar com espaçamento melhorado
   const levelOrder = ['ENTRY', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'];
   const positioned: Node[] = [];
   let yOffset = 0;
 
   levelOrder.forEach((level) => {
     const nodesInLevel = levelGroups[level];
-    const xSpacing = 300;
-    const ySpacing = 150;
+    if (nodesInLevel.length === 0) return;
+
+    const xSpacing = 320;
+    const ySpacing = 180;
     const startX = -(nodesInLevel.length - 1) * (xSpacing / 2);
 
     nodesInLevel.forEach((node, index) => {
@@ -59,9 +70,7 @@ function autoLayout(nodes: Node[], edges: Edge[]) {
       });
     });
 
-    if (nodesInLevel.length > 0) {
-      yOffset += ySpacing;
-    }
+    yOffset += ySpacing;
   });
 
   return positioned;
@@ -82,8 +91,9 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
         level: node.level,
         category: node.category,
         certificationId: node.certificationId,
+        highlighted: node.highlighted || false,
       },
-      position: node.position || { x: 0, y: 0 },
+      position: { x: 0, y: 0 },
     }));
 
     return autoLayout(nodes, data.edges as Edge[]);
@@ -139,6 +149,9 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
         <Controls />
         <MiniMap
           nodeColor={(node) => {
+            if ((node.data as any).highlighted) {
+              return '#3b82f6'; // primary color
+            }
             const level = (node.data as any).level;
             const colors: Record<string, string> = {
               ENTRY: '#86efac',

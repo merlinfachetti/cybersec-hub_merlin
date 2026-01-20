@@ -153,3 +153,61 @@ export interface RoadmapData {
   nodes: RoadmapNode[];
   edges: RoadmapEdge[];
 }
+
+// Definições de roadmaps predefinidos
+export interface PredefinedRoadmap {
+  id: string;
+  title: string;
+  description: string;
+  fromRole: string;
+  toRole: string;
+  duration: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  certificationIds: string[];
+}
+
+// Nota: Estes IDs serão substituídos pelos IDs reais do seu banco
+// Você precisará pegar os IDs corretos via Prisma Studio
+export const PREDEFINED_ROADMAPS: PredefinedRoadmap[] = [
+  {
+    id: 'dev-to-security-engineer',
+    title: 'Developer → Security Engineer',
+    description:
+      'Perfect for software developers transitioning into application security and secure coding. Focus on offensive and defensive skills.',
+    fromRole: 'Software Developer',
+    toRole: 'Security Engineer',
+    duration: '12-18 months',
+    difficulty: 'intermediate',
+    certificationIds: [
+      // Será preenchido dinamicamente baseado em slugs
+    ],
+  },
+  {
+    id: 'beginner-to-analyst',
+    title: 'Beginner → Security Analyst',
+    description:
+      'Start from scratch and build a solid foundation in cybersecurity. Focus on defensive security and compliance.',
+    fromRole: 'No experience',
+    toRole: 'Security Analyst',
+    duration: '6-12 months',
+    difficulty: 'beginner',
+    certificationIds: [],
+  },
+  {
+    id: 'analyst-to-pentester',
+    title: 'Security Analyst → Penetration Tester',
+    description:
+      'Advance from defensive to offensive security. Master penetration testing and ethical hacking.',
+    fromRole: 'Security Analyst',
+    toRole: 'Penetration Tester',
+    duration: '12-24 months',
+    difficulty: 'advanced',
+    certificationIds: [],
+  },
+];
+
+// Função para obter roadmap por slug de certificação
+export function getRoadmapBySlugs(slugs: string[]) {
+  // Esta função será usada para criar roadmaps dinamicamente
+  return slugs;
+}
