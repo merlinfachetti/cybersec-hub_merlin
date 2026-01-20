@@ -34,9 +34,9 @@ export default function DashboardLayout({
             </Link>
             <Link
               href="/roadmap"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
+              className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-1"
             >
-              <Map className="h-4 w-4 inline mr-1" />
+              <Map className="h-4 w-4" />
               Roadmap
             </Link>
             <Link

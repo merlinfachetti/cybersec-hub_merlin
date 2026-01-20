@@ -132,3 +132,24 @@ export interface CertificationDetail {
     level: string;
   }>;
 }
+
+export interface RoadmapNode {
+  id: string;
+  certificationId: string;
+  name: string;
+  level: string;
+  category: string;
+  position?: { x: number; y: number };
+}
+
+export interface RoadmapEdge {
+  id: string;
+  source: string;
+  target: string;
+  type: 'prerequisite' | 'recommended';
+}
+
+export interface RoadmapData {
+  nodes: RoadmapNode[];
+  edges: RoadmapEdge[];
+}
