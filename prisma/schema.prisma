@@ -1,0 +1,226 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== ENUMS ====================
+
+enum CertificationLevel {
+  ENTRY
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CertificationCategory {
+  OFFENSIVE_SECURITY
+  DEFENSIVE_SECURITY
+  GOVERNANCE_RISK
+  CLOUD_SECURITY
+  APPLICATION_SECURITY
+  NETWORK_SECURITY
+  FORENSICS
+  INCIDENT_RESPONSE
+  SECURITY_ENGINEERING
+  THREAT_INTELLIGENCE
+}
+
+enum Region {
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  EUROPE
+  ASIA
+  OCEANIA
+  AFRICA
+  MIDDLE_EAST
+}
+
+enum DemandLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ResourceType {
+  COURSE_VIDEO
+  COURSE_INTERACTIVE
+  BOOK
+  PRACTICE_EXAM
+  LAB_ENVIRONMENT
+  CHEAT_SHEET
+  STUDY_GUIDE
+  BOOTCAMP
+  MENTORSHIP
+  COMMUNITY
+}
+
+enum SkillImportance {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+  CORE
+}
+
+// ==================== MODELS ====================
+
+model Provider {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  slug           String          @unique
+  website        String
+  description    String?         @db.Text
+  logo           String?
+  country        String?
+  certifications Certification[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([slug])
+  @@map("providers")
+}
+
+model Certification {
+  id                    String                 @id @default(cuid())
+  slug                  String                 @unique
+  name                  String
+  fullName              String?
+  acronym               String?
+  provider              Provider               @relation(fields: [providerId], references: [id])
+  providerId            String
+  level                 CertificationLevel
+  category              CertificationCategory
+  subCategory           String?
+  description           String                 @db.Text
+  objectives            String[]
+  targetAudience        String?                @db.Text
+  prerequisites         Certification[]        @relation("CertificationPrerequisites")
+  prerequisitesFor      Certification[]        @relation("CertificationPrerequisites")
+  recommendedExperience String?
+  examFormat            String?
+  examDuration          Int?
+  numberOfQuestions     Int?
+  passingScore          Int?
+  examLanguages         String[]
+  validityYears         Int?
+  requiresRenewal       Boolean                @default(false)
+  renewalRequirements   String?                @db.Text
+  officialUrl           String
+  syllabusPdfUrl        String?
+  lastUpdated           DateTime               @updatedAt
+  createdAt             DateTime               @default(now())
+  costs                 CertificationCost[]
+  marketRecognition     MarketRecognition[]
+  skills                CertificationSkill[]
+  resources             Resource[]
+
+  @@index([level, category])
+  @@index([providerId])
+  @@index([slug])
+  @@map("certifications")
+}
+
+model CertificationCost {
+  id               String        @id @default(cuid())
+  certification    Certification @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  certificationId  String
+  region           Region
+  country          String?
+  currency         String        @default("USD")
+  examCost         Float
+  officialTraining Float?
+  renewalCost      Float?
+  voucherAvailable Boolean       @default(false)
+  source           String?
+  lastVerified     DateTime      @default(now())
+  notes            String?       @db.Text
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@unique([certificationId, region, country])
+  @@index([certificationId])
+  @@map("certification_costs")
+}
+
+model MarketRecognition {
+  id                  String        @id @default(cuid())
+  certification       Certification @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  certificationId     String
+  region              Region
+  country             String?
+  demandLevel         DemandLevel
+  jobPostingsCount    Int?
+  averageSalaryImpact Float?
+  juniorSalaryRange   String?
+  midSalaryRange      String?
+  seniorSalaryRange   String?
+  topCompanies        String[]
+  governmentRequired  Boolean       @default(false)
+  dataSource          String?
+  lastUpdated         DateTime      @default(now())
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@unique([certificationId, region, country])
+  @@index([certificationId])
+  @@index([region])
+  @@map("market_recognition")
+}
+
+model Skill {
+  id             String               @id @default(cuid())
+  name           String               @unique
+  slug           String               @unique
+  category       String?
+  description    String?              @db.Text
+  certifications CertificationSkill[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([slug])
+  @@map("skills")
+}
+
+model CertificationSkill {
+  certification   Certification   @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  certificationId String
+  skill           Skill           @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId         String
+  importance      SkillImportance
+
+  @@id([certificationId, skillId])
+  @@index([certificationId])
+  @@index([skillId])
+  @@map("certification_skills")
+}
+
+model Resource {
+  id              String        @id @default(cuid())
+  certification   Certification @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+  certificationId String
+  title           String
+  type            ResourceType
+  provider        String
+  url             String
+  description     String?       @db.Text
+  cost            Float         @default(0)
+  currency        String        @default("USD")
+  isFree          Boolean       @default(false)
+  rating          Float?        @default(0)
+  reviewsCount    Int?          @default(0)
+  language        String        @default("en")
+  durationHours   Int?
+  lastUpdated     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([certificationId])
+  @@index([type])
+  @@map("resources")
+}
