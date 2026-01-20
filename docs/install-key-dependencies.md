@@ -3,6 +3,7 @@
 npm install @radix-ui/react-slot
 npm install class-variance-authority
 npm install clsx tailwind-merge
+npm install tailwindcss-animate
 npm install lucide-react # Ícones
 
 # Dependências de Formulários e Validação
