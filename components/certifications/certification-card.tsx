@@ -17,6 +17,7 @@ import {
 } from '@/lib/format';
 import { ExternalLink, BookOpen } from 'lucide-react';
 import type { CertificationListItem } from '@/lib/hooks/use-certifications';
+import { GitCompare } from 'lucide-react';
 
 interface CertificationCardProps {
   certification: CertificationListItem;
@@ -75,9 +76,15 @@ export function CertificationCard({ certification }: CertificationCardProps) {
             href={`https://www.google.com/search?q=${encodeURIComponent(certification.name + ' ' + certification.provider.name)}`}
             target="_blank"
             rel="noopener noreferrer"
+            title={`Search "${certification.name}" on Google`}
           >
             <ExternalLink className="h-4 w-4" />
           </a>
+        </Button>
+        <Button asChild variant="outline" size="icon" title="Compare">
+          <Link href={`/certifications/compare?ids=${certification.id}`}>
+            <GitCompare className="h-4 w-4" />
+          </Link>
         </Button>
       </CardFooter>
     </Card>

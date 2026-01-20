@@ -48,7 +48,7 @@ export default function CertificationDetailPage({
         <Skeleton className="h-8 w-64 mb-4" />
         <Skeleton className="h-12 w-full mb-2" />
         <Skeleton className="h-6 w-48 mb-8" />
-        <Skeleton className="h-[400px] w-full" />
+        <Skeleton className="h-100 w-full" />
       </div>
     );
   }
