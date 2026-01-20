@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    console.log('🔍 API /roadmap called'); // ← ADICIONAR LOG
+
     // Buscar todas as certificações com seus pré-requisitos
     const certifications = await prisma.certification.findMany({
       select: {

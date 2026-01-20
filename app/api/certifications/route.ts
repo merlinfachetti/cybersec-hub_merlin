@@ -12,18 +12,18 @@ export async function GET(request: Request) {
 
     // Paginação
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const limit = parseInt(searchParams.get('limit') || '12');
     const skip = (page - 1) * limit;
 
     // Build where clause
     const where: any = {};
 
     if (level) {
-      where.level = level.toUpperCase();
+      where.level = level;
     }
 
     if (category) {
-      where.category = category.toUpperCase();
+      where.category = category;
     }
 
     if (search) {
@@ -42,14 +42,14 @@ export async function GET(request: Request) {
         include: {
           provider: {
             select: {
+              id: true,
               name: true,
-              slug: true,
-              logo: true,
+              website: true,
             },
           },
           costs: {
             where: {
-              region: 'EUROPE', // Default para Europa (você está aí)
+              currency: 'USD',
             },
             take: 1,
           },
@@ -77,8 +77,12 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('Error fetching certifications:', error);
+
     return NextResponse.json(
-      { error: 'Failed to fetch certifications' },
+      {
+        error: 'Failed to fetch certifications',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

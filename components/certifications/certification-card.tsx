@@ -62,7 +62,7 @@ export function CertificationCard({ certification }: CertificationCardProps) {
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <BookOpen className="h-3 w-3" />
-            <span>{certification._count.resources} resources</span>
+            <span>{certification._count?.resources || 0} resources</span>
           </div>
         </div>
       </CardContent>

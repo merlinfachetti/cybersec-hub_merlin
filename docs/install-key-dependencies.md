@@ -17,7 +17,7 @@ npm i @prisma/client
 //Depois confira:
 npm ls prisma @prisma/client
 
-npm i pg @prisma/adapter-pg
+npm install @prisma/adapter-pg pg
 
 # Dependências de Estado e Data Fetching
 

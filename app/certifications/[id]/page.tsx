@@ -48,7 +48,7 @@ export default function CertificationDetailPage({
         <Skeleton className="h-8 w-64 mb-4" />
         <Skeleton className="h-12 w-full mb-2" />
         <Skeleton className="h-6 w-48 mb-8" />
-        <Skeleton className="h-100 w-full" />
+        <Skeleton className="h-96 w-full" />
       </div>
     );
   }
@@ -115,9 +115,11 @@ export default function CertificationDetailPage({
           </Link>
         </div>
 
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          {certification.description}
-        </p>
+        {certification.description && (
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            {certification.description}
+          </p>
+        )}
 
         <div className="flex gap-3 mt-6">
           <Button asChild size="lg">
@@ -150,8 +152,16 @@ export default function CertificationDetailPage({
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="costs">Costs</TabsTrigger>
-          <TabsTrigger value="skills">Skills</TabsTrigger>
-          <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsTrigger value="skills">
+            Skills{' '}
+            {certification.skills?.length > 0 &&
+              `(${certification.skills.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="resources">
+            Resources{' '}
+            {certification.resources?.length > 0 &&
+              `(${certification.resources.length})`}
+          </TabsTrigger>
           <TabsTrigger value="market">Market</TabsTrigger>
         </TabsList>
 
@@ -195,20 +205,21 @@ export default function CertificationDetailPage({
                   </span>
                 </div>
               )}
-              {certification.examLanguages.length > 0 && (
-                <div className="flex items-center gap-2 sm:col-span-2">
-                  <Languages className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">
-                    Languages:{' '}
-                    <strong>{certification.examLanguages.join(', ')}</strong>
-                  </span>
-                </div>
-              )}
+              {certification.examLanguages &&
+                certification.examLanguages.length > 0 && (
+                  <div className="flex items-center gap-2 sm:col-span-2">
+                    <Languages className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">
+                      Languages:{' '}
+                      <strong>{certification.examLanguages.join(', ')}</strong>
+                    </span>
+                  </div>
+                )}
             </CardContent>
           </Card>
 
           {/* Objectives */}
-          {certification.objectives.length > 0 && (
+          {certification.objectives && certification.objectives.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>Learning Objectives</CardTitle>
@@ -265,60 +276,28 @@ export default function CertificationDetailPage({
           </Card>
 
           {/* Prerequisites */}
-          {certification.prerequisites.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Prerequisites</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {certification.prerequisites.map((prereq) => (
-                    <Link
-                      key={prereq.id}
-                      href={`/certifications/${prereq.id}`}
-                      className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Badge className={getLevelColor(prereq.level)}>
-                          {formatLevel(prereq.level)}
-                        </Badge>
+          {certification.prerequisites &&
+            certification.prerequisites.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Prerequisites</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {certification.prerequisites.map((prereq) => (
+                      <Link
+                        key={prereq.id}
+                        href={`/certifications/${prereq.id}`}
+                        className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors"
+                      >
                         <span className="font-medium">{prereq.name}</span>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Next Steps */}
-          {certification.prerequisitesFor.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Recommended Next Steps</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {certification.prerequisitesFor.map((next) => (
-                    <Link
-                      key={next.id}
-                      href={`/certifications/${next.id}`}
-                      className="flex items-center justify-between p-3 rounded-lg border hover:border-primary transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Badge className={getLevelColor(next.level)}>
-                          {formatLevel(next.level)}
-                        </Badge>
-                        <span className="font-medium">{next.name}</span>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                      </Link>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
         </TabsContent>
 
         {/* Costs Tab */}
@@ -328,7 +307,7 @@ export default function CertificationDetailPage({
               <CardTitle>Costs by Region</CardTitle>
             </CardHeader>
             <CardContent>
-              <CertificationCostsTable costs={certification.costs} />
+              <CertificationCostsTable costs={certification.costs || []} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -340,7 +319,7 @@ export default function CertificationDetailPage({
               <CardTitle>Required Skills</CardTitle>
             </CardHeader>
             <CardContent>
-              <CertificationSkillsList skills={certification.skills} />
+              <CertificationSkillsList skills={certification.skills || []} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -352,7 +331,9 @@ export default function CertificationDetailPage({
               <CardTitle>Study Resources</CardTitle>
             </CardHeader>
             <CardContent>
-              <CertificationResourcesList resources={certification.resources} />
+              <CertificationResourcesList
+                resources={certification.resources || []}
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -365,7 +346,7 @@ export default function CertificationDetailPage({
             </CardHeader>
             <CardContent>
               <CertificationMarketChart
-                marketRecognition={certification.marketRecognition}
+                marketRecognition={certification.marketRecognition || []}
               />
             </CardContent>
           </Card>
