@@ -177,7 +177,7 @@ model MarketRecognition {
   @@unique([certificationId, region, country])
   @@index([certificationId])
   @@index([region])
-}
+}∑
 
 enum DemandLevel {
   LOW
