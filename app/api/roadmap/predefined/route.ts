@@ -50,16 +50,21 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const roadmapId = searchParams.get('id');
 
+    console.log('🔍 [API] /api/roadmap/predefined called', { roadmapId });
+
     if (roadmapId) {
       // Retornar roadmap específico com dados completos
       const definition = roadmapDefinitions.find((r) => r.id === roadmapId);
 
       if (!definition) {
+        console.log('❌ [API] Roadmap not found:', roadmapId);
         return NextResponse.json(
           { error: 'Roadmap not found' },
           { status: 404 }
         );
       }
+
+      console.log('🔍 [API] Found roadmap definition:', definition.title);
 
       // Buscar certificações por slug
       const certifications = await prisma.certification.findMany({
@@ -76,13 +81,34 @@ export async function GET(request: Request) {
           category: true,
           prerequisites: {
             select: {
-              id: true,
+              prerequisite: {
+                select: {
+                  id: true,
+                  slug: true,
+                },
+              },
             },
           },
         },
+        orderBy: {
+          name: 'asc',
+        },
       });
 
-      // Criar nós e edges
+      console.log('✅ [API] Found certifications:', certifications.length);
+
+      if (certifications.length === 0) {
+        console.log(
+          '⚠️ [API] No certifications found for slugs:',
+          definition.certificationSlugs
+        );
+        return NextResponse.json(
+          { error: 'No certifications found for this roadmap' },
+          { status: 404 }
+        );
+      }
+
+      // Criar nós
       const nodes = certifications.map((cert) => ({
         id: cert.id,
         certificationId: cert.id,
@@ -92,41 +118,97 @@ export async function GET(request: Request) {
         highlighted: true,
       }));
 
+      console.log('✅ [API] Created nodes:', nodes.length);
+
+      // Criar edges baseado em pré-requisitos
       const edges: Array<{
         id: string;
         source: string;
         target: string;
-        type: 'prerequisite' | 'recommended'; // ✅ ESPECIFICAR O TIPO CORRETO
+        type: 'prerequisite' | 'recommended';
       }> = [];
 
       certifications.forEach((cert) => {
-        cert.prerequisites.forEach((prereq) => {
-          if (certifications.find((c) => c.id === prereq.id)) {
-            edges.push({
-              id: `${prereq.id}-${cert.id}`,
-              source: prereq.id,
-              target: cert.id,
-              type: 'prerequisite' as const, // ✅ USAR 'as const'
-            });
-          }
-        });
+        if (cert.prerequisites && cert.prerequisites.length > 0) {
+          cert.prerequisites.forEach((prereqRelation) => {
+            const prereqId = prereqRelation.prerequisite.id;
+            const prereqCert = certifications.find((c) => c.id === prereqId);
+
+            if (prereqCert) {
+              const edgeId = `${prereqId}-${cert.id}`;
+              // Evitar duplicatas
+              if (!edges.find((e) => e.id === edgeId)) {
+                edges.push({
+                  id: edgeId,
+                  source: prereqId,
+                  target: cert.id,
+                  type: 'prerequisite' as const,
+                });
+                console.log(
+                  `✅ [API] Created edge: ${prereqCert.name} → ${cert.name}`
+                );
+              }
+            }
+          });
+        }
       });
 
+      // Se não há edges de pré-requisitos, criar sequencial
+      if (edges.length === 0 && certifications.length > 1) {
+        console.log(
+          'ℹ️ [API] No prerequisites found, creating sequential path'
+        );
+        for (let i = 0; i < certifications.length - 1; i++) {
+          edges.push({
+            id: `${certifications[i].id}-${certifications[i + 1].id}`,
+            source: certifications[i].id,
+            target: certifications[i + 1].id,
+            type: 'recommended' as const,
+          });
+        }
+      }
+
+      console.log('✅ [API] Built graph:', {
+        nodes: nodes.length,
+        edges: edges.length,
+      });
+
+      // ✅ CORREÇÃO: Retornar estrutura CONSISTENTE
       return NextResponse.json({
-        roadmap: definition,
         nodes,
         edges,
+        roadmapInfo: {
+          id: definition.id,
+          title: definition.title,
+          description: definition.description,
+          fromRole: definition.fromRole,
+          toRole: definition.toRole,
+          duration: definition.duration,
+          difficulty: definition.difficulty,
+        },
       });
     }
 
-    // Retornar lista de roadmaps
+    // Retornar lista de roadmaps (sem ID)
+    console.log('✅ [API] Returning roadmaps list:', roadmapDefinitions.length);
     return NextResponse.json({
       roadmaps: roadmapDefinitions,
     });
   } catch (error) {
-    console.error('Error fetching predefined roadmaps:', error);
+    console.error('❌ [API] Error in /api/roadmap/predefined:', error);
+
+    if (error instanceof Error) {
+      console.error('❌ [API] Error details:', {
+        message: error.message,
+        stack: error.stack,
+      });
+    }
+
     return NextResponse.json(
-      { error: 'Failed to fetch roadmaps' },
+      {
+        error: 'Failed to fetch roadmaps',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
