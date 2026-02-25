@@ -29,7 +29,7 @@ export default function HomePage() {
               🚀 Your Career Transition Partner
             </Badge>
 
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               Master Cybersecurity
               <br />
               <span className="text-primary">
@@ -37,7 +37,7 @@ export default function HomePage() {
               </span>
             </h1>
 
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-base text-muted-foreground sm:text-xl">
               Complete guide to cybersecurity certifications, career roadmaps,
               market insights, and curated study resources. All in one place.
             </p>

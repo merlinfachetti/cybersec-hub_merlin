@@ -98,7 +98,9 @@ export default function MarketPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <BarChart3 className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tight">Market Analysis</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Market Analysis
+          </h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Explore demand, salaries, and hiring trends across regions
@@ -106,7 +108,7 @@ export default function MarketPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -171,7 +173,7 @@ export default function MarketPage() {
       {/* Main Content */}
       <div className="grid gap-6 lg:grid-cols-4">
         {/* Charts */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="order-2 space-y-6 lg:order-1 lg:col-span-3">
           <MarketDemandChart data={data.byRegion} />
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -209,7 +211,7 @@ export default function MarketPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="order-1 space-y-6 lg:order-2">
           <MarketFilters
             certifications={certifications}
             selectedCertification={filters.certificationId}

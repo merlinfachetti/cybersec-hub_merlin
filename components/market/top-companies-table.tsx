@@ -43,7 +43,7 @@ export function TopCompaniesTable({ data }: TopCompaniesTableProps) {
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
-          <Table>
+          <Table className="min-w-[560px]">
             <TableHeader>
               <TableRow>
                 <TableHead>Region</TableHead>
@@ -55,10 +55,10 @@ export function TopCompaniesTable({ data }: TopCompaniesTableProps) {
               {Object.entries(companiesByRegion).map(
                 ([region, companies]: [string, any]) => (
                   <TableRow key={region}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium whitespace-normal">
                       {REGIONS[region as keyof typeof REGIONS] || region}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       <div className="flex flex-wrap gap-2">
                         {Array.from(companies)
                           .slice(0, 5)

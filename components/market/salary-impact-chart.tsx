@@ -25,9 +25,22 @@ interface SalaryImpactChartProps {
   }>;
 }
 
+const REGION_ABBREVIATIONS: Record<string, string> = {
+  'North America': 'N. America',
+  'South America': 'S. America',
+  Europe: 'Europe',
+  Asia: 'Asia',
+  Oceania: 'Oceania',
+  Africa: 'Africa',
+  'Middle East': 'Mid. East',
+};
+
 export function SalaryImpactChart({ data }: SalaryImpactChartProps) {
   const chartData = data.map((item) => ({
-    region: REGIONS[item.region as keyof typeof REGIONS] || item.region,
+    region:
+      REGION_ABBREVIATIONS[REGIONS[item.region as keyof typeof REGIONS]] ||
+      REGIONS[item.region as keyof typeof REGIONS] ||
+      item.region,
     impact: Math.round(item.avgImpact),
   }));
 
@@ -40,21 +53,23 @@ export function SalaryImpactChart({ data }: SalaryImpactChartProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <RadarChart data={chartData}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="region" />
-            <PolarRadiusAxis angle={90} domain={[0, 40]} />
-            <Radar
-              name="Salary Impact %"
-              dataKey="impact"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
-              fillOpacity={0.6}
-            />
-            <Tooltip formatter={(value) => `${value}%`} />
-          </RadarChart>
-        </ResponsiveContainer>
+        <div className="h-[280px] w-full sm:h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={chartData}>
+              <PolarGrid />
+              <PolarAngleAxis dataKey="region" tick={{ fontSize: 11 }} />
+              <PolarRadiusAxis angle={90} domain={[0, 40]} tick={{ fontSize: 10 }} />
+              <Radar
+                name="Salary Impact %"
+                dataKey="impact"
+                stroke="hsl(var(--primary))"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.6}
+              />
+              <Tooltip formatter={(value) => `${value}%`} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

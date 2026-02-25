@@ -16,7 +16,7 @@ interface CustomNodeProps {
 function CustomNode({ data }: CustomNodeProps) {
   return (
     <div
-      className={`px-4 py-3 shadow-md rounded-lg border-2 bg-card hover:shadow-lg transition-all min-w-[200px] ${
+      className={`min-w-[170px] rounded-lg border-2 bg-card px-3 py-3 shadow-md transition-all hover:shadow-lg sm:min-w-[200px] sm:px-4 ${
         data.highlighted
           ? 'border-primary ring-2 ring-primary/20'
           : 'border-border'

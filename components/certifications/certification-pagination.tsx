@@ -31,7 +31,7 @@ export function CertificationPagination({
   }
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
       <Button
         variant="outline"
         size="icon"

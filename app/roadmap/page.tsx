@@ -140,15 +140,15 @@ export default function RoadmapPage() {
     <div className="container mx-auto py-8 px-4">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
+        <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Map className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Certification Roadmap
             </h1>
           </div>
           {selectedRoadmapId && (
-            <Button variant="outline" onClick={handleResetView}>
+            <Button variant="outline" onClick={handleResetView} className="w-full sm:w-auto">
               <RotateCcw className="h-4 w-4 mr-2" />
               View All
             </Button>
@@ -167,7 +167,7 @@ export default function RoadmapPage() {
         onValueChange={(v) => setActiveTab(v as any)}
         className="mb-6"
       >
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 sm:max-w-md">
           <TabsTrigger value="predefined">Career Paths</TabsTrigger>
           <TabsTrigger value="all">All Certifications</TabsTrigger>
         </TabsList>
@@ -187,7 +187,7 @@ export default function RoadmapPage() {
 
           {/* Stats Cards */}
           {roadmapData && (
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -242,7 +242,7 @@ export default function RoadmapPage() {
           {/* Roadmap Viewer */}
           {roadmapData && (
             <div className="grid gap-6 lg:grid-cols-4">
-              <div className="lg:col-span-3">
+              <div className="order-2 lg:order-1 lg:col-span-3">
                 <Card>
                   <CardHeader>
                     <CardTitle>
@@ -262,7 +262,7 @@ export default function RoadmapPage() {
                 </Card>
               </div>
 
-              <div className="space-y-6">
+              <div className="order-1 space-y-6 lg:order-2">
                 <RoadmapLegend />
 
                 <Card>
@@ -313,7 +313,7 @@ export default function RoadmapPage() {
           {allData && (
             <>
               {/* Stats Cards */}
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
@@ -366,7 +366,7 @@ export default function RoadmapPage() {
 
               {/* Roadmap Viewer */}
               <div className="grid gap-6 lg:grid-cols-4">
-                <div className="lg:col-span-3">
+                <div className="order-2 lg:order-1 lg:col-span-3">
                   <Card>
                     <CardHeader>
                       <CardTitle>All Certifications</CardTitle>
@@ -380,7 +380,7 @@ export default function RoadmapPage() {
                   </Card>
                 </div>
 
-                <div className="space-y-6">
+                <div className="order-1 space-y-6 lg:order-2">
                   <RoadmapLegend />
                 </div>
               </div>

@@ -27,9 +27,22 @@ interface MarketDemandChartProps {
   }>;
 }
 
+const REGION_ABBREVIATIONS: Record<string, string> = {
+  'North America': 'N. America',
+  'South America': 'S. America',
+  Europe: 'Europe',
+  Asia: 'Asia',
+  Oceania: 'Oceania',
+  Africa: 'Africa',
+  'Middle East': 'Mid. East',
+};
+
 export function MarketDemandChart({ data }: MarketDemandChartProps) {
   const chartData = data.map((item) => ({
-    region: REGIONS[item.region as keyof typeof REGIONS] || item.region,
+    region:
+      REGION_ABBREVIATIONS[REGIONS[item.region as keyof typeof REGIONS]] ||
+      REGIONS[item.region as keyof typeof REGIONS] ||
+      item.region,
     jobs: item.totalJobs,
     certs: item.certifications,
   }));
@@ -43,28 +56,37 @@ export function MarketDemandChart({ data }: MarketDemandChartProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="region" angle={-45} textAnchor="end" height={100} />
-            <YAxis yAxisId="left" />
-            <YAxis yAxisId="right" orientation="right" />
-            <Tooltip />
-            <Legend />
-            <Bar
-              yAxisId="left"
-              dataKey="jobs"
-              fill="hsl(var(--primary))"
-              name="Job Postings"
-            />
-            <Bar
-              yAxisId="right"
-              dataKey="certs"
-              fill="hsl(var(--chart-2))"
-              name="Certifications"
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="h-[280px] w-full sm:h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="region"
+                interval={0}
+                angle={-30}
+                textAnchor="end"
+                height={72}
+                tick={{ fontSize: 11 }}
+              />
+              <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Legend wrapperStyle={{ fontSize: '12px' }} />
+              <Bar
+                yAxisId="left"
+                dataKey="jobs"
+                fill="hsl(var(--primary))"
+                name="Job Postings"
+              />
+              <Bar
+                yAxisId="right"
+                dataKey="certs"
+                fill="hsl(var(--chart-2))"
+                name="Certifications"
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

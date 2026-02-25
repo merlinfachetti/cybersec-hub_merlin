@@ -39,7 +39,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
       <CardContent className="pt-6">
         <div className="space-y-4">
           {/* Header */}
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge
@@ -67,7 +67,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
             </div>
 
             {!resource.isFree && (
-              <div className="text-right">
+              <div className="sm:text-right">
                 <p className="text-lg font-bold text-primary">
                   {formatCurrency(resource.cost, resource.currency)}
                 </p>
@@ -92,7 +92,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           )}
 
           {/* Metrics */}
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
             {resource.rating && resource.rating > 0 && (
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
