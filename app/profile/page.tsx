@@ -6,6 +6,7 @@ import { useUserProgress } from '@/lib/hooks/use-user-progress';
 import { ProfileHeader } from '@/components/profile/profile-header';
 import { ProgressCard } from '@/components/profile/progress-card';
 import { StudyPlan } from '@/components/profile/study-plan';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -183,24 +184,18 @@ export default function ProfilePage() {
               <CardTitle className="text-base">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <a
+              <Link
                 href="/certifications"
                 className="block text-sm text-primary hover:underline"
               >
                 → Browse certifications
-              </a>
-              <a
-                href="/roadmap"
-                className="block text-sm text-primary hover:underline"
-              >
+              </Link>
+              <Link href="/roadmap" className="block text-sm text-primary hover:underline">
                 → View career roadmap
-              </a>
-              <a
-                href="/resources"
-                className="block text-sm text-primary hover:underline"
-              >
+              </Link>
+              <Link href="/resources" className="block text-sm text-primary hover:underline">
                 → Find study resources
-              </a>
+              </Link>
             </CardContent>
           </Card>
         </div>

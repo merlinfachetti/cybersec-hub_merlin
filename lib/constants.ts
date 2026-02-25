@@ -48,8 +48,8 @@ export const DEMAND_LEVELS = {
 // Rotas
 export const ROUTES = {
   HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
   DASHBOARD: '/',
   CERTIFICATIONS: '/certifications',
   CERTIFICATION_DETAIL: (id: string) => `/certifications/${id}`,

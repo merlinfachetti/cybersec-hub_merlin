@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '@/lib/api-client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,11 +24,11 @@ import {
 } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency, formatLevel, getLevelColor } from '@/lib/format';
-import { X, Plus, Info } from 'lucide-react';
+import { Info, X } from 'lucide-react';
 import Link from 'next/link';
 import type { CertificationDetail } from '@/lib/types';
 
-export default function ComparePage() {
+function ComparePageContent() {
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [certifications, setCertifications] = useState<CertificationDetail[]>(
@@ -395,5 +395,20 @@ export default function ComparePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container mx-auto py-8 px-4 max-w-7xl">
+          <Skeleton className="h-10 w-64 mb-6" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      }
+    >
+      <ComparePageContent />
+    </Suspense>
   );
 }
