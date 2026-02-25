@@ -81,12 +81,8 @@ export async function GET(request: Request) {
           category: true,
           prerequisites: {
             select: {
-              prerequisite: {
-                select: {
-                  id: true,
-                  slug: true,
-                },
-              },
+              id: true,
+              slug: true,
             },
           },
         },
@@ -131,7 +127,7 @@ export async function GET(request: Request) {
       certifications.forEach((cert) => {
         if (cert.prerequisites && cert.prerequisites.length > 0) {
           cert.prerequisites.forEach((prereqRelation) => {
-            const prereqId = prereqRelation.prerequisite.id;
+            const prereqId = prereqRelation.id;
             const prereqCert = certifications.find((c) => c.id === prereqId);
 
             if (prereqCert) {

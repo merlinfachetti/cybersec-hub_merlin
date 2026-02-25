@@ -14,10 +14,10 @@ function isValidId(id: string): boolean {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const certificationId = params.id;
+    const { id: certificationId } = await context.params;
 
     console.log('🔍 [API] /api/certifications/[id] called', {
       id: certificationId,

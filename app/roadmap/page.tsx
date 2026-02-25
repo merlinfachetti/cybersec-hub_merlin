@@ -71,8 +71,8 @@ export default function RoadmapPage() {
         setPredefinedRoadmaps(result.roadmaps);
 
         // Selecionar primeiro roadmap por padrão
-        if (result.roadmaps.length > 0 && !selectedRoadmapId) {
-          setSelectedRoadmapId(result.roadmaps[0].id);
+        if (result.roadmaps.length > 0) {
+          setSelectedRoadmapId((previous) => previous || result.roadmaps[0].id);
         }
       } catch (err) {
         console.error('Failed to fetch predefined roadmaps:', err);
