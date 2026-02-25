@@ -64,7 +64,7 @@ export function RoadmapSelector({
                 <Badge variant="default">Selected</Badge>
               )}
             </div>
-            <CardTitle className="text-lg">{roadmap.title}</CardTitle>
+            <CardTitle className="text-base sm:text-lg">{roadmap.title}</CardTitle>
             <CardDescription>{roadmap.description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">

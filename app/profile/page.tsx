@@ -56,13 +56,15 @@ export default function ProfilePage() {
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       {/* Profile Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight mb-6">My Profile</h1>
+        <h1 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl">
+          My Profile
+        </h1>
         <ProfileHeader user={user} />
       </div>
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid gap-4 md:grid-cols-4 mb-8">
+        <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">

@@ -44,7 +44,7 @@ export function CertificationResourcesList({
       {sortedResources.map((resource) => (
         <Card key={resource.id}>
           <CardContent className="pt-6">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="font-semibold">{resource.title}</h4>
@@ -67,7 +67,7 @@ export function CertificationResourcesList({
                   </p>
                 )}
 
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex flex-wrap items-center gap-3 text-sm">
                   {resource.rating && resource.rating > 0 && (
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -96,7 +96,7 @@ export function CertificationResourcesList({
                 </div>
               </div>
 
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="w-full sm:w-auto">
                 <a
                   href={resource.url}
                   target="_blank"

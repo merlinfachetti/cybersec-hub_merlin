@@ -18,18 +18,20 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex items-start gap-6">
-          <Avatar className="h-20 w-20">
-            <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+          <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
+            <AvatarFallback className="text-xl sm:text-2xl">
+              {initials}
+            </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 space-y-4">
             <div>
-              <h2 className="text-2xl font-bold">{user.name}</h2>
+              <h2 className="text-xl font-bold sm:text-2xl">{user.name}</h2>
               <p className="text-muted-foreground">{user.email}</p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div className="flex items-center gap-2 text-sm">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>

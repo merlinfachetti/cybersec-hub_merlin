@@ -48,7 +48,7 @@ export function ProgressCard({ progress }: ProgressCardProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg">
               {progress.certification.name}
@@ -57,7 +57,7 @@ export function ProgressCard({ progress }: ProgressCardProps) {
               {progress.certification.provider.name}
             </p>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
             <Badge className={getLevelColor(progress.certification.level)}>
               {formatLevel(progress.certification.level)}
             </Badge>
@@ -83,7 +83,7 @@ export function ProgressCard({ progress }: ProgressCardProps) {
           </div>
         )}
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           {progress.startedAt && (
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />

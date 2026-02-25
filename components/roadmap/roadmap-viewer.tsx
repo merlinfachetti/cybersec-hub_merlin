@@ -137,7 +137,7 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
   );
 
   return (
-    <div className="w-full h-175 border rounded-lg bg-background">
+    <div className="h-[58vh] min-h-[420px] w-full max-h-[760px] rounded-lg border bg-background sm:h-[68vh]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -147,7 +147,7 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{
-          padding: 0.2,
+          padding: 0.3,
         }}
         minZoom={0.1}
         maxZoom={1.5}
@@ -167,7 +167,7 @@ export function RoadmapViewer({ data }: RoadmapViewerProps) {
             };
             return colors[level] || '#d1d5db';
           }}
-          className="border rounded"
+          className="hidden rounded border sm:block"
         />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>

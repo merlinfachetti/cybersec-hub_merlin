@@ -32,7 +32,7 @@ export function CertificationMarketChart({
       {marketRecognition.map((market) => (
         <Card key={market.id}>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <CardTitle className="text-lg">
                 {REGIONS[market.region as keyof typeof REGIONS]}
                 {market.country && ` - ${market.country}`}

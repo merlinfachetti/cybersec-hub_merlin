@@ -136,7 +136,7 @@ export default function ResourcesPage() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
+          <h1 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
             Study Resources
           </h1>
           <p className="text-muted-foreground">Loading resources...</p>
@@ -166,7 +166,9 @@ export default function ResourcesPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <BookOpen className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold tracking-tight">Study Resources</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Study Resources
+          </h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Curated learning materials from the best providers
@@ -175,7 +177,7 @@ export default function ResourcesPage() {
 
       {/* Stats Cards */}
       {data && (
-        <div className="grid gap-4 md:grid-cols-4 mb-6">
+        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -236,7 +238,7 @@ export default function ResourcesPage() {
       {/* Main Content */}
       <div className="grid gap-6 lg:grid-cols-4">
         {/* Resources Grid */}
-        <div className="lg:col-span-3">
+        <div className="order-2 lg:order-1 lg:col-span-3">
           {data && data.data.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -269,7 +271,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Sidebar Filters */}
-        <div>
+        <div className="order-1 lg:order-2">
           <ResourceFilters
             certifications={certifications}
             selectedCertification={filters.certificationId}

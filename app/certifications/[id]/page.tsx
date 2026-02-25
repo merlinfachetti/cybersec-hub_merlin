@@ -85,7 +85,7 @@ export default function CertificationDetailPage({
               {getCategoryIcon(certification.category)}
             </span>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 {certification.name}
               </h1>
               {certification.fullName &&
@@ -121,7 +121,7 @@ export default function CertificationDetailPage({
           </p>
         )}
 
-        <div className="flex gap-3 mt-6">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
             <a
               href={certification.officialUrl}
@@ -149,21 +149,29 @@ export default function CertificationDetailPage({
 
       {/* Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="costs">Costs</TabsTrigger>
-          <TabsTrigger value="skills">
-            Skills{' '}
-            {certification.skills?.length > 0 &&
-              `(${certification.skills.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="resources">
-            Resources{' '}
-            {certification.resources?.length > 0 &&
-              `(${certification.resources.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="market">Market</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-1">
+          <TabsList className="inline-flex min-w-max gap-2">
+            <TabsTrigger value="overview" className="shrink-0">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="costs" className="shrink-0">
+              Costs
+            </TabsTrigger>
+            <TabsTrigger value="skills" className="shrink-0">
+              Skills{' '}
+              {certification.skills?.length > 0 &&
+                `(${certification.skills.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="shrink-0">
+              Resources{' '}
+              {certification.resources?.length > 0 &&
+                `(${certification.resources.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="market" className="shrink-0">
+              Market
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">

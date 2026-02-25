@@ -127,7 +127,7 @@ function ComparePageContent() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight mb-2">
+        <h1 className="mb-2 text-3xl font-bold tracking-tight sm:text-4xl">
           Compare Certifications
         </h1>
         <p className="text-muted-foreground">
@@ -142,7 +142,7 @@ function ComparePageContent() {
             <CardTitle className="text-base">Select Certifications</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4 flex-wrap">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               {selectedIds.map((id) => {
                 const cert = certifications.find((c) => c.id === id);
                 return (
@@ -161,7 +161,7 @@ function ComparePageContent() {
 
               {selectedIds.length < 3 && (
                 <Select onValueChange={handleAddCertification}>
-                  <SelectTrigger className="w-62.5">
+                  <SelectTrigger className="w-full sm:w-[250px]">
                     <SelectValue placeholder="Add certification..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -198,7 +198,7 @@ function ComparePageContent() {
                   <TableRow>
                     <TableHead className="w-48">Attribute</TableHead>
                     {certifications.map((cert) => (
-                      <TableHead key={cert.id} className="min-w-62.5">
+                      <TableHead key={cert.id} className="min-w-[220px]">
                         <div className="space-y-2">
                           <Link
                             href={`/certifications/${cert.id}`}

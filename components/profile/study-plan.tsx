@@ -61,7 +61,7 @@ export function StudyPlan({ user }: StudyPlanProps) {
                 )}
 
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="font-semibold">{phase.week}</p>
                       <p className="text-sm text-muted-foreground">
