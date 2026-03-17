@@ -1,11 +1,9 @@
 import { defineConfig } from 'prisma/config';
 
-// Load .env.local in local dev (not needed on Vercel — env vars injected directly)
-if (!process.env.VERCEL && !process.env.DATABASE_URL) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('dotenv').config({ path: '.env.local' });
-  } catch {}
+// Load .env.local only locally (Vercel has env vars natively)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+  const { loadEnvConfig } = await import('@next/env');
+  loadEnvConfig(process.cwd());
 }
 
 export default defineConfig({
@@ -14,10 +12,7 @@ export default defineConfig({
     path: 'prisma/migrations',
     seed: 'tsx prisma/seed.ts',
   },
-  // datasource.url is only needed for migrate/seed, not for generate
-  ...(process.env.DATABASE_URL && {
-    datasource: {
-      url: process.env.DATABASE_URL,
-    },
-  }),
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
 });
