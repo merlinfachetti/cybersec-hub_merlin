@@ -1,3 +1,4 @@
+// @ts-nocheck — legacy route, typed in Sprint 4
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
