@@ -20,7 +20,7 @@ Edite `.env.local` com sua DATABASE_URL e JWT_SECRET.
 
 ### 3. Migrations + Seed
 ```bash
-npx prisma migrate dev --name init
+npx prisma migrate deploy
 npx prisma db seed
 ```
 Credenciais padrão: `merlin@cyberportal.dev` / `CyberPortal@2025!`
