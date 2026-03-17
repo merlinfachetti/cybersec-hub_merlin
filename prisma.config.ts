@@ -1,9 +1,8 @@
 import { defineConfig } from 'prisma/config';
-import { loadEnvConfig } from '@next/env';
 
-// Load .env.local for local CLI commands (migrate, seed, studio)
-// In production (Vercel), env vars are injected directly
-if (process.env.NODE_ENV !== 'production') {
+// Load .env.local only in local development (not on Vercel/CI where vars come from environment)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  const { loadEnvConfig } = await import('@next/env');
   loadEnvConfig(process.cwd());
 }
 
@@ -13,8 +12,7 @@ export default defineConfig({
     path: 'prisma/migrations',
     seed: 'tsx prisma/seed.ts',
   },
-  // DATABASE_URL only needed for migrate/seed, not for generate
-  ...(process.env.DATABASE_URL ? {
-    datasource: { url: process.env.DATABASE_URL },
-  } : {}),
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
 });
