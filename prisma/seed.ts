@@ -3,11 +3,16 @@
  * Run: npx prisma db seed
  */
 
-// @ts-ignore — types available after `prisma generate`
-import { PrismaClient } from '@prisma/client';
+// @ts-ignore — available after `prisma generate`
+import { PrismaClient } from '../generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 const ADMIN = {
   email: 'merlin@cyberportal.dev',
@@ -29,7 +34,6 @@ async function main() {
   }
 
   const passwordHash = await bcrypt.hash(ADMIN.password, 12);
-
   const user = await prisma.user.create({
     data: {
       email: ADMIN.email,
