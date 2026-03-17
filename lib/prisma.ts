@@ -1,6 +1,6 @@
 /**
- * lib/prisma.ts
- * Prisma 7 client — url passed via constructor (not schema.prisma)
+ * lib/prisma.ts — Prisma 7 singleton
+ * URL is read from prisma.config.ts at runtime (not constructor)
  */
 
 // @ts-ignore — types available after `prisma generate`
@@ -11,9 +11,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 export const prisma: PrismaClient =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL,
+  globalForPrisma.prisma ?? new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 

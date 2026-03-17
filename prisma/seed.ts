@@ -7,9 +7,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
 const ADMIN = {
   email: 'merlin@cyberportal.dev',
@@ -25,7 +23,6 @@ async function main() {
   console.log('🌱 Seeding database...\n');
 
   const existing = await prisma.user.findUnique({ where: { email: ADMIN.email } });
-
   if (existing) {
     console.log(`⚠️  User "${ADMIN.email}" already exists — skipping.`);
     return;
