@@ -1,6 +1,6 @@
 /**
  * prisma/seed.ts — Cria superadmin Merlin
- * Uses pg directly to avoid Prisma 7 generated client import issues.
+ * Uses pg directly (zero Prisma import dependency at seed time)
  * Run: npx prisma db seed
  */
 
@@ -30,9 +30,8 @@ async function main() {
   try {
     console.log('🌱 Seeding database...\n');
 
-    // Check if user already exists
     const existing = await pool.query(
-      'SELECT id, email FROM users WHERE email = $1',
+      'SELECT id FROM users WHERE email = $1',
       [ADMIN.email]
     );
 
@@ -47,8 +46,9 @@ async function main() {
 
     await pool.query(
       `INSERT INTO users (id, email, "passwordHash", name, role, "targetRole", "studyHoursPerWeek", location, "isActive", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3, $4, $5::\"UserRole\", $6, $7, $8, true, $9, $9)`,
-      [id, ADMIN.email, passwordHash, ADMIN.name, ADMIN.role, ADMIN.targetRole, ADMIN.studyHoursPerWeek, ADMIN.location, now]
+       VALUES ($1, $2, $3, $4, $5::"UserRole", $6, $7, $8, true, $9, $9)`,
+      [id, ADMIN.email, passwordHash, ADMIN.name, ADMIN.role,
+       ADMIN.targetRole, ADMIN.studyHoursPerWeek, ADMIN.location, now]
     );
 
     console.log('✅ Superadmin created!');
@@ -57,7 +57,6 @@ async function main() {
     console.log('\n🔑 Credentials:');
     console.log(`   Email:    ${ADMIN.email}`);
     console.log(`   Password: ${ADMIN.password}`);
-    console.log('\n⚠️  Change password before production!');
 
   } finally {
     await pool.end();
