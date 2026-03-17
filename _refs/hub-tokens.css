@@ -1,0 +1,100 @@
+/* ============================================
+   CYBER PORTAL — Design Tokens
+   Single Source of Truth for all visual values
+   ============================================ */
+
+:root {
+  /* ---- Neutrals ---- */
+  --bg:       #0a0a12;
+  --bg-deep:  #060610;
+  --surface:  rgba(15, 15, 30, 0.80);
+  --text:     #e8e8f0;
+  --text-bright: #ffffff;
+  --muted:    #6a6a8a;
+  --border:   rgba(255, 255, 255, 0.08);
+
+  /* ---- Accent: Team Colors ---- */
+  --red:      #e53e3e;
+  --red-soft: #ff6b6b;
+  --red-dim:  rgba(229, 62, 62, 0.25);
+
+  --blue:     #3b82f6;
+  --blue-soft:#60a5fa;
+  --blue-dim: rgba(59, 130, 246, 0.25);
+
+  --purple:     #8b5cf6;
+  --purple-soft:#a78bfa;
+  --purple-dim: rgba(139, 92, 246, 0.25);
+
+  /* ---- Glow (box-shadow values) ---- */
+  --glow-red:    0 0 20px rgba(229, 62, 62, 0.35), 0 0 60px rgba(229, 62, 62, 0.10);
+  --glow-blue:   0 0 20px rgba(59, 130, 246, 0.35), 0 0 60px rgba(59, 130, 246, 0.10);
+  --glow-purple: 0 0 20px rgba(139, 92, 246, 0.35), 0 0 60px rgba(139, 92, 246, 0.10);
+  --glow-white:  0 0 30px rgba(255, 255, 255, 0.20), 0 0 80px rgba(200, 210, 255, 0.08);
+
+  /* ---- Glass ---- */
+  --glass-bg:     rgba(10, 10, 30, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-blur:   16px;
+
+  /* ---- Inputs ---- */
+  --input-bg:     rgba(5, 5, 20, 0.70);
+  --input-border: rgba(255, 255, 255, 0.12);
+  --input-focus:  rgba(59, 130, 246, 0.40);
+
+  /* ---- Radius ---- */
+  --r-xs:  2px;
+  --r-sm:  4px;
+  --r-md:  8px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-pill: 100px;
+
+  /* ---- Motion ---- */
+  --ease:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fast:  150ms;
+  --mid:   300ms;
+  --slow:  600ms;
+  --cinema: 1200ms;
+
+  /* ---- Shadows ---- */
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.40);
+  --shadow-2: 0 8px 32px rgba(0, 0, 0, 0.60);
+  --shadow-elevated: 0 16px 64px rgba(0, 0, 0, 0.80);
+
+  /* ---- Typography ---- */
+  --font-main: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+
+  --fs-xs:   0.6875rem;   /* 11px */
+  --fs-sm:   0.75rem;     /* 12px */
+  --fs-base: 0.875rem;    /* 14px */
+  --fs-md:   1rem;        /* 16px */
+  --fs-lg:   1.25rem;     /* 20px */
+  --fs-xl:   1.5rem;      /* 24px */
+  --fs-2xl:  2rem;        /* 32px */
+  --fs-3xl:  2.5rem;      /* 40px */
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold:   700;
+
+  --ls-tight:  -0.01em;
+  --ls-normal: 0;
+  --ls-wide:   0.08em;
+  --ls-wider:  0.14em;
+  --ls-widest: 0.22em;
+
+  /* ---- Z-index layers ---- */
+  --z-canvas:    0;
+  --z-overlay:   10;
+  --z-ui:        20;
+  --z-topbar:    30;
+  --z-panel:     40;
+  --z-modal:     50;
+  --z-tooltip:   60;
+}

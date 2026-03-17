@@ -1,6 +1,158 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* ============================================================
+   CYBER PORTAL — Design System Tokens
+   Source of truth for cinematographic UI
+   ============================================================ */
+
+:root {
+  /* ── Cyber neutrals ── */
+  --cp-bg:          #0a0a12;
+  --cp-bg-deep:     #060610;
+  --cp-surface:     rgba(15, 15, 30, 0.80);
+  --cp-text:        #e8e8f0;
+  --cp-text-bright: #ffffff;
+  --cp-muted:       #6a6a8a;
+  --cp-border:      rgba(255, 255, 255, 0.08);
+
+  /* ── Team accents ── */
+  --cp-red:         #e53e3e;
+  --cp-red-soft:    #ff6b6b;
+  --cp-red-dim:     rgba(229, 62, 62, 0.25);
+  --cp-blue:        #3b82f6;
+  --cp-blue-soft:   #60a5fa;
+  --cp-blue-dim:    rgba(59, 130, 246, 0.25);
+  --cp-purple:      #8b5cf6;
+  --cp-purple-soft: #a78bfa;
+  --cp-purple-dim:  rgba(139, 92, 246, 0.25);
+
+  /* ── Semantic ── */
+  --cp-ok:     #22c55e;
+  --cp-warn:   #f59e0b;
+  --cp-danger: #e53e3e;
+
+  /* ── Glow shadows ── */
+  --cp-glow-red:    0 0 20px rgba(229,62,62,0.35), 0 0 60px rgba(229,62,62,0.10);
+  --cp-glow-blue:   0 0 20px rgba(59,130,246,0.35), 0 0 60px rgba(59,130,246,0.10);
+  --cp-glow-purple: 0 0 20px rgba(139,92,246,0.35), 0 0 60px rgba(139,92,246,0.10);
+  --cp-glow-white:  0 0 30px rgba(255,255,255,0.20), 0 0 80px rgba(200,210,255,0.08);
+
+  /* ── Glass ── */
+  --cp-glass-bg:     rgba(10, 10, 30, 0.55);
+  --cp-glass-border: rgba(255, 255, 255, 0.10);
+  --cp-glass-blur:   16px;
+
+  /* ── Inputs ── */
+  --cp-input-bg:    rgba(5, 5, 20, 0.70);
+  --cp-input-border: rgba(255, 255, 255, 0.12);
+  --cp-input-focus: rgba(59, 130, 246, 0.40);
+
+  /* ── Radius ── */
+  --cp-r-xs:   2px;
+  --cp-r-sm:   4px;
+  --cp-r-md:   8px;
+  --cp-r-lg:   14px;
+  --cp-r-xl:   20px;
+  --cp-r-pill: 100px;
+
+  /* ── Motion ── */
+  --cp-ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --cp-ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --cp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cp-fast:   150ms;
+  --cp-mid:    300ms;
+  --cp-slow:   600ms;
+  --cp-cinema: 1200ms;
+
+  /* ── Shadows ── */
+  --cp-shadow-1:        0 2px 8px rgba(0,0,0,0.40);
+  --cp-shadow-2:        0 8px 32px rgba(0,0,0,0.60);
+  --cp-shadow-elevated: 0 16px 64px rgba(0,0,0,0.80);
+
+  /* ── Z-index layers ── */
+  --cp-z-canvas:  0;
+  --cp-z-overlay: 10;
+  --cp-z-ui:      20;
+  --cp-z-topbar:  30;
+  --cp-z-panel:   40;
+  --cp-z-modal:   50;
+  --cp-z-tooltip: 60;
+}
+
+/* ── Cyber screen base ── */
+.cp-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--cp-bg-deep);
+  color: var(--cp-text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.cp-glass {
+  background: var(--cp-glass-bg);
+  border: 1px solid var(--cp-glass-border);
+  backdrop-filter: blur(var(--cp-glass-blur));
+  -webkit-backdrop-filter: blur(var(--cp-glass-blur));
+  border-radius: var(--cp-r-lg);
+}
+
+.cp-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: var(--cp-z-overlay);
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%);
+}
+
+.cp-grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--cp-z-overlay);
+  pointer-events: none;
+  opacity: 0.025;
+}
+
+@keyframes cp-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cp-animate-in {
+  animation: cp-fade-in 0.5s var(--cp-ease-out) both;
+}
+
+@keyframes cp-tricolor {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Unsupported viewport ── */
+.cp-unsupported {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--cp-bg-deep);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+  color: var(--cp-muted);
+}
+
+@media (max-width: 1023px) {
+  .cp-unsupported { display: flex; }
+  .cp-main-app    { display: none !important; }
+}
+
+/* ============================================================
+   Tailwind/shadcn theme (kept as-is for existing components)
+   ============================================================ */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -121,13 +273,5 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-
-  :root {
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }

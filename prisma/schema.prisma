@@ -9,6 +9,49 @@ datasource db {
   provider = "postgresql"
 }
 
+// ==================== AUTH MODELS ====================
+
+enum UserRole {
+  STUDENT
+  ANALYST
+  ADMIN
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String
+  name              String?
+  role              UserRole  @default(STUDENT)
+  targetRole        String?
+  studyHoursPerWeek Int?      @default(10)
+  location          String?
+  avatarUrl         String?
+  isActive          Boolean   @default(true)
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  sessions          Session[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("sessions")
+}
+
 // ==================== ENUMS ====================
 
 enum CertificationLevel {
