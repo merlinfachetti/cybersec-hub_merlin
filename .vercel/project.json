@@ -1,0 +1,15 @@
+{
+  "orgId": "team_9zB558ZQp5LIC3mr7InyWpwc",
+  "settings": {
+    "framework": "nextjs",
+    "buildCommand": "npx prisma generate && next build --webpack",
+    "installCommand": "npm install",
+    "outputDirectory": ".next",
+    "devCommand": "next dev --turbopack",
+    "rootDirectory": null
+  },
+  "git": {
+    "repo": "merlinfachetti/cybersec-lab",
+    "type": "github"
+  }
+}
