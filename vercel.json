@@ -1,6 +1,4 @@
 {
-  "installCommand": "npm install --ignore-scripts",
-  "buildCommand": "npx prisma generate && next build --webpack",
   "framework": "nextjs",
   "regions": ["fra1"]
 }
