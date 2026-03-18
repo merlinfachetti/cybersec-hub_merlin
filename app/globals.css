@@ -279,10 +279,16 @@
 /* ── Signal Lost mobile screen ── */
 .cp-signal-lost {
   display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
 }
 
 @media (max-width: 1023px) {
-  .cp-signal-lost { display: block; }
+  /* Show Signal Lost, hide everything else */
+  .cp-signal-lost { display: block !important; }
   .cp-main-app    { display: none !important; }
-  .cp-unsupported { display: none; } /* replaced by signal-lost */
+  .cp-unsupported { display: none !important; }
+  /* Prevent scroll/bounce on mobile */
+  body { overflow: hidden; position: fixed; width: 100%; }
 }
