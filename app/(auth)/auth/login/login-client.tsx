@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import SignalLost from '@/components/signal-lost';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 // ── Canvas background (nebula + stargate) ─────────────────────────────────
@@ -317,11 +318,9 @@ export default function LoginClient() {
         ))}
       </div>
 
-      {/* Unsupported viewport */}
-      <div className="cp-unsupported">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: '#e8e8f0' }}>Desktop Experience Only</h2>
-        <p style={{ maxWidth: 300, lineHeight: 1.5 }}>CYBER PORTAL is optimized for desktop viewports (1024px+).</p>
+      {/* Signal Lost — mobile block */}
+      <div className="cp-signal-lost">
+        <SignalLost />
       </div>
 
       <style>{`

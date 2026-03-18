@@ -275,3 +275,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── Signal Lost mobile screen ── */
+.cp-signal-lost {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .cp-signal-lost { display: block; }
+  .cp-main-app    { display: none !important; }
+  .cp-unsupported { display: none; } /* replaced by signal-lost */
+}
