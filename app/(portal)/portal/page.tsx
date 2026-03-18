@@ -223,6 +223,13 @@ function initUniverse(
 
 // ── Main component ────────────────────────────────────────────────────────
 
+interface UserProfile {
+  name: string | null;
+  email: string;
+  role: string;
+  avatarUrl: string | null;
+}
+
 export default function PortalPage() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -231,6 +238,16 @@ export default function PortalPage() {
   const [activeMode, setActiveMode] = useState<TeamColor>('red');
   const [selectedNode, setSelectedNode] = useState<NodeId | null>('phishing');
   const [panelHidden, setPanelHidden] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Fetch authenticated user
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.user && setUser(d.user))
+      .catch(() => null);
+  }, []);
 
   const panel = selectedNode ? NODE_DETAILS[selectedNode] : NODE_DETAILS['phishing'];
 
@@ -276,29 +293,121 @@ export default function PortalPage() {
       {/* ── UI layer ── */}
       <div className="cp-main-app" style={{ position: 'relative', zIndex: 20, height: '100vh', display: 'flex', flexDirection: 'column', pointerEvents: 'none' }}>
 
-        {/* Topbar */}
-        <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', background: 'rgba(6,6,16,0.7)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.06)', pointerEvents: 'all' }}>
+        {/* ── Topbar ── */}
+        <header style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 24px', height: 56,
+          background: 'rgba(6,6,16,0.85)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          pointerEvents: 'all',
+        }}>
+          {/* Left — brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6a6a8a', display: 'flex' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 14, letterSpacing: '0.12em', color: '#ffffff' }}>CYBER PORTAL</span>
-              <span style={{ fontSize: 11, fontStyle: 'italic', color: '#6a6a8a' }}>signal &gt; noise</span>
+            {/* Shield icon */}
+            <div style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#shield-grad)" strokeWidth="1.5">
+                <defs>
+                  <linearGradient id="shield-grad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#e53e3e"/>
+                    <stop offset="50%" stopColor="#3b82f6"/>
+                    <stop offset="100%" stopColor="#8b5cf6"/>
+                  </linearGradient>
+                </defs>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.14em', color: '#ffffff', lineHeight: 1 }}>CYBER PORTAL</span>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.08em' }}>signal &gt; noise</span>
             </div>
           </div>
 
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 12, color: '#e8e8f0' }}>
-            Today: 2h Study &middot; 1 Lab &middot; Risk: Low
+          {/* Center — status */}
+          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: 'rgba(200,210,240,0.5)', display: 'flex', alignItems: 'center', gap: 16 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e', display: 'inline-block' }}/>
+              LIVE
+            </span>
+            <span>2h Study · 1 Lab · Risk: Low</span>
           </div>
 
+          {/* Right — search + user */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6a6a8a', display: 'flex', padding: 4 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            {/* Search */}
+            <button style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, cursor: 'pointer', color: '#6a6a8a', display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', transition: 'all 200ms' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.15)'; (e.currentTarget as HTMLElement).style.color = '#e8e8f0'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; (e.currentTarget as HTMLElement).style.color = '#6a6a8a'; }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11 }}>Search</span>
             </button>
-            <button onClick={handleLogout} title="Sign out" style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6a6a8a' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </button>
+
+            {/* User avatar + dropdown */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setShowUserMenu(v => !v)}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: '5px 10px 5px 5px', cursor: 'pointer', transition: 'all 200ms' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.15)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'}
+              >
+                {/* Avatar */}
+                <div style={{ width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid rgba(139,92,246,0.5)', flexShrink: 0, background: 'rgba(139,92,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src="/merlin.jpg" alt="Merlin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                </div>
+                {/* Name + role */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'left' }}>
+                  <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 600, color: '#e8e8f0', lineHeight: 1 }}>
+                    {user?.name ?? 'Merlin'}
+                  </span>
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#8b5cf6', letterSpacing: '0.06em', lineHeight: 1 }}>
+                    {user?.role ?? 'ADMIN'}
+                  </span>
+                </div>
+                {/* Chevron */}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6a6a8a" strokeWidth="2" style={{ transform: showUserMenu ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms' }}>
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+
+              {/* Dropdown menu */}
+              {showUserMenu && (
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                  background: 'rgba(10,10,25,0.95)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 10, padding: '6px', minWidth: 180,
+                  backdropFilter: 'blur(20px)', boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
+                  zIndex: 100,
+                  animation: 'cp-fade-in 0.15s ease-out both',
+                }}>
+                  {/* User info header */}
+                  <div style={{ padding: '8px 10px 10px', borderBottom: '1px solid rgba(255,255,255,0.07)', marginBottom: 6 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#e8e8f0', fontFamily: '"Space Grotesk", sans-serif' }}>{user?.name ?? 'Merlin'}</div>
+                    <div style={{ fontSize: 10, color: '#6a6a8a', fontFamily: '"JetBrains Mono", monospace', marginTop: 2 }}>{user?.email ?? 'merlin@cyberportal.dev'}</div>
+                  </div>
+                  {/* Menu items */}
+                  {[
+                    { icon: '◉', label: 'Profile' },
+                    { icon: '⚙', label: 'Settings' },
+                  ].map(item => (
+                    <button key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 10px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 7, color: '#9bb0c6', fontSize: 13, fontFamily: '"Inter", sans-serif', transition: 'all 150ms' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLElement).style.color = '#e8e8f0'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'none'; (e.currentTarget as HTMLElement).style.color = '#9bb0c6'; }}>
+                      <span style={{ fontSize: 11, opacity: 0.6 }}>{item.icon}</span>
+                      {item.label}
+                    </button>
+                  ))}
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', marginTop: 6, paddingTop: 6 }}>
+                    <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 10px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 7, color: '#ff6b6b', fontSize: 13, fontFamily: '"Inter", sans-serif', transition: 'all 150ms' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(229,62,62,0.1)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'none'}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
