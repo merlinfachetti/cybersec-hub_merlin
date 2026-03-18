@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret-change-in-prod');
+const getSecret = () => new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret-change-in-prod');
 const COOKIE_NAME = 'cp_session';
 
 // Rotas públicas (não precisam de auth)
@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
   // Valida JWT
   try {
-    await jwtVerify(token, JWT_SECRET);
+    await jwtVerify(token, getSecret());
     return NextResponse.next();
   } catch {
     // Token inválido ou expirado — limpa cookie e redireciona

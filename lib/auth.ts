@@ -10,9 +10,12 @@ import { createHash } from 'crypto';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? (() => { throw new Error('JWT_SECRET env var is missing'); })()
-);
+// Lazy — evaluated at request time, not build time
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET env var is missing');
+  return new TextEncoder().encode(secret);
+}
 
 const COOKIE_NAME = 'cp_session';
 const TOKEN_TTL_SECONDS = 60 * 60 * 8; // 8h
@@ -41,12 +44,12 @@ export async function createToken(payload: Omit<SessionPayload, 'iat' | 'exp'>):
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(`${TOKEN_TTL_SECONDS}s`)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifyToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as SessionPayload;
   } catch {
     return null;
