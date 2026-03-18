@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Menu, Shield } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -52,7 +52,7 @@ export function MainNav() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
+          <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 28, height: 28, objectFit: "contain", filter: "drop-shadow(0 0 5px rgba(139,92,246,0.45))" }} />
           <span className="truncate font-bold text-lg sm:text-xl">CyberSec Hub</span>
         </Link>
 

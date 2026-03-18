@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  Shield,
   BookOpen,
   TrendingUp,
   Map,
@@ -72,7 +71,7 @@ export default function HomePage() {
             <Link href="/certifications">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <CardHeader>
-                  <Shield className="h-12 w-12 text-primary mb-4" />
+                  <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 56, height: 56, objectFit: "contain", filter: "drop-shadow(0 0 10px rgba(139,92,246,0.5))", marginBottom: "1rem" }} />
                   <CardTitle>100+ Certifications</CardTitle>
                   <CardDescription>
                     Complete catalog from Security+ to OSCP. Filter by level,
