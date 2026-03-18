@@ -129,17 +129,8 @@ export default function SignalLost() {
 
         {/* ── TOP — logo only, centered, no interactive elements ── */}
         <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          {/* Shield tricolor */}
-          <svg width="28" height="32" viewBox="0 0 24 28" fill="none">
-            <defs>
-              <linearGradient id="sl-shield" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#e53e3e"/>
-                <stop offset="50%" stopColor="#3b82f6"/>
-                <stop offset="100%" stopColor="#8b5cf6"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 26s10-5 10-12V4L12 1 2 4v10c0 7 10 12 10 12z" stroke="url(#sl-shield)" strokeWidth="1.5" fill="none"/>
-          </svg>
+          {/* Logo */}
+          <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 0 10px rgba(139,92,246,0.6)) drop-shadow(0 0 20px rgba(59,130,246,0.3))' }} />
           <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff' }}>CYBER PORTAL</span>
           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '.1em' }}>signal &gt; noise</span>
         </div>

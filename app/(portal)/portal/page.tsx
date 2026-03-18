@@ -305,18 +305,9 @@ export default function PortalPage() {
         }}>
           {/* Left — brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {/* Shield icon */}
-            <div style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="url(#shield-grad)" strokeWidth="1.5">
-                <defs>
-                  <linearGradient id="shield-grad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#e53e3e"/>
-                    <stop offset="50%" stopColor="#3b82f6"/>
-                    <stop offset="100%" stopColor="#8b5cf6"/>
-                  </linearGradient>
-                </defs>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
+            {/* Logo */}
+            <div style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.14em', color: '#ffffff', lineHeight: 1 }}>CYBER PORTAL</span>
