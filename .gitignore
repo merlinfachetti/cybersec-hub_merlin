@@ -452,3 +452,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,react,node,visualstudiocode,git,webstorm,pycharm
 
+
+# Vercel CLI config (managed by Vercel dashboard)
+.vercel
