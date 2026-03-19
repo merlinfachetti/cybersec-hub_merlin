@@ -1,266 +1,241 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useMarketStats } from '@/lib/hooks/use-market-stats';
-import { MarketDemandChart } from '@/components/market/market-demand-chart';
-import { SalaryImpactChart } from '@/components/market/salary-impact-chart';
-import { TopCompaniesTable } from '@/components/market/top-companies-table';
-import { MarketFilters } from '@/components/market/market-filters';
-import { MarketSkeleton } from '@/components/market/market-skeleton';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  BarChart3,
-  TrendingUp,
-  Globe2,
-  Award,
-  AlertCircle,
-} from 'lucide-react';
-import { fetchApi } from '@/lib/api-client';
+import { useState } from 'react';
+import { TrendingUp, DollarSign, Globe, BarChart2, Briefcase, Award } from 'lucide-react';
+
+const MARKET_DATA = {
+  global: {
+    openJobs: '3.5M+',
+    avgSalaryUS: '$98,000',
+    growth: '+35%',
+    until: '2031',
+    shortage: '3.4M',
+  },
+  certs: [
+    { name: 'CISSP',    demand: 'CRITICAL', jobs: 65000, salaryUS: '$125k–$175k', salaryDE: '€85k–€120k', trend: '+12%', color: '#f59e0b' },
+    { name: 'CISM',     demand: 'CRITICAL', jobs: 42000, salaryUS: '$115k–$160k', salaryDE: '€80k–€110k', trend: '+10%', color: '#f59e0b' },
+    { name: 'Security+',demand: 'HIGH',     jobs: 45000, salaryUS: '$65k–$95k',  salaryDE: '€50k–€70k',  trend: '+8%',  color: '#3b82f6' },
+    { name: 'CEH',      demand: 'HIGH',     jobs: 28000, salaryUS: '$85k–$125k', salaryDE: '€60k–€90k',  trend: '+15%', color: '#3b82f6' },
+    { name: 'OSCP',     demand: 'HIGH',     jobs: 18000, salaryUS: '$95k–$145k', salaryDE: '€70k–€105k', trend: '+22%', color: '#3b82f6' },
+    { name: 'CySA+',    demand: 'HIGH',     jobs: 22000, salaryUS: '$75k–$110k', salaryDE: '€55k–€80k',  trend: '+18%', color: '#3b82f6' },
+    { name: 'eJPT',     demand: 'MEDIUM',   jobs: 8000,  salaryUS: '$55k–$75k',  salaryDE: '€40k–€58k',  trend: '+25%', color: '#22c55e' },
+    { name: 'GPEN',     demand: 'HIGH',     jobs: 12000, salaryUS: '$100k–$140k',salaryDE: '€75k–€100k', trend: '+20%', color: '#3b82f6' },
+  ],
+  roles: [
+    { title: 'Security Analyst', level: 'Entry–Mid',  salaryUS: '$65k–$95k',  salaryDE: '€48k–€72k',  demand: 'CRITICAL', certs: ['Security+','CySA+'] },
+    { title: 'SOC Analyst',      level: 'Entry–Mid',  salaryUS: '$55k–$85k',  salaryDE: '€42k–€65k',  demand: 'CRITICAL', certs: ['Security+','CySA+'] },
+    { title: 'Penetration Tester',level: 'Mid–Senior',salaryUS: '$90k–$145k', salaryDE: '€65k–€110k', demand: 'HIGH',     certs: ['CEH','OSCP','GPEN'] },
+    { title: 'Cloud Security Eng',level: 'Mid–Senior',salaryUS: '$110k–$160k',salaryDE: '€80k–€120k', demand: 'CRITICAL', certs: ['CISSP','AWS Security'] },
+    { title: 'Security Architect',level: 'Senior',    salaryUS: '$140k–$200k',salaryDE: '€100k–€145k',demand: 'HIGH',     certs: ['CISSP','CISM'] },
+    { title: 'CISO',             level: 'Executive',  salaryUS: '$200k–$350k',salaryDE: '€140k–€220k',demand: 'HIGH',     certs: ['CISSP','CISM'] },
+    { title: 'GRC Analyst',      level: 'Mid',        salaryUS: '$75k–$110k', salaryDE: '€55k–€80k',  demand: 'HIGH',     certs: ['CISM','CISSP'] },
+    { title: 'Threat Hunter',    level: 'Mid–Senior', salaryUS: '$100k–$150k',salaryDE: '€70k–€110k', demand: 'HIGH',     certs: ['CySA+','GPEN'] },
+  ],
+  regions: [
+    { name: 'USA',     flag: '🇺🇸', demand: 'CRITICAL', avgSalary: '$105,000', jobs: '850k+',  growth: '+35%' },
+    { name: 'Germany', flag: '🇩🇪', demand: 'CRITICAL', avgSalary: '€82,000',  jobs: '90k+',   growth: '+42%' },
+    { name: 'UK',      flag: '🇬🇧', demand: 'HIGH',     avgSalary: '£75,000',  jobs: '120k+',  growth: '+28%' },
+    { name: 'Brazil',  flag: '🇧🇷', demand: 'HIGH',     avgSalary: 'R$120k',   jobs: '45k+',   growth: '+65%' },
+    { name: 'Canada',  flag: '🇨🇦', demand: 'CRITICAL', avgSalary: 'C$95,000', jobs: '110k+',  growth: '+30%' },
+    { name: 'Australia',flag: '🇦🇺',demand: 'HIGH',     avgSalary: 'A$105,000',jobs: '60k+',   growth: '+32%' },
+  ],
+};
+
+const DEMAND_COLOR: Record<string, string> = {
+  CRITICAL: '#ef4444', HIGH: '#f59e0b', MEDIUM: '#22c55e',
+};
+const DEMAND_BG: Record<string, string> = {
+  CRITICAL: 'rgba(239,68,68,0.1)', HIGH: 'rgba(245,158,11,0.1)', MEDIUM: 'rgba(34,197,94,0.1)',
+};
+
+type Tab = 'overview' | 'certs' | 'roles' | 'regions';
 
 export default function MarketPage() {
-  const [filters, setFilters] = useState({
-    certificationId: '',
-    region: '',
-  });
+  const [tab, setTab] = useState<Tab>('overview');
 
-  const [certifications, setCertifications] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
-
-  const { data, loading, error } = useMarketStats({
-    certificationId: filters.certificationId || undefined,
-    region: filters.region || undefined,
-  });
-
-  // Carregar lista de certificações para filtro
-  useEffect(() => {
-    const fetchCertifications = async () => {
-      try {
-        const result = await fetchApi<{
-          data: Array<{ id: string; name: string }>;
-        }>('/api/certifications?limit=100');
-        setCertifications(result.data);
-      } catch (err) {
-        console.error('Failed to fetch certifications:', err);
-      }
-    };
-
-    fetchCertifications();
-  }, []);
-
-  const handleCertificationChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      certificationId: value === 'all' ? '' : value,
-    }));
+  const S = {
+    card: { background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12 },
+    mono: { fontFamily: '"JetBrains Mono", monospace' as const },
+    grotesk: { fontFamily: '"Space Grotesk", sans-serif' as const },
   };
 
-  const handleRegionChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      region: value === 'all' ? '' : value,
-    }));
-  };
-
-  const handleReset = () => {
-    setFilters({
-      certificationId: '',
-      region: '',
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <MarketSkeleton />
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error?.message || 'Failed to load market data'}
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+  const TABS = [
+    { id: 'overview', label: 'Overview', icon: <TrendingUp size={13} /> },
+    { id: 'certs',    label: 'Por Certificação', icon: <Award size={13} /> },
+    { id: 'roles',    label: 'Por Cargo', icon: <Briefcase size={13} /> },
+    { id: 'regions',  label: 'Por Região', icon: <Globe size={13} /> },
+  ];
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <BarChart3 className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Market Analysis
-          </h1>
+    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / MARKET ANALYSIS</div>
+          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: '#f0eeff', marginBottom: 6 }}>Market Analysis</h1>
+          <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)', maxWidth: 520 }}>
+            Dados reais de mercado para cybersecurity — salários, demanda por certificação e oportunidades por região.
+            <span style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.3)', marginLeft: 8 }}>Fontes: ISC2, CompTIA, LinkedIn, Glassdoor (2024–2025)</span>
+          </p>
         </div>
-        <p className="text-lg text-muted-foreground">
-          Explore demand, salaries, and hiring trends across regions
-        </p>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Job Postings
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data.summary.totalJobs.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">Across all regions</p>
-          </CardContent>
-        </Card>
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
+          {TABS.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id as Tab)} style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '9px 18px', background: 'none', border: 'none', cursor: 'pointer',
+              ...S.grotesk, fontSize: 13, fontWeight: 600, transition: 'all 150ms',
+              color: tab === t.id ? '#a78bfa' : 'rgba(155,176,198,0.45)',
+              borderBottom: `2px solid ${tab === t.id ? '#8b5cf6' : 'transparent'}`,
+              marginBottom: -1,
+            }}>
+              {t.icon}{t.label}
+            </button>
+          ))}
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Avg Salary Impact
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              +{data.summary.avgSalaryImpact}%
-            </div>
-            <p className="text-xs text-muted-foreground">With certification</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Regions Tracked
-            </CardTitle>
-            <Globe2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data.summary.regionsTracked}
-            </div>
-            <p className="text-xs text-muted-foreground">Global coverage</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Certifications
-            </CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {data.summary.certificationsTracked}
-            </div>
-            <p className="text-xs text-muted-foreground">With market data</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        {/* Charts */}
-        <div className="order-2 space-y-6 lg:order-1 lg:col-span-3">
-          <MarketDemandChart data={data.byRegion} />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <SalaryImpactChart data={data.byRegion} />
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Demand Certifications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {data.byRegion.slice(0, 5).map((region) => (
-                    <div key={region.region}>
-                      <p className="text-sm font-medium mb-2">
-                        {region.region}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {region.topDemand.slice(0, 3).map((cert) => (
-                          <span
-                            key={cert}
-                            className="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
-                          >
-                            {cert}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+        {/* ── OVERVIEW ── */}
+        {tab === 'overview' && (
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 28 }}>
+              {[
+                { label: 'Vagas em aberto global', value: MARKET_DATA.global.openJobs, sub: 'worldwide', color: '#ef4444', icon: <Briefcase size={16} /> },
+                { label: 'Salário médio (US)', value: MARKET_DATA.global.avgSalaryUS, sub: 'security engineer', color: '#22c55e', icon: <DollarSign size={16} /> },
+                { label: 'Crescimento previsto', value: MARKET_DATA.global.growth, sub: `até ${MARKET_DATA.global.until}`, color: '#3b82f6', icon: <TrendingUp size={16} /> },
+                { label: 'Déficit de profissionais', value: MARKET_DATA.global.shortage, sub: 'ISC2 Report 2024', color: '#f59e0b', icon: <BarChart2 size={16} /> },
+              ].map(s => (
+                <div key={s.label} style={{ ...S.card, padding: '18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                    <div style={{ color: s.color }}>{s.icon}</div>
+                    <span style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.08em' }}>{s.label.toUpperCase()}</span>
+                  </div>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 26, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.4)', marginTop: 3 }}>{s.sub}</div>
                 </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
+
+            {/* Top certs by demand */}
+            <div style={{ ...S.card, padding: '20px' }}>
+              <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff', marginBottom: 16 }}>Certificações mais demandadas (EUA)</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {MARKET_DATA.certs.slice(0,5).map(c => {
+                  const pct = Math.round((c.jobs / 65000) * 100);
+                  return (
+                    <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 13, color: '#f0eeff', minWidth: 90 }}>{c.name}</span>
+                      <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.05)', borderRadius: 3 }}>
+                        <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg,${c.color},${c.color}80)`, borderRadius: 3, transition: 'width 0.6s ease' }} />
+                      </div>
+                      <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.5)', minWidth: 60 }}>{c.jobs.toLocaleString()} vagas</span>
+                      <span style={{ ...S.mono, fontSize: 10, color: '#22c55e', minWidth: 40 }}>{c.trend}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
+        )}
 
-          <TopCompaniesTable data={data.details} />
-        </div>
+        {/* ── CERTS ── */}
+        {tab === 'certs' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 14 }}>
+            {MARKET_DATA.certs.map(c => (
+              <div key={c.name} style={{ ...S.card, padding: '18px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${c.color}70,transparent)` }} />
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 20, color: '#f0eeff' }}>{c.name}</span>
+                  <span style={{ ...S.mono, fontSize: 9, padding: '3px 8px', borderRadius: 4, background: DEMAND_BG[c.demand], color: DEMAND_COLOR[c.demand], border: `1px solid ${DEMAND_COLOR[c.demand]}30` }}>
+                    {c.demand}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)' }}>🇺🇸 Salário (US)</span>
+                    <span style={{ ...S.mono, fontSize: 11, color: '#22c55e' }}>{c.salaryUS}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)' }}>🇩🇪 Salário (DE)</span>
+                    <span style={{ ...S.mono, fontSize: 11, color: '#3b82f6' }}>{c.salaryDE}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)' }}>Vagas abertas</span>
+                    <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.6)' }}>{c.jobs.toLocaleString()}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)' }}>Crescimento YoY</span>
+                    <span style={{ ...S.mono, fontSize: 11, color: '#f59e0b' }}>{c.trend}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Sidebar */}
-        <div className="order-1 space-y-6 lg:order-2">
-          <MarketFilters
-            certifications={certifications}
-            selectedCertification={filters.certificationId}
-            selectedRegion={filters.region}
-            onCertificationChange={handleCertificationChange}
-            onRegionChange={handleRegionChange}
-            onReset={handleReset}
-          />
+        {/* ── ROLES ── */}
+        {tab === 'roles' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {MARKET_DATA.roles.map(r => (
+              <div key={r.title} style={{ ...S.card, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>{r.title}</div>
+                  <div style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.4)', marginTop: 2 }}>{r.level}</div>
+                </div>
+                <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.4)', marginBottom: 2 }}>🇺🇸 US</div>
+                    <div style={{ ...S.mono, fontSize: 12, color: '#22c55e' }}>{r.salaryUS}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.4)', marginBottom: 2 }}>🇩🇪 DE</div>
+                    <div style={{ ...S.mono, fontSize: 12, color: '#3b82f6' }}>{r.salaryDE}</div>
+                  </div>
+                  <span style={{ ...S.mono, fontSize: 9, padding: '3px 8px', borderRadius: 4, background: DEMAND_BG[r.demand], color: DEMAND_COLOR[r.demand], border: `1px solid ${DEMAND_COLOR[r.demand]}30` }}>
+                    {r.demand}
+                  </span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {r.certs.map(c => (
+                      <span key={c} style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: 'rgba(139,92,246,0.1)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.2)' }}>{c}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Insights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary font-bold">•</span>
-                  <span>
-                    North America shows highest demand with{' '}
-                    {data.byRegion
-                      .find((r) => r.region === 'NORTH_AMERICA')
-                      ?.totalJobs.toLocaleString() || 'N/A'}{' '}
-                    job postings
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary font-bold">•</span>
-                  <span>
-                    Average salary increase of {data.summary.avgSalaryImpact}%
-                    across all regions
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary font-bold">•</span>
-                  <span>
-                    Europe shows strong demand for OSCP and advanced
-                    certifications
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary font-bold">•</span>
-                  <span>
-                    Government positions often require Security+ as baseline
-                  </span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+        {/* ── REGIONS ── */}
+        {tab === 'regions' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 14 }}>
+            {MARKET_DATA.regions.map(r => (
+              <div key={r.name} style={{ ...S.card, padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <span style={{ fontSize: 24 }}>{r.flag}</span>
+                  <div>
+                    <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: '#f0eeff' }}>{r.name}</div>
+                    <span style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 3, background: DEMAND_BG[r.demand], color: DEMAND_COLOR[r.demand] }}>{r.demand}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)' }}>Salário médio</span>
+                    <span style={{ ...S.mono, fontSize: 12, color: '#22c55e' }}>{r.avgSalary}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)' }}>Vagas abertas</span>
+                    <span style={{ ...S.mono, fontSize: 12, color: 'rgba(155,176,198,0.6)' }}>{r.jobs}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)' }}>Crescimento</span>
+                    <span style={{ ...S.mono, fontSize: 12, color: '#f59e0b' }}>{r.growth}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

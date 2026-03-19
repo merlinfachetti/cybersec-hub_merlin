@@ -4,268 +4,310 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Award, TrendingUp, Clock, Target, BookOpen,
-  Shield, Zap, Users, ChevronRight, Star,
+  Shield, Zap, ChevronRight, Star, Edit3, Plus,
+  CheckCircle, Circle, BarChart2, User,
 } from 'lucide-react';
 
-interface UserSession {
-  name: string | null;
-  email: string;
-  role: string;
-}
-
-interface ProgressItem {
-  id: string;
-  certificationSlug: string;
-  status: string;
-  progressPercent: number;
-  studyHours: number;
-  certification?: { name: string; level: string; category: string } | null;
-}
-
-interface Stats {
-  totalCertifications: number;
-  inProgress: number;
-  completed: number;
-  totalStudyHours: number;
-  averageProgress: number;
-  upcomingExams: number;
-}
+interface UserSession { name: string | null; email: string; role: string; }
 
 const STATUS_COLOR: Record<string, string> = {
-  STUDYING: '#3b82f6',
-  INTERESTED: '#8b5cf6',
-  SCHEDULED: '#f59e0b',
-  PASSED: '#22c55e',
-  FAILED: '#ef4444',
-  EXPIRED: '#6b7280',
+  STUDYING: '#3b82f6', INTERESTED: '#8b5cf6', SCHEDULED: '#f59e0b',
+  PASSED: '#22c55e', FAILED: '#ef4444', EXPIRED: '#6b7280',
+};
+const STATUS_LABEL: Record<string, string> = {
+  STUDYING: 'Studying', INTERESTED: 'Interested', SCHEDULED: 'Scheduled',
+  PASSED: '✓ Passed', FAILED: 'Failed', EXPIRED: 'Expired',
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  STUDYING: 'Studying',
-  INTERESTED: 'Interested',
-  SCHEDULED: 'Scheduled',
-  PASSED: '✓ Passed',
-  FAILED: 'Failed',
-  EXPIRED: 'Expired',
-};
+// Study plan — interactive checklist
+const STUDY_PLAN = [
+  { id: 1, task: 'Assistir Professor Messer SY0-701 completo', cert: 'SEC+', hours: 14, done: false },
+  { id: 2, task: 'Completar 3 simulados Jason Dion (min. 80%)', cert: 'SEC+', hours: 6, done: false },
+  { id: 3, task: 'Revisar flashcards de Network Security', cert: 'SEC+', hours: 3, done: true },
+  { id: 4, task: 'Fazer TryHackMe Pre-Security Path', cert: 'Fundamentos', hours: 40, done: false },
+  { id: 5, task: 'Concluir HackTheBox Starting Point Tier 1', cert: 'eJPT', hours: 10, done: false },
+  { id: 6, task: 'Ler capítulo 3 – Cryptography (Darril Gibson)', cert: 'SEC+', hours: 2, done: true },
+];
+
+const QUICK_STATS = [
+  { label: 'Estudo hoje', value: '2h 15m', icon: <Clock size={16} />, color: '#3b82f6' },
+  { label: 'Streak', value: '12 dias', icon: <Zap size={16} />, color: '#f59e0b' },
+  { label: 'Labs feitos', value: '8', icon: <BarChart2 size={16} />, color: '#8b5cf6' },
+  { label: 'Próxima meta', value: 'SEC+', icon: <Target size={16} />, color: '#22c55e' },
+];
 
 export default function ProfilePage() {
   const [user, setUser] = useState<UserSession | null>(null);
-  const [progress, setProgress] = useState<ProgressItem[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState(STUDY_PLAN);
+  const [activeSection, setActiveSection] = useState<'overview' | 'plan' | 'certs' | 'posture'>('overview');
 
   useEffect(() => {
-    async function load() {
-      try {
-        const [meRes, progressRes] = await Promise.all([
-          fetch('/api/auth/me'),
-          fetch('/api/user/progress'),
-        ]);
-        if (meRes.ok) {
-          const { user: u } = await meRes.json();
-          setUser(u);
-        }
-        if (progressRes.ok) {
-          const d = await progressRes.json();
-          setProgress(d.data ?? []);
-          setStats(d.stats ?? null);
-        }
-      } catch (e) {
-        console.error('Profile load error:', e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.user && setUser(d.user))
+      .catch(() => null);
   }, []);
 
-  const S = { // shared styles
-    card: { background: 'rgba(15,22,40,0.8)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '20px 24px' },
-    label: { fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: '0.1em', color: 'rgba(155,176,198,0.6)', textTransform: 'uppercase' as const },
-    val: { fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 28, color: '#e6eef8' },
-    sub: { fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'rgba(155,176,198,0.5)', marginTop: 2 },
+  const toggleTask = (id: number) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
   };
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 12, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.1em' }}>
-        loading profile...
-      </div>
-    </div>
-  );
+  const completedTasks = tasks.filter(t => t.done).length;
+  const totalHours = tasks.reduce((s, t) => s + (t.done ? t.hours : 0), 0);
+
+  const S = {
+    card: { background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12 },
+    mono: { fontFamily: '"JetBrains Mono", monospace' as const },
+    grotesk: { fontFamily: '"Space Grotesk", sans-serif' as const },
+  };
+
+  const SECTIONS = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'plan', label: 'Plano de Estudo' },
+    { id: 'certs', label: 'Certificações' },
+    { id: 'posture', label: 'Postura' },
+  ];
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 36 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-            <span style={S.label}>profile</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
+          <div style={{ position: 'relative' }}>
+            <img src="/merlin.jpg" alt="Alden Merlin" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(139,92,246,0.4)' }} />
+            <div style={{ position: 'absolute', bottom: 2, right: 2, width: 14, height: 14, borderRadius: '50%', background: '#22c55e', border: '2px solid #0b0f14', boxShadow: '0 0 6px #22c55e' }} />
           </div>
-          <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 28, color: '#e6eef8', marginBottom: 4 }}>
-            {user?.name ?? 'Merlin'}
-          </h1>
-          <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)' }}>
-            {user?.email} &nbsp;·&nbsp;
-            <span style={{ color: '#8b5cf6', fontWeight: 600 }}>{user?.role?.toUpperCase() ?? 'ADMIN'}</span>
-          </p>
+          <div>
+            <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 24, color: '#f0eeff', margin: 0 }}>
+              {user?.name ?? 'Merlin'}
+            </h1>
+            <div style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)', marginTop: 2 }}>
+              {user?.email} · <span style={{ color: '#8b5cf6', fontWeight: 600 }}>{user?.role?.toUpperCase() ?? 'ADMIN'}</span>
+            </div>
+            <div style={{ ...S.mono, fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '0.1em', marginTop: 4 }}>
+              ● SESSÃO ATIVA · Transição para Security Engineer
+            </div>
+          </div>
         </div>
 
-        {/* Stats grid */}
-        {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 32 }}>
-            {[
-              { icon: <Award size={16} />, label: 'Certifications', val: stats.totalCertifications, sub: `${stats.completed} completed` },
-              { icon: <TrendingUp size={16} />, label: 'In Progress', val: stats.inProgress, sub: `${stats.averageProgress.toFixed(0)}% avg` },
-              { icon: <Clock size={16} />, label: 'Study Hours', val: `${stats.totalStudyHours}h`, sub: 'total logged' },
-              { icon: <Target size={16} />, label: 'Upcoming Exams', val: stats.upcomingExams, sub: 'scheduled' },
-            ].map(item => (
-              <div key={item.label} style={S.card}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <div style={{ color: '#8b5cf6' }}>{item.icon}</div>
-                  <span style={S.label}>{item.label}</span>
+        {/* Quick stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
+          {QUICK_STATS.map(s => (
+            <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ color: s.color, flexShrink: 0 }}>{s.icon}</div>
+              <div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 18, color: '#f0eeff' }}>{s.value}</div>
+                <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.06em' }}>{s.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Section tabs */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
+          {SECTIONS.map(s => (
+            <button key={s.id} onClick={() => setActiveSection(s.id as any)} style={{
+              padding: '9px 18px', background: 'none', border: 'none', cursor: 'pointer',
+              ...S.grotesk, fontSize: 13, fontWeight: 600, transition: 'all 150ms',
+              color: activeSection === s.id ? '#a78bfa' : 'rgba(155,176,198,0.45)',
+              borderBottom: `2px solid ${activeSection === s.id ? '#8b5cf6' : 'transparent'}`,
+              marginBottom: -1,
+            }}>{s.label}</button>
+          ))}
+        </div>
+
+        {/* ── OVERVIEW ── */}
+        {activeSection === 'overview' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 20 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Progress towards SEC+ */}
+              <div style={{ ...S.card, padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>CompTIA Security+ SY0-701</div>
+                  <span style={{ ...S.mono, fontSize: 10, color: '#3b82f6', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', padding: '2px 8px', borderRadius: 4 }}>STUDYING</span>
                 </div>
-                <div style={S.val}>{item.val}</div>
-                <div style={S.sub}>{item.sub}</div>
+                <div style={{ marginBottom: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)' }}>Progresso</span>
+                    <span style={{ ...S.mono, fontSize: 11, color: '#3b82f6', fontWeight: 600 }}>45%</span>
+                  </div>
+                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3 }}>
+                    <div style={{ height: '100%', width: '45%', background: 'linear-gradient(90deg,#3b82f6,#8b5cf6)', borderRadius: 3 }} />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'rgba(155,176,198,0.45)' }}>
+                  <span>80h estudadas</span>
+                  <span>~40h restantes</span>
+                  <span>Meta: 90 dias</span>
+                </div>
+              </div>
+
+              {/* Study plan preview */}
+              <div style={{ ...S.card, padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>Tarefas de Hoje</div>
+                  <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>{completedTasks}/{tasks.length} · {totalHours}h</span>
+                </div>
+                {tasks.slice(0,4).map(t => (
+                  <div key={t.id} onClick={() => toggleTask(t.id)} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}>
+                    <div style={{ color: t.done ? '#22c55e' : 'rgba(155,176,198,0.25)', flexShrink: 0, marginTop: 1 }}>
+                      {t.done ? <CheckCircle size={16} /> : <Circle size={16} />}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, color: t.done ? 'rgba(155,176,198,0.4)' : '#e6eef8', textDecoration: t.done ? 'line-through' : 'none' }}>{t.task}</div>
+                      <div style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.35)', marginTop: 2 }}>{t.cert} · {t.hours}h</div>
+                    </div>
+                  </div>
+                ))}
+                <button onClick={() => setActiveSection('plan')} style={{ marginTop: 12, fontSize: 12, color: '#8b5cf6', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                  Ver plano completo →
+                </button>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ ...S.card, padding: '16px' }}>
+                <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>PRÓXIMOS PASSOS</div>
+                {[
+                  { n: 1, text: 'Completar Security+ (45% feito, ~40h)', color: '#3b82f6' },
+                  { n: 2, text: 'Agendar exame (2-3 sem após conclusão)', color: '#f59e0b' },
+                  { n: 3, text: 'Iniciar prep eJPT para red team básico', color: '#22c55e' },
+                ].map(r => (
+                  <div key={r.n} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <span style={{ ...S.mono, fontSize: 11, color: r.color, fontWeight: 700, minWidth: 16 }}>{r.n}.</span>
+                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.65)', lineHeight: 1.5 }}>{r.text}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ ...S.card, padding: '16px' }}>
+                <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>ACESSO RÁPIDO</div>
+                {[
+                  { href: '/certifications', label: 'Browse Certificações', icon: <Award size={12} /> },
+                  { href: '/roadmap', label: 'Ver Roadmap', icon: <TrendingUp size={12} /> },
+                  { href: '/resources', label: 'Study Resources', icon: <BookOpen size={12} /> },
+                  { href: '/threat-universe', label: '← Threat Universe', icon: <Shield size={12} /> },
+                ].map(l => (
+                  <Link key={l.href} href={l.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', textDecoration: 'none', color: 'rgba(155,176,198,0.6)', fontSize: 13, transition: 'color 150ms' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#e6eef8'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.6)'}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{l.icon}{l.label}</div>
+                    <ChevronRight size={12} style={{ opacity: 0.4 }} />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── STUDY PLAN ── */}
+        {activeSection === 'plan' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: '#f0eeff' }}>Plano de Estudo Interativo</div>
+                <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)', marginTop: 2 }}>Clique em cada tarefa para marcar como concluída</div>
+              </div>
+              <div style={{ ...S.mono, fontSize: 11, color: '#22c55e' }}>{completedTasks}/{tasks.length} concluídas · {totalHours}h</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {tasks.map(t => (
+                <div key={t.id} onClick={() => toggleTask(t.id)} style={{
+                  ...S.card, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+                  background: t.done ? 'rgba(34,197,94,0.05)' : 'rgba(12,8,28,0.8)',
+                  borderColor: t.done ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.07)',
+                  transition: 'all 150ms',
+                }}>
+                  <div style={{ color: t.done ? '#22c55e' : 'rgba(155,176,198,0.3)', flexShrink: 0 }}>
+                    {t.done ? <CheckCircle size={18} /> : <Circle size={18} />}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, color: t.done ? 'rgba(155,176,198,0.4)' : '#e6eef8', textDecoration: t.done ? 'line-through' : 'none' }}>{t.task}</div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
+                    <span style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', background: 'rgba(139,92,246,0.08)', padding: '2px 8px', borderRadius: 4 }}>{t.cert}</span>
+                    <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.35)' }}>{t.hours}h</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── CERTS ── */}
+        {activeSection === 'certs' && (
+          <div>
+            <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: '#f0eeff', marginBottom: 16 }}>Minhas Certificações</div>
+            {[
+              { name: 'CompTIA Security+', provider: 'CompTIA', status: 'STUDYING', progress: 45, hours: 80 },
+              { name: 'CEH', provider: 'EC-Council', status: 'INTERESTED', progress: 0, hours: 0 },
+            ].map(c => (
+              <div key={c.name} style={{ ...S.card, padding: '18px 20px', marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: c.progress > 0 ? 12 : 0 }}>
+                  <div>
+                    <div style={{ ...S.grotesk, fontWeight: 600, fontSize: 15, color: '#f0eeff' }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)', marginTop: 2 }}>{c.provider}</div>
+                  </div>
+                  <span style={{ ...S.mono, fontSize: 10, color: STATUS_COLOR[c.status], background: `${STATUS_COLOR[c.status]}18`, border: `1px solid ${STATUS_COLOR[c.status]}40`, padding: '3px 10px', borderRadius: 5 }}>
+                    {STATUS_LABEL[c.status]}
+                  </span>
+                </div>
+                {c.progress > 0 && (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>Progresso</span>
+                      <span style={{ ...S.mono, fontSize: 11, color: STATUS_COLOR[c.status] }}>{c.progress}%</span>
+                    </div>
+                    <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
+                      <div style={{ height: '100%', width: `${c.progress}%`, background: STATUS_COLOR[c.status], borderRadius: 2, transition: 'width 0.6s ease' }} />
+                    </div>
+                    <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.35)', marginTop: 6 }}>{c.hours}h estudadas</div>
+                  </div>
+                )}
+              </div>
+            ))}
+            <Link href="/certifications" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, fontSize: 13, color: '#8b5cf6', textDecoration: 'none' }}>
+              <Plus size={14} /> Adicionar certificação
+            </Link>
+          </div>
+        )}
+
+        {/* ── POSTURE ── */}
+        {activeSection === 'posture' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+            {[
+              { team: 'RED TEAM', label: 'Offensive', color: '#e53e3e', rgb: '229,62,62', level: 'Iniciante', score: 15, skills: ['Footprinting básico','Network scanning','Web vulns básicas'], next: 'Completar TryHackMe Jr Pen Tester' },
+              { team: 'BLUE TEAM', label: 'Defensive', color: '#3b82f6', rgb: '59,130,246', level: 'Iniciante+', score: 30, skills: ['Log analysis','Incident triage','SIEM básico'], next: 'Completar Security+ SY0-701' },
+              { team: 'PURPLE TEAM', label: 'Improve', color: '#8b5cf6', rgb: '139,92,246', level: 'Awareness', score: 20, skills: ['Threat modeling básico','Purple team concepts'], next: 'Fazer Tabletop Exercise intro' },
+            ].map(t => (
+              <div key={t.team} style={{ ...S.card, padding: '20px', borderColor: `rgba(${t.rgb},0.2)`, background: `rgba(${t.rgb},0.04)` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: t.color, boxShadow: `0 0 8px ${t.color}` }} />
+                  <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 13, color: t.color }}>{t.team}</span>
+                </div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: '#f0eeff', marginBottom: 2 }}>{t.level}</div>
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ height: 5, background: 'rgba(255,255,255,0.06)', borderRadius: 3, marginBottom: 4 }}>
+                    <div style={{ height: '100%', width: `${t.score}%`, background: t.color, borderRadius: 3 }} />
+                  </div>
+                  <span style={{ ...S.mono, fontSize: 10, color: `${t.color}80` }}>{t.score}/100</span>
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  {t.skills.map(s => (
+                    <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}>
+                      <div style={{ width: 4, height: 4, borderRadius: '50%', background: t.color, flexShrink: 0 }} />
+                      <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.6)' }}>{s}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ ...S.mono, fontSize: 9, color: `${t.color}70`, background: `rgba(${t.rgb},0.08)`, padding: '8px 10px', borderRadius: 6, lineHeight: 1.5 }}>
+                  → {t.next}
+                </div>
               </div>
             ))}
           </div>
         )}
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
-
-          {/* Left — certifications */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <BookOpen size={16} color="#8b5cf6" />
-              <h2 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16 }}>My Certifications</h2>
-            </div>
-
-            {progress.length === 0 ? (
-              <div style={{ ...S.card, textAlign: 'center', padding: '48px 24px' }}>
-                <Award size={32} style={{ margin: '0 auto 12px', color: 'rgba(155,176,198,0.3)' }} />
-                <p style={{ color: 'rgba(155,176,198,0.5)', fontSize: 14 }}>No certifications tracked yet</p>
-                <Link href="/certifications" style={{ display: 'inline-block', marginTop: 16, fontSize: 13, color: '#8b5cf6', textDecoration: 'none' }}>
-                  Browse certifications →
-                </Link>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {progress.map(item => {
-                  const color = STATUS_COLOR[item.status] ?? '#6b7280';
-                  return (
-                    <div key={item.id} style={S.card}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <div>
-                          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 14, marginBottom: 3 }}>
-                            {item.certification?.name ?? item.certificationSlug}
-                          </div>
-                          <div style={{ display: 'flex', gap: 8 }}>
-                            {item.certification?.level && (
-                              <span style={{ fontSize: 11, background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 4, padding: '2px 8px', color: '#8b5cf6', fontFamily: '"JetBrains Mono", monospace' }}>
-                                {item.certification.level}
-                              </span>
-                            )}
-                            {item.certification?.category && (
-                              <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.5)', fontFamily: '"JetBrains Mono", monospace' }}>
-                                {item.certification.category}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 600, color, background: `${color}22`, border: `1px solid ${color}44`, borderRadius: 6, padding: '3px 10px', fontFamily: '"JetBrains Mono", monospace', whiteSpace: 'nowrap' }}>
-                          {STATUS_LABEL[item.status] ?? item.status}
-                        </span>
-                      </div>
-
-                      {item.progressPercent > 0 && (
-                        <div style={{ marginBottom: 8 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                            <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.5)' }}>Progress</span>
-                            <span style={{ fontSize: 11, color, fontWeight: 600 }}>{item.progressPercent}%</span>
-                          </div>
-                          <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
-                            <div style={{ height: '100%', width: `${item.progressPercent}%`, background: color, borderRadius: 2, transition: 'width 0.6s ease' }} />
-                          </div>
-                        </div>
-                      )}
-
-                      <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.4)', display: 'flex', gap: 16 }}>
-                        {item.studyHours > 0 && <span>⏱ {item.studyHours}h studied</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Right sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-            {/* Posture */}
-            <div style={S.card}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Shield size={14} color="#8b5cf6" />
-                <span style={S.label}>Security Posture</span>
-              </div>
-              {[
-                { team: 'RED', label: 'Attack', color: '#e53e3e', val: 'Beginner' },
-                { team: 'BLUE', label: 'Defend', color: '#3b82f6', val: 'Intermediate' },
-                { team: 'PURPLE', label: 'Improve', color: '#8b5cf6', val: 'Active' },
-              ].map(t => (
-                <div key={t.team} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: t.color, boxShadow: `0 0 6px ${t.color}` }} />
-                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.7)' }}>{t.label}</span>
-                  </div>
-                  <span style={{ fontSize: 11, color: t.color, fontFamily: '"JetBrains Mono", monospace' }}>{t.val}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Recommended */}
-            <div style={S.card}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Star size={14} color="#f59e0b" />
-                <span style={S.label}>Recommended Next</span>
-              </div>
-              {[
-                'Complete Security+ (45% done, ~40h remaining)',
-                'Schedule Security+ exam (2-3 weeks after completion)',
-                'Start CEH preparation (3-4 month timeline)',
-              ].map((rec, i) => (
-                <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                  <span style={{ color: '#8b5cf6', fontWeight: 700, fontSize: 12, minWidth: 16 }}>{i + 1}.</span>
-                  <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.7)', lineHeight: 1.5 }}>{rec}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Quick links */}
-            <div style={S.card}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Zap size={14} color="#3b82f6" />
-                <span style={S.label}>Quick Access</span>
-              </div>
-              {[
-                { href: '/certifications', label: 'Browse Certifications' },
-                { href: '/roadmap', label: 'Career Roadmap' },
-                { href: '/resources', label: 'Study Resources' },
-                { href: '/market', label: 'Market Insights' },
-                { href: '/portal', label: '← Threat Universe' },
-              ].map(link => (
-                <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', textDecoration: 'none', color: 'rgba(155,176,198,0.7)', fontSize: 13, transition: 'color 150ms' }}>
-                  {link.label}
-                  <ChevronRight size={12} style={{ opacity: 0.4 }} />
-                </Link>
-              ))}
-            </div>
-
-          </div>
-        </div>
       </div>
     </div>
   );

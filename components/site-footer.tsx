@@ -65,7 +65,7 @@ export function SiteFooter() {
                 }}>CYBERSEC LAB</span>
               </div>
               <p style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)', lineHeight: 1.7, marginBottom: 16, maxWidth: 240 }}>
-                Plataforma de aprendizado em cybersecurity — Red, Blue e Purple Team. Signal sobre o ruído.
+                Plataforma de aprendizado em cybersecurity — Red, Blue e Purple Team.
               </p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {[
