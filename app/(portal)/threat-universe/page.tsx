@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import SignalLost from '@/components/signal-lost';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 // ── Node data (matching mock exactly) ─────────────────────────────────────
 
@@ -337,6 +339,21 @@ export default function PortalPage() {
 
           {/* ── Divider ── */}
           <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.07)', margin: '0 24px', flexShrink: 0 }} />
+
+          {/* ── Back to Home ── */}
+          <Link href="/home" style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
+            color: 'rgba(139,92,246,0.5)', letterSpacing: '0.08em',
+            textDecoration: 'none', flexShrink: 0, marginRight: 20,
+            padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(139,92,246,0.15)',
+            transition: 'all 150ms',
+          }}
+          onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'rgba(139,92,246,0.9)'; el.style.borderColor = 'rgba(139,92,246,0.4)'; }}
+          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'rgba(139,92,246,0.5)'; el.style.borderColor = 'rgba(139,92,246,0.15)'; }}
+          >
+            ← Hub
+          </Link>
 
           {/* ── Center: Status ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, flex: 1, justifyContent: 'center' }}>

@@ -21,11 +21,10 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      {
-        source: '/',
-        destination: '/portal',
-        permanent: false,
-      },
+      // Root → home hub
+      { source: '/', destination: '/home', permanent: false },
+      // Backward compat: old /portal → new /threat-universe
+      { source: '/portal', destination: '/threat-universe', permanent: true },
     ];
   },
 };

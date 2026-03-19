@@ -1,6 +1,6 @@
 import { MainNav } from '@/components/main-nav';
 
-export default function LegacyLayout({ children }: { children: React.ReactNode }) {
+export default function HubLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col">
       <MainNav />

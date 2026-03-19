@@ -210,7 +210,7 @@ export default function LoginClient() {
       }
       await runHandshake();
       await sleep(800);
-      router.push(searchParams.get('from') ?? '/portal');
+      router.push(searchParams.get('from') ?? '/home');
       router.refresh();
     } catch {
       const msg = 'Connection error. Try again.';
