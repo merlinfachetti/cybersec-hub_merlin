@@ -240,21 +240,45 @@ export default function LoginClient() {
         {/* Topbar */}
         <header style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30,
+          height: 56,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 32px', height: 54,
-          background: 'rgba(8,6,20,0.88)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(139,92,246,0.18)',
+          padding: '0 32px',
+          background: 'linear-gradient(180deg, rgba(6,4,18,0.97) 0%, rgba(8,5,22,0.90) 100%)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          borderBottom: '1px solid rgba(139,92,246,0.15)',
+          boxShadow: '0 1px 0 rgba(139,92,246,0.08), 0 4px 24px rgba(0,0,0,0.5)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.6))' }} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.14em', color: '#ffffff', lineHeight: 1 }}>CYBER PORTAL</span>
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.1em', lineHeight: 1 }}>signal &gt; noise</span>
+          {/* Logo + Brand */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ position: 'absolute', inset: -4, borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+              <img src="/logo.png" alt="CYBER PORTAL" style={{
+                width: 34, height: 34, objectFit: 'contain', position: 'relative', zIndex: 1,
+                filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 14px rgba(59,130,246,0.35))' }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
+                fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff', lineHeight: 1 }}>
+                CYBER PORTAL
+              </span>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+                color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em', lineHeight: 1 }}>
+                signal &gt; noise
+              </span>
             </div>
           </div>
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(150,140,200,0.45)', letterSpacing: '0.06em' }}>
-            ENV: PROD &nbsp;|&nbsp; LAT: 18ms
+          {/* ENV status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e',
+                boxShadow: '0 0 6px #22c55e', display: 'inline-block' }} />
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+                color: 'rgba(34,197,94,0.7)', letterSpacing: '0.1em' }}>ENV: PROD</span>
+            </div>
+            <span style={{ color: 'rgba(255,255,255,0.07)', fontSize: 10 }}>|</span>
+            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+              color: 'rgba(180,175,220,0.3)', letterSpacing: '0.08em' }}>LAT: 18ms</span>
           </div>
         </header>
 

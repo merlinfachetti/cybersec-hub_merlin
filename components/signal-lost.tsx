@@ -130,7 +130,13 @@ export default function SignalLost() {
         {/* ── TOP — logo only, centered, no interactive elements ── */}
         <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           {/* Logo */}
-          <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 52, height: 52, objectFit: 'contain', background: 'transparent', filter: 'drop-shadow(0 0 12px rgba(139,92,246,0.7)) drop-shadow(0 0 24px rgba(59,130,246,0.35))' }} />
+          <div style={{ position: 'relative', width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'absolute', inset: -8, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(59,130,246,0.1) 50%, transparent 70%)' }} />
+            <img src="/logo.png" alt="CYBER PORTAL" style={{
+              width: 56, height: 56, objectFit: 'contain', position: 'relative', zIndex: 1,
+              filter: 'drop-shadow(0 0 12px rgba(139,92,246,0.9)) drop-shadow(0 0 24px rgba(59,130,246,0.5))' }} />
+          </div>
           <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff' }}>CYBER PORTAL</span>
           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '.1em' }}>signal &gt; noise</span>
         </div>
