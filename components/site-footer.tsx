@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Shield, Radio, Github, ExternalLink } from 'lucide-react';
+import { Radio } from 'lucide-react';
 
 const FOOTER_LINKS = {
   Careers: [
