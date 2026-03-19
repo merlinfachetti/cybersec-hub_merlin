@@ -276,8 +276,10 @@ export default function PortalPage() {
     purple: { label: 'IMPROVE', tag: 'PURPLE TEAM', color: '#8b5cf6', border: 'rgba(139,92,246,0.5)',   glow: '0 0 20px rgba(139,92,246,0.4)' },
   };
 
-  const panelBorder = panel.team === 'red' ? 'rgba(229,62,62,0.35)' : panel.team === 'blue' ? 'rgba(59,130,246,0.35)' : 'rgba(139,92,246,0.35)';
-  const panelIconColor = TEAM_COLORS[panel.team].main;
+  // Panel colors follow ACTIVE MODE (not node team)
+  const panelBorder = activeMode === 'red' ? 'rgba(229,62,62,0.35)' : activeMode === 'blue' ? 'rgba(59,130,246,0.35)' : 'rgba(139,92,246,0.35)';
+  const panelIconColor = TEAM_COLORS[activeMode].main;
+  const panelRgb = activeMode === 'red' ? '229,62,62' : activeMode === 'blue' ? '59,130,246' : '139,92,246';
 
   return (
     <>
@@ -529,9 +531,9 @@ export default function PortalPage() {
               </button>
 
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 6, background: `rgba(${panel.team === 'red' ? '229,62,62' : panel.team === 'blue' ? '59,130,246' : '139,92,246'},0.2)`, border: `1px solid ${panelIconColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: `rgba(${panelRgb},0.2)`, border: `1px solid ${panelIconColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={panelIconColor} strokeWidth="2">
-                    {panel.team === 'red' ? <><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></> : panel.team === 'blue' ? <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/> : <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>}
+                    {activeMode === 'red' ? <><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></> : activeMode === 'blue' ? <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/> : <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>}
                   </svg>
                 </div>
                 <div>
@@ -549,7 +551,7 @@ export default function PortalPage() {
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
                 <button style={{ padding: '7px 16px', borderRadius: 6, background: panelIconColor, border: 'none', cursor: 'pointer', fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '0.04em' }}>{panel.actions[0]}</button>
-                <button style={{ padding: '7px 16px', borderRadius: 6, background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.35)', cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: '#60a5fa' }}>{panel.actions[1]}</button>
+                <button style={{ padding: '7px 16px', borderRadius: 6, background: `rgba(${panelRgb},0.12)`, border: `1px solid rgba(${panelRgb},0.3)`, cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: panelIconColor }}>{panel.actions[1]}</button>
                 <button style={{ padding: '7px 16px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: '#e8e8f0' }}>{panel.actions[2]}</button>
               </div>
 
