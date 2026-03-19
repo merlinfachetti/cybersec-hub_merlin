@@ -250,11 +250,11 @@ export default function LoginClient() {
         }}>
           {/* Logo + Brand */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: 41, height: 41, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ position: 'absolute', inset: -4, borderRadius: '50%',
                 background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
               <img src="/logo.png" alt="CYBER PORTAL" style={{
-                width: 34, height: 34, objectFit: 'contain', position: 'relative', zIndex: 1,
+                width: 41, height: 41, objectFit: 'contain', position: 'relative', zIndex: 1,
                 filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 14px rgba(59,130,246,0.35))' }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
