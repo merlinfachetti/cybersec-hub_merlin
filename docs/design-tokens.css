@@ -1,0 +1,53 @@
+:root {
+  /* Core neutrals */
+  --bg: #0b0f14;
+  --surface: #0f1620;
+  --surface-2: #141f2d;
+  --text: #e6eef8;
+  --muted: #9bb0c6;
+  --border: rgba(230, 238, 248, 0.1);
+
+  /* Mode accents (Red / Blue / Purple) */
+  --red: #ff4d6d;
+  --blue: #4da3ff;
+  --purple: #9b6bff;
+
+  /* Semantic */
+  --ok: #3ee6b6;
+  --warn: #ffcc66;
+  --danger: #ff4d6d;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+
+  /* Spacing (8px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+
+  /* Shadow (soft, not “gamery”) */
+  --shadow-1: 0 6px 24px rgba(0, 0, 0, 0.35);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+}

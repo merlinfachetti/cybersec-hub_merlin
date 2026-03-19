@@ -1,0 +1,146 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CYBERSEC LAB API",
+    "description": "API REST do CYBERSEC LAB — Threat Intelligence & Cybersecurity Learning Platform",
+    "version": "1.0.0",
+    "contact": { "name": "Alden Merlin", "url": "https://cyberseclab.aldenmerlin.com" }
+  },
+  "servers": [
+    { "url": "https://cyberseclab.aldenmerlin.com", "description": "Production" },
+    { "url": "http://localhost:3000", "description": "Local" }
+  ],
+  "tags": [
+    { "name": "Auth", "description": "Autenticação e sessão" },
+    { "name": "Certifications", "description": "Certificações de cybersecurity" },
+    { "name": "Resources", "description": "Recursos de estudo" },
+    { "name": "Roadmap", "description": "Career roadmap" },
+    { "name": "Market", "description": "Dados de mercado" },
+    { "name": "User", "description": "Dados do usuário" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": { "type": "apiKey", "in": "cookie", "name": "cp_session" }
+    }
+  },
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Autenticar usuário",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": {
+            "type": "object",
+            "required": ["identifier","passphrase"],
+            "properties": {
+              "identifier": { "type": "string", "example": "merlin@cyberportal.dev" },
+              "passphrase": { "type": "string", "example": "CyberPortal@2025!" }
+            }
+          }}}
+        },
+        "responses": {
+          "200": { "description": "Autenticado com sucesso — cookie cp_session setado" },
+          "401": { "description": "Credenciais inválidas" },
+          "429": { "description": "Rate limit — muitas tentativas" }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth"], "summary": "Encerrar sessão",
+        "security": [{ "cookieAuth": [] }],
+        "responses": { "200": { "description": "Sessão encerrada" } }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": ["Auth"], "summary": "Obter usuário da sessão atual",
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": { "description": "Dados do usuário autenticado" },
+          "401": { "description": "Não autenticado" }
+        }
+      }
+    },
+    "/api/certifications": {
+      "get": {
+        "tags": ["Certifications"], "summary": "Listar certificações",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          { "name": "level", "in": "query", "schema": { "type": "string", "enum": ["ENTRY","INTERMEDIATE","ADVANCED","EXPERT"] } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 12 } }
+        ],
+        "responses": { "200": { "description": "Lista paginada de certificações" } }
+      }
+    },
+    "/api/certifications/{id}": {
+      "get": {
+        "tags": ["Certifications"], "summary": "Detalhe de uma certificação",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Dados completos da certificação" }, "404": { "description": "Não encontrada" } }
+      }
+    },
+    "/api/resources": {
+      "get": {
+        "tags": ["Resources"], "summary": "Listar recursos de estudo",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          { "name": "certificationId", "in": "query", "schema": { "type": "string" } },
+          { "name": "type", "in": "query", "schema": { "type": "string" } },
+          { "name": "isFree", "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": { "200": { "description": "Lista de recursos" } }
+      }
+    },
+    "/api/roadmap": {
+      "get": {
+        "tags": ["Roadmap"], "summary": "Obter roadmap do usuário",
+        "security": [{ "cookieAuth": [] }],
+        "responses": { "200": { "description": "Roadmap personalizado" } }
+      }
+    },
+    "/api/roadmap/predefined": {
+      "get": {
+        "tags": ["Roadmap"], "summary": "Listar roadmaps predefinidos",
+        "security": [{ "cookieAuth": [] }],
+        "responses": { "200": { "description": "Lista de roadmaps pré-definidos por role" } }
+      }
+    },
+    "/api/market/stats": {
+      "get": {
+        "tags": ["Market"], "summary": "Estatísticas de mercado",
+        "security": [{ "cookieAuth": [] }],
+        "responses": { "200": { "description": "Dados de demanda e salários" } }
+      }
+    },
+    "/api/user/progress": {
+      "get": {
+        "tags": ["User"], "summary": "Progresso do usuário nas certificações",
+        "security": [{ "cookieAuth": [] }],
+        "responses": { "200": { "description": "Progresso e estatísticas" } }
+      },
+      "post": {
+        "tags": ["User"], "summary": "Registrar progresso em uma certificação",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": {
+            "type": "object",
+            "properties": {
+              "certificationSlug": { "type": "string" },
+              "status": { "type": "string", "enum": ["INTERESTED","STUDYING","SCHEDULED","PASSED","FAILED"] },
+              "progressPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+              "studyHours": { "type": "number" }
+            }
+          }}}
+        },
+        "responses": { "201": { "description": "Progresso registrado" } }
+      }
+    }
+  }
+}
