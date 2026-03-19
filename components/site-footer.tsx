@@ -26,18 +26,18 @@ export function SiteFooter() {
         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'none'}
       >
         <ChevronUp size={14} style={{
-          color: 'rgba(139,92,246,0.4)',
+          color: 'rgba(255,140,40,0.7)',
           transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)',
           transition: 'transform 300ms ease',
         }} />
         <span style={{
           fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
-          color: 'rgba(155,176,198,0.3)', letterSpacing: '0.1em',
+          color: 'rgba(255,140,40,0.5)', letterSpacing: '0.1em',
         }}>
           {expanded ? 'RECOLHER' : 'EXPANDIR'}
         </span>
         <ChevronUp size={14} style={{
-          color: 'rgba(139,92,246,0.4)',
+          color: 'rgba(255,140,40,0.7)',
           transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)',
           transition: 'transform 300ms ease',
         }} />
@@ -143,7 +143,7 @@ function FooterLinkGroup({ title, links }: { title: string; links: { label: stri
     <div>
       <div style={{
         fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
-        color: 'rgba(139,92,246,0.5)', letterSpacing: '0.14em',
+        color: 'rgba(255,140,40,0.6)', letterSpacing: '0.14em',
         textTransform: 'uppercase', marginBottom: 12,
       }}>
         {title}

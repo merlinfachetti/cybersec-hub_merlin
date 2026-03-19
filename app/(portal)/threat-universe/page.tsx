@@ -371,7 +371,7 @@ export default function PortalPage() {
           <Link href="/home" style={{
             display: 'flex', alignItems: 'center', gap: 5,
             fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
-            color: 'rgba(139,92,246,0.5)', letterSpacing: '0.08em',
+            color: 'rgba(255,140,40,0.6)', letterSpacing: '0.08em',
             textDecoration: 'none', flexShrink: 0, marginRight: 20,
             padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(139,92,246,0.15)',
             transition: 'all 150ms',
@@ -492,7 +492,7 @@ export default function PortalPage() {
                   <div style={{ padding: '10px 12px 12px', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 6 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: '#e8e4ff',
                       fontFamily: '"Space Grotesk", sans-serif' }}>{user?.name ?? 'Merlin'}</div>
-                    <div style={{ fontSize: 10, color: 'rgba(139,92,246,0.5)',
+                    <div style={{ fontSize: 10, color: 'rgba(255,140,40,0.6)',
                       fontFamily: '"JetBrains Mono", monospace', marginTop: 3 }}>
                       {user?.email ?? 'merlin@cyberportal.dev'}
                     </div>
