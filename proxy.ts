@@ -1,74 +1,61 @@
 /**
- * middleware.ts
- * Proteção de rotas via JWT — Edge Runtime
- * Rotas protegidas: /portal/* e /api/* (exceto auth)
+ * proxy.ts — Next.js 16 Edge Middleware
+ * Protege rotas via JWT cookie
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const getSecret = () => new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret-change-in-prod');
+const getSecret = () => new TextEncoder().encode(
+  process.env.JWT_SECRET ?? 'dev-secret-change-in-prod'
+);
+
 const COOKIE_NAME = 'cp_session';
 
-// Rotas públicas (não precisam de auth)
 const PUBLIC_PATHS = [
-  '/',
   '/auth/login',
   '/auth/register',
   '/api/auth/login',
+  '/api/auth/logout',
 ];
 
 function isPublic(pathname: string): boolean {
-  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
-}
-
-export async function proxy(request: NextRequest): Promise<NextResponse> {
-  const { pathname } = request.nextUrl;
-
-  // Deixa passar arquivos estáticos e rotas públicas
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
-    pathname.startsWith('/public') ||
-    isPublic(pathname)
-  ) {
-    return NextResponse.next();
-  }
+    pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|css|js)$/)
+  ) return true;
+  return PUBLIC_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'));
+}
 
-  // Verifica cookie de sessão
+async function handler(request: NextRequest): Promise<NextResponse> {
+  const { pathname } = request.nextUrl;
+
+  if (isPublic(pathname)) return NextResponse.next();
+
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (!token) {
-    return redirectToLogin(request);
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('from', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Valida JWT
   try {
     await jwtVerify(token, getSecret());
     return NextResponse.next();
   } catch {
-    // Token inválido ou expirado — limpa cookie e redireciona
-    const response = redirectToLogin(request);
-    response.cookies.delete(COOKIE_NAME);
-    return response;
+    const res = NextResponse.redirect(new URL('/auth/login', request.url));
+    res.cookies.delete(COOKIE_NAME);
+    return res;
   }
 }
 
-function redirectToLogin(request: NextRequest): NextResponse {
-  const loginUrl = new URL('/auth/login', request.url);
-  loginUrl.searchParams.set('from', request.nextUrl.pathname);
-  return NextResponse.redirect(loginUrl);
-}
+// Next.js 16 proxy.ts requires named export 'proxy'
+export { handler as proxy };
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg)$).*)',
   ],
 };

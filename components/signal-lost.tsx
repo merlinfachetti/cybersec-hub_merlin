@@ -343,7 +343,7 @@ export default function SignalLost() {
       <div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
         {/* Top — logo (draggable in full mode) */}
-        <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, width: '100%' }}>
+        <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, width: '100%', textAlign: 'center' }}>
           {/* Placeholder keeps layout when logo goes fixed */}
           {isDragging && gateState === 'armed' && (
             <div style={{ width: 56, height: 56, flexShrink: 0 }} />
@@ -381,7 +381,7 @@ export default function SignalLost() {
                 />
               </svg>
             )}
-            <div style={{ position: 'relative', width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
               <div style={{
                 position: 'absolute', inset: -8, borderRadius: '50%',
                 background: `radial-gradient(circle, ${gateState === 'armed' || gateState === 'locked' ? 'rgba(34,197,94,0.3)' : 'rgba(139,92,246,0.2)'} 0%, rgba(59,130,246,0.1) 50%, transparent 70%)`,
@@ -394,7 +394,7 @@ export default function SignalLost() {
                 onContextMenu={e => e.preventDefault()}
                 onDragStart={e => e.preventDefault()}
                 style={{
-                  width: 56, height: 56, objectFit: 'contain', position: 'relative', zIndex: 1,
+                  width: 64, height: 64, objectFit: 'contain', position: 'relative', zIndex: 1,
                   filter: `drop-shadow(0 0 12px ${gateState === 'locked' || gateState === 'charging' ? 'rgba(34,197,94,0.9)' : 'rgba(139,92,246,0.9)'}) drop-shadow(0 0 24px rgba(59,130,246,0.5))`,
                   transition: 'filter 300ms',
                   WebkitTouchCallout: 'none',

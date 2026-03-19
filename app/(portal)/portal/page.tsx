@@ -309,17 +309,17 @@ export default function PortalPage() {
 
           {/* ── Left: Logo + Brand ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '0 0 auto' }}>
-            <div style={{ position: 'relative', width: 45, height: 45, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: 55, height: 55, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {/* Glow halo behind logo */}
               <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)', pointerEvents: 'none' }} />
               <img
                 src="/logo.png"
                 alt="CYBER PORTAL"
-                style={{ width: 45, height: 45, objectFit: 'contain', position: 'relative', zIndex: 1,
+                style={{ width: 55, height: 55, objectFit: 'contain', position: 'relative', zIndex: 1,
                   filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 16px rgba(59,130,246,0.4))' }}
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
               <span style={{
                 fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
                 fontSize: 14, letterSpacing: '0.16em', color: '#f0eeff',
