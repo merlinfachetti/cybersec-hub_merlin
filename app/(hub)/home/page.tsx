@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {
   Shield, Map, BookOpen, TrendingUp,
   FileText, User, Zap, ChevronRight,
-  Radio, Lock as LockIcon
+  Radio
 } from 'lucide-react';
 
 interface UserSession {
@@ -107,8 +107,9 @@ export default function HomePage() {
 
         {/* Header */}
         <div style={{ marginBottom: 48 }}>
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>
-            ● SECURE SESSION ACTIVE
+          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(34,197,94,0.7)', letterSpacing: '0.14em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span className="secure-dot" style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
+            SECURE SESSION ACTIVE
           </div>
           <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 32, marginBottom: 6 }}>
             {greeting}{user?.name ? `, ${user.name}` : ''}.
@@ -210,19 +211,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Bottom status */}
-        <div style={{ marginTop: 48, display: 'flex', alignItems: 'center', gap: 16, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <LockIcon size={11} style={{ color: 'rgba(34,197,94,0.6)' }} />
-            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.35)', letterSpacing: '0.06em' }}>
-              SESSION AUTHENTICATED
-            </span>
-          </div>
-          <span style={{ color: 'rgba(255,255,255,0.05)', fontSize: 10 }}>|</span>
-          <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.3)', letterSpacing: '0.06em' }}>
-            CYBERSEC LAB · signal &gt; noise
-          </span>
-        </div>
+
 
       </div>
     </div>
