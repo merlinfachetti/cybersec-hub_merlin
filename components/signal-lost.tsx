@@ -343,7 +343,11 @@ export default function SignalLost() {
       <div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
         {/* Top — logo (draggable in full mode) */}
-        <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, width: '100%' }}>
+          {/* Placeholder keeps layout when logo goes fixed */}
+          {isDragging && gateState === 'armed' && (
+            <div style={{ width: 56, height: 56, flexShrink: 0 }} />
+          )}
           <div
             ref={logoRef}
             data-logo="true"
@@ -362,6 +366,7 @@ export default function SignalLost() {
               WebkitTouchCallout: 'none',
               WebkitUserSelect: 'none',
               userSelect: 'none',
+              flexShrink: 0,
               transition: (gateState === 'locked' || gateState === 'charging') ? 'all 0.3s ease' : 'none',
             }}
           >
