@@ -238,15 +238,24 @@ export default function LoginClient() {
       <div className="cp-main-app" style={{ position: 'relative', zIndex: 20, height: '100vh', display: 'flex', flexDirection: 'column' }}>
 
         {/* Topbar */}
-        <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 28, height: 28, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <header style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 32px', height: 54,
+          background: 'rgba(8,6,20,0.88)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(139,92,246,0.18)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.6))' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.14em', color: '#ffffff', lineHeight: 1 }}>CYBER PORTAL</span>
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.08em', lineHeight: 1 }}>signal &gt; noise</span>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.1em', lineHeight: 1 }}>signal &gt; noise</span>
             </div>
           </div>
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#6a6a8a' }}>ENV: PROD&ensp;|&ensp;LAT: 18ms</div>
+          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(150,140,200,0.45)', letterSpacing: '0.06em' }}>
+            ENV: PROD &nbsp;|&nbsp; LAT: 18ms
+          </div>
         </header>
 
         {/* Auth stage */}
@@ -266,13 +275,31 @@ export default function LoginClient() {
               )}
 
               <InputField icon="user" placeholder="Identifier" type="text" value={identifier} onChange={setIdentifier} autoComplete="username" />
-              <InputField icon="lock" placeholder="Passphrase" type={showPass ? 'text' : 'password'} value={passphrase} onChange={setPassphrase} autoComplete="current-password"
+              {/* Passphrase + strength hint */}
+              <InputField icon="lock" placeholder="Min 12 chars · upper · lower · symbol" type={showPass ? 'text' : 'password'} value={passphrase} onChange={setPassphrase} autoComplete="current-password"
                 trailing={
                   <button type="button" onClick={() => setShowPass(v => !v)} style={{ width: 24, height: 24, flexShrink: 0, color: '#6a6a8a', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {showPass ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 }
               />
+
+              {/* Passphrase strength */}
+              {passphrase.length > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 2px' }}>
+                  {[
+                    passphrase.length >= 12,
+                    /[A-Z]/.test(passphrase),
+                    /[0-9]/.test(passphrase),
+                    /[^A-Za-z0-9]/.test(passphrase),
+                  ].map((ok, i) => (
+                    <div key={i} style={{ flex: 1, height: 2, borderRadius: 1, background: ok ? ['#e53e3e','#f59e0b','#3b82f6','#22c55e'][i] : 'rgba(255,255,255,0.08)', transition: 'background 300ms' }} />
+                  ))}
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(150,140,200,0.5)', whiteSpace: 'nowrap', minWidth: 32 }}>
+                    {passphrase.length < 12 ? 'weak' : !/[A-Z]/.test(passphrase) ? 'fair' : !/[0-9]/.test(passphrase) ? 'good' : !/[^A-Za-z0-9]/.test(passphrase) ? 'strong' : 'max'}
+                  </span>
+                </div>
+              )}
 
               {/* Remember device */}
               <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>

@@ -297,21 +297,19 @@ export default function PortalPage() {
         <header style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 30,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 24px', height: 56,
-          background: 'rgba(6,6,16,0.85)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          padding: '0 28px', height: 58,
+          background: 'rgba(8,6,20,0.92)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(139,92,246,0.18)',
           pointerEvents: 'all',
         }}>
           {/* Left — brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             {/* Logo */}
-            <div style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 36, height: 36, objectFit: 'contain', filter: 'drop-shadow(0 0 10px rgba(139,92,246,0.7)) drop-shadow(0 0 20px rgba(59,130,246,0.3))', flexShrink: 0 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.14em', color: '#ffffff', lineHeight: 1 }}>CYBER PORTAL</span>
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.08em' }}>signal &gt; noise</span>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '0.1em', lineHeight: 1 }}>signal &gt; noise</span>
             </div>
           </div>
 
