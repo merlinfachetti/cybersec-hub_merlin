@@ -4,8 +4,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SignalLost from '@/components/signal-lost';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 // ── Node data (matching mock exactly) ─────────────────────────────────────
 

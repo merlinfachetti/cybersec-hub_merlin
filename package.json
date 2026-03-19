@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -16,7 +16,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
-    "db:seed:certs": "npx ts-node --project tsconfig.json -e \"const {Pool}=require('pg');const fs=require('fs');const p=new Pool({connectionString:process.env.DATABASE_URL});p.query(fs.readFileSync('prisma/seed-certs.sql','utf8')).then(()=>{console.log('\u2705 Certs seeded');p.end()}).catch(e=>{console.error(e);p.end()})\""
+    "db:seed:certs": "npx ts-node --project tsconfig.json -e \"const {Pool}=require('pg');const fs=require('fs');const p=new Pool({connectionString:process.env.DATABASE_URL});p.query(fs.readFileSync('prisma/seed-certs.sql','utf8')).then(()=>{console.log('\u2705 Certs seeded');p.end()}).catch(e=>{console.error(e);p.end()})\"",
+    "build:full": "prisma generate && next build --webpack"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
