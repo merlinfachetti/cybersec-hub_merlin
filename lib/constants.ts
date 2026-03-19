@@ -1,6 +1,6 @@
 // Constantes do projeto
 
-export const APP_NAME = 'CyberSec Hub';
+export const APP_NAME = 'CyberSec Lab';
 export const APP_DESCRIPTION =
   'Your complete guide to cybersecurity certifications, career paths, and market insights';
 

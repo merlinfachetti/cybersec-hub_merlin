@@ -53,7 +53,7 @@ export function MainNav() {
       <div className="container flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2">
           <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 28, height: 28, objectFit: "contain", filter: "drop-shadow(0 0 5px rgba(139,92,246,0.45))" }} />
-          <span className="truncate font-bold text-lg sm:text-xl">CyberSec Hub</span>
+          <span className="truncate font-bold text-lg sm:text-xl">CyberSec Lab</span>
         </Link>
 
         <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
