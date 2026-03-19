@@ -179,7 +179,7 @@ export default function ResourcesPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
@@ -191,7 +191,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Filters */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+        <div className="cert-filters" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <input value={search} onChange={e => setSearch(e.target.value)}
@@ -241,7 +241,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: 16 }}>
           {filtered.map(r => {
             const lvlColor = r.level === 'ENTRY' ? '#22c55e' : r.level === 'INTERMEDIATE' ? '#3b82f6' : '#f59e0b';
             return (

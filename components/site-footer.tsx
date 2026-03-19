@@ -111,7 +111,7 @@ export function SiteFooter() {
       </div>
 
       {/* Always-visible credits bar */}
-      <div style={{
+      <div className="footer-credits" style={{
         maxWidth: 1100, margin: '0 auto', padding: '10px 24px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
       }}>

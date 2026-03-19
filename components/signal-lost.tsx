@@ -553,7 +553,7 @@ function AuthReveal() {
       });
       const data = await res.json();
       if (res.ok) {
-        window.location.href = '/certifications';
+        window.location.href = '/home';
       } else {
         setError(data.error ?? 'Could not verify credentials.');
       }

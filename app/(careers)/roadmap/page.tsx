@@ -256,7 +256,7 @@ export default function RoadmapPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
@@ -289,10 +289,10 @@ export default function RoadmapPage() {
 
         {/* ── CAREER PATHS TAB ── */}
         {activeTab === 'paths' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 24, alignItems: 'start' }}>
+          <div className="roadmap-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 24, alignItems: 'start' }}>
 
             {/* Left: path selector */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'sticky', top: 24 }}>
+            <div className="roadmap-selector" style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'sticky', top: 24 }}>
               {(Object.values(CAREER_PATHS) as typeof path[]).map(p => (
                 <button key={p.id} onClick={() => { setActivePath(p.id as PathId); setOpenStep(0); }} style={{
                   padding: '14px 16px', borderRadius: 10, border: `1px solid ${activePath === p.id ? p.color + '50' : 'rgba(255,255,255,0.07)'}`,
@@ -355,7 +355,7 @@ export default function RoadmapPage() {
                             <span style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>by {step.provider}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexShrink: 0 }}>
+                        <div className="step-header-meta" style={{ display: 'flex', gap: 16, alignItems: 'center', flexShrink: 0 }}>
                           <span style={{ ...S.mono, fontSize: 11, color: step.color }}>{step.cost}</span>
                           <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.hours}</span>
                           <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.duration}</span>

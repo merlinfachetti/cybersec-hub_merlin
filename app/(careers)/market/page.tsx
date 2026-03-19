@@ -68,7 +68,7 @@ export default function MarketPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
@@ -81,7 +81,7 @@ export default function MarketPage() {
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
+        <div className="market-tabs" style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id as Tab)} style={{
               display: 'flex', alignItems: 'center', gap: 6,
@@ -99,7 +99,7 @@ export default function MarketPage() {
         {/* ── OVERVIEW ── */}
         {tab === 'overview' && (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 28 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(220px,100%), 1fr))', gap: 14, marginBottom: 28 }}>
               {[
                 { label: 'Vagas em aberto global', value: MARKET_DATA.global.openJobs, sub: 'worldwide', color: '#ef4444', icon: <Briefcase size={16} /> },
                 { label: 'Salário médio (US)', value: MARKET_DATA.global.avgSalaryUS, sub: 'security engineer', color: '#22c55e', icon: <DollarSign size={16} /> },

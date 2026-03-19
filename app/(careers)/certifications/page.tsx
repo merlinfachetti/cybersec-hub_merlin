@@ -226,7 +226,7 @@ export default function CertificationsPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 36 }}>
@@ -265,7 +265,7 @@ export default function CertificationsPage() {
         </div>
 
         {/* Search + category filter */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 32, flexWrap: 'wrap' }}>
+        <div className="cert-filters" style={{ display: 'flex', gap: 12, marginBottom: 32, flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(139,92,246,0.5)', pointerEvents: 'none' }} />
             <input
@@ -315,7 +315,7 @@ export default function CertificationsPage() {
 
         {/* Grid — grouped by level */}
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: 16 }}>
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} style={{ height: 240, borderRadius: 14, background: 'rgba(255,255,255,0.03)', animation: 'pulse 1.5s ease-in-out infinite' }} />
             ))}
@@ -345,7 +345,7 @@ export default function CertificationsPage() {
                   <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${meta.color}30, transparent)` }} />
                   <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: `${meta.color}60` }}>{group.length}</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: 16 }}>
                   {group.map(cert => <CertCard key={cert.id} cert={cert} />)}
                 </div>
               </div>

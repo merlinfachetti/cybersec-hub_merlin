@@ -103,7 +103,7 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 48 }}>

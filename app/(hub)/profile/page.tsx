@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
@@ -92,7 +92,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Quick stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
+        <div className="profile-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
           {QUICK_STATS.map(s => (
             <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ color: s.color, flexShrink: 0 }}>{s.icon}</div>
@@ -119,7 +119,7 @@ export default function ProfilePage() {
 
         {/* ── OVERVIEW ── */}
         {activeSection === 'overview' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 20 }}>
+          <div className="profile-main" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 20 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* Progress towards SEC+ */}
               <div style={{ ...S.card, padding: '20px' }}>
