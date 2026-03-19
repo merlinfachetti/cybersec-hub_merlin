@@ -241,6 +241,28 @@ export default function PortalPage() {
   const [panelHidden, setPanelHidden] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [showNodeDetail, setShowNodeDetail] = useState(false);
+
+  // Filtered nodes based on search + activeMode
+  const filteredNodes = NODES.filter(n => {
+    const matchesMode = activeMode === 'red'
+      ? n.team === 'red'
+      : activeMode === 'blue'
+      ? n.team === 'blue'
+      : n.team === 'purple';
+    if (!searchQuery) return true; // search overrides mode filter
+    const q = searchQuery.toLowerCase();
+    const detail = NODE_DETAILS[n.id as NodeId];
+    return (
+      n.label.toLowerCase().includes(q) ||
+      n.sublabel.toLowerCase().includes(q) ||
+      detail.title.toLowerCase().includes(q) ||
+      detail.desc.toLowerCase().includes(q) ||
+      detail.mitre.toLowerCase().includes(q)
+    );
+  });
 
   // Fetch authenticated user
   useEffect(() => {
@@ -257,6 +279,13 @@ export default function PortalPage() {
     universeRef.current = initUniverse(canvasRef.current, (id) => {
       setSelectedNode(id);
       setPanelHidden(false);
+      setShowNodeDetail(true);
+      // Switch activeMode to match the clicked node's team
+      const nodeTeam = NODES.find(n => n.id === id)?.team as TeamColor;
+      if (nodeTeam) {
+        setActiveMode(nodeTeam);
+        universeRef.current?.setMode(nodeTeam);
+      }
     });
     return () => universeRef.current?.destroy();
   }, []);
@@ -535,48 +564,106 @@ export default function PortalPage() {
             })}
           </div>
 
-          {/* Bottom panel */}
+          {/* ── Bottom panel — rich node detail ── */}
           {!panelHidden && selectedNode && (
             <div className="cp-animate-in" style={{
-              background: 'rgba(8,8,20,0.92)', backdropFilter: 'blur(20px)',
-              borderTop: `1px solid ${panelBorder}`,
-              padding: '16px 24px 20px', animationDelay: '0.4s', position: 'relative',
+              background: 'rgba(6,4,18,0.97)', backdropFilter: 'blur(24px)',
+              borderTop: `2px solid ${panelBorder}`,
+              boxShadow: `0 -4px 32px rgba(${panelRgb},0.1)`,
+              padding: '0', animationDelay: '0.1s', position: 'relative',
             }}>
-              <button onClick={() => setPanelHidden(true)} style={{ position: 'absolute', top: 14, right: 18, background: 'none', border: 'none', cursor: 'pointer', color: '#6a6a8a', display: 'flex' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
+              {/* Top accent bar */}
+              <div style={{ height: 2, background: `linear-gradient(90deg, ${panelIconColor}, rgba(${panelRgb},0.3), transparent)` }} />
 
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 6, background: `rgba(${panelRgb},0.2)`, border: `1px solid ${panelIconColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={panelIconColor} strokeWidth="2">
-                    {activeMode === 'red' ? <><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></> : activeMode === 'blue' ? <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/> : <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>}
-                  </svg>
+              <div style={{ padding: '14px 24px 18px' }}>
+                {/* Header row */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    {/* Team badge */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '4px 10px', borderRadius: 6,
+                      background: `rgba(${panelRgb},0.15)`, border: `1px solid rgba(${panelRgb},0.35)`,
+                    }}>
+                      <div style={{ width: 6, height: 6, borderRadius: '50%', background: panelIconColor, boxShadow: `0 0 6px ${panelIconColor}` }} />
+                      <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: panelIconColor, letterSpacing: '0.1em', fontWeight: 600 }}>
+                        {activeMode.toUpperCase()} TEAM
+                      </span>
+                    </div>
+                    {/* Title */}
+                    <h2 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 17, fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                      {panel.title}
+                    </h2>
+                    {/* Severity badge */}
+                    {panel.severity !== 'N/A' && (
+                      <span style={{
+                        fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
+                        color: panel.severity === 'High' ? '#ef4444' : panel.severity === 'Medium' ? '#f59e0b' : '#22c55e',
+                        background: panel.severity === 'High' ? 'rgba(239,68,68,0.1)' : panel.severity === 'Medium' ? 'rgba(245,158,11,0.1)' : 'rgba(34,197,94,0.1)',
+                        border: `1px solid ${panel.severity === 'High' ? 'rgba(239,68,68,0.3)' : panel.severity === 'Medium' ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.3)'}`,
+                        padding: '2px 8px', borderRadius: 4, letterSpacing: '0.08em',
+                      }}>
+                        {panel.severity}
+                      </span>
+                    )}
+                  </div>
+                  <button onClick={() => setPanelHidden(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(155,176,198,0.4)', padding: 4, display: 'flex', transition: 'color 150ms' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.8)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.4)'}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
                 </div>
-                <div>
-                  <h2 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 16, fontWeight: 700, color: '#ffffff', marginBottom: 3 }}>{panel.title}</h2>
-                  {panel.severity !== 'N/A' && (
-                    <p style={{ fontSize: 12, color: '#f59e0b', display: 'flex', alignItems: 'center', gap: 5 }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                      Severity: {panel.severity}
+
+                {/* Two-column layout: desc + actions */}
+                <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+                  {/* Left: description */}
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 13, color: 'rgba(220,215,240,0.75)', lineHeight: 1.65, margin: '0 0 10px' }}>
+                      {panel.desc}
                     </p>
-                  )}
+                    {panel.mitre && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        {panel.mitre}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right: action buttons */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7, flexShrink: 0, minWidth: 180 }}>
+                    <button onClick={() => router.push(panel.routes[0])} style={{
+                      padding: '9px 18px', borderRadius: 7,
+                      background: `linear-gradient(135deg, rgba(${panelRgb},0.9), rgba(${panelRgb},0.7))`,
+                      border: 'none', cursor: 'pointer',
+                      fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 700,
+                      color: '#fff', letterSpacing: '0.06em', textAlign: 'center',
+                      boxShadow: `0 2px 12px rgba(${panelRgb},0.3)`,
+                      transition: 'all 150ms',
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'none'}
+                    >{panel.actions[0]}</button>
+                    <button onClick={() => router.push(panel.routes[1])} style={{
+                      padding: '8px 18px', borderRadius: 7,
+                      background: `rgba(${panelRgb},0.1)`, border: `1px solid rgba(${panelRgb},0.3)`,
+                      cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12,
+                      color: panelIconColor, textAlign: 'center', transition: 'all 150ms',
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = `rgba(${panelRgb},0.18)`}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = `rgba(${panelRgb},0.1)`}
+                    >{panel.actions[1]}</button>
+                    <button onClick={() => router.push(panel.routes[2])} style={{
+                      padding: '8px 18px', borderRadius: 7,
+                      background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                      cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12,
+                      color: 'rgba(220,215,240,0.6)', textAlign: 'center', transition: 'all 150ms',
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.09)'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
+                    >{panel.actions[2]}</button>
+                  </div>
                 </div>
               </div>
-
-              <p style={{ fontSize: 13, color: 'rgba(232,232,240,0.75)', lineHeight: 1.5, marginBottom: 14, maxWidth: 640 }}>{panel.desc}</p>
-
-              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <button onClick={() => router.push(panel.routes[0])} style={{ padding: '7px 16px', borderRadius: 6, background: panelIconColor, border: 'none', cursor: 'pointer', fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '0.04em' }}>{panel.actions[0]}</button>
-                <button onClick={() => router.push(panel.routes[1])} style={{ padding: '7px 16px', borderRadius: 6, background: `rgba(${panelRgb},0.12)`, border: `1px solid rgba(${panelRgb},0.3)`, cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: panelIconColor }}>{panel.actions[1]}</button>
-                <button onClick={() => router.push(panel.routes[2])} style={{ padding: '7px 16px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: '#e8e8f0' }}>{panel.actions[2]}</button>
-              </div>
-
-              {panel.mitre && (
-                <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#6a6a8a', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  {panel.mitre} &middot; Severity: {panel.severity}
-                </div>
-              )}
             </div>
           )}
 
