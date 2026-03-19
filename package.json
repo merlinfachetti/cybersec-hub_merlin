@@ -11,7 +11,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "next typegen && tsc --noEmit",
-    "postinstall": "prisma generate || true",
+    "postinstall": "node -e \"const v=process.versions.node.split('.').map(Number);if(v[0]>20||(v[0]===20&&v[1]>=19)){require('child_process').execSync('prisma generate',{stdio:'inherit'})}\" || true",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
@@ -72,5 +72,9 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=10.0.0"
   }
 }
