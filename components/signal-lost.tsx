@@ -116,6 +116,23 @@ export default function SignalLost() {
     if (canvasRef.current) return initBg(canvasRef.current);
   }, []);
 
+  // Bloquear context menu e seleção nativa do browser no mobile
+  useEffect(() => {
+    const blockContextMenu = (e: Event) => e.preventDefault();
+    const blockTouchCallout = (e: TouchEvent) => {
+      // Só bloqueia se o toque está no logo
+      if ((e.target as HTMLElement)?.closest('[data-logo]')) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('contextmenu', blockContextMenu);
+    document.addEventListener('touchstart', blockTouchCallout, { passive: false });
+    return () => {
+      document.removeEventListener('contextmenu', blockContextMenu);
+      document.removeEventListener('touchstart', blockTouchCallout);
+    };
+  }, []);
+
   // Position scanner at center
   useEffect(() => {
     const updateScannerPos = () => {
@@ -279,10 +296,14 @@ export default function SignalLost() {
   }
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, background: '#020208', overflow: 'hidden',
-      touchAction: 'none', userSelect: 'none',
-    }}>
+    <div
+      style={{
+        position: 'fixed', inset: 0, background: '#020208', overflow: 'hidden',
+        touchAction: 'none', userSelect: 'none',
+        WebkitUserSelect: 'none', WebkitTouchCallout: 'none',
+      }}
+      onContextMenu={e => e.preventDefault()}
+    >
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
 
       {/* Grain */}
@@ -325,9 +346,12 @@ export default function SignalLost() {
         <div style={{ paddingTop: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <div
             ref={logoRef}
+            data-logo="true"
             onPointerDown={compactMode ? startCompactHold : startFullHold}
             onPointerUp={cancelHold}
             onPointerLeave={cancelHold}
+            onContextMenu={e => e.preventDefault()}
+            onDragStart={e => e.preventDefault()}
             style={{
               position: isDragging && gateState === 'armed' ? 'fixed' : 'relative',
               left: isDragging && gateState === 'armed' ? logoPos.x - 28 : 'auto',
@@ -335,6 +359,9 @@ export default function SignalLost() {
               zIndex: isDragging ? 100 : 1,
               cursor: gateState === 'idle' ? 'grab' : gateState === 'armed' ? 'grabbing' : 'default',
               touchAction: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitUserSelect: 'none',
+              userSelect: 'none',
               transition: (gateState === 'locked' || gateState === 'charging') ? 'all 0.3s ease' : 'none',
             }}
           >
@@ -356,11 +383,21 @@ export default function SignalLost() {
                 transition: 'background 300ms',
                 animation: gateState === 'armed' ? 'sl-pulse-halo 1s ease-in-out infinite' : 'none',
               }} />
-              <img src="/logo.png" alt="CYBER PORTAL" style={{
-                width: 56, height: 56, objectFit: 'contain', position: 'relative', zIndex: 1,
-                filter: `drop-shadow(0 0 12px ${gateState === 'locked' || gateState === 'charging' ? 'rgba(34,197,94,0.9)' : 'rgba(139,92,246,0.9)'}) drop-shadow(0 0 24px rgba(59,130,246,0.5))`,
-                transition: 'filter 300ms',
-              }} />
+              <img
+                src="/logo.png" alt="CYBER PORTAL"
+                draggable={false}
+                onContextMenu={e => e.preventDefault()}
+                onDragStart={e => e.preventDefault()}
+                style={{
+                  width: 56, height: 56, objectFit: 'contain', position: 'relative', zIndex: 1,
+                  filter: `drop-shadow(0 0 12px ${gateState === 'locked' || gateState === 'charging' ? 'rgba(34,197,94,0.9)' : 'rgba(139,92,246,0.9)'}) drop-shadow(0 0 24px rgba(59,130,246,0.5))`,
+                  transition: 'filter 300ms',
+                  WebkitTouchCallout: 'none',
+                  WebkitUserSelect: 'none',
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                }}
+              />
             </div>
           </div>
 
@@ -466,6 +503,8 @@ export default function SignalLost() {
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap');
+        * { -webkit-touch-callout: none; }
+        canvas { touch-action: none; }
         @keyframes sl-flicker { 0%,93%,100%{opacity:1} 94%{opacity:.82} 95%{opacity:1} 97%{opacity:.9} 98%{opacity:1} }
         @keyframes sl-spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes sl-pulse-halo { 0%,100%{opacity:0.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.15)} }
