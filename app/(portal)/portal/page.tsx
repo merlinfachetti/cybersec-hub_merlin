@@ -314,7 +314,7 @@ export default function PortalPage() {
               <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)', pointerEvents: 'none' }} />
               <img
                 src="/logo.png"
-                alt="CYBER PORTAL"
+                alt="CYBERSEC LAB"
                 style={{ width: 55, height: 55, objectFit: 'contain', position: 'relative', zIndex: 1,
                   filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 16px rgba(59,130,246,0.4))' }}
               />
@@ -324,7 +324,7 @@ export default function PortalPage() {
                 fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
                 fontSize: 14, letterSpacing: '0.16em', color: '#f0eeff',
                 lineHeight: 1, textTransform: 'uppercase',
-              }}>CYBER PORTAL</span>
+              }}>CYBERSEC LAB</span>
               <span style={{
                 fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
                 color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em', lineHeight: 1,

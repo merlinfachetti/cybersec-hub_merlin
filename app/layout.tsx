@@ -4,8 +4,8 @@ import { ErrorBoundary } from '@/components/error-boundary';
 
 export const metadata: Metadata = {
   title: {
-    default: 'CYBER PORTAL',
-    template: '%s | CYBER PORTAL',
+    default: 'CYBERSEC LAB',
+    template: '%s | CYBERSEC LAB',
   },
   description: 'Threat Intelligence & Cybersecurity Learning Platform by Alden Merlin',
   icons: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'CYBER PORTAL',
+    title: 'CYBERSEC LAB',
     description: 'Threat Intelligence & Cybersecurity Learning Platform',
     images: [{ url: '/logo-512.png', width: 512, height: 512 }],
   },

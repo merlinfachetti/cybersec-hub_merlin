@@ -389,7 +389,7 @@ export default function SignalLost() {
                 animation: gateState === 'armed' ? 'sl-pulse-halo 1s ease-in-out infinite' : 'none',
               }} />
               <img
-                src="/logo.png" alt="CYBER PORTAL"
+                src="/logo.png" alt="CYBERSEC LAB"
                 draggable={false}
                 onContextMenu={e => e.preventDefault()}
                 onDragStart={e => e.preventDefault()}
@@ -406,7 +406,7 @@ export default function SignalLost() {
             </div>
           </div>
 
-          <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBER PORTAL</span>
+          <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBERSEC LAB</span>
           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '.1em' }}>signal &gt; noise</span>
 
           {/* Hold hint */}
@@ -578,11 +578,27 @@ function AuthReveal() {
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 340, opacity: step === 'appear' ? 0 : 1, transform: step === 'appear' ? 'translateY(12px)' : 'translateY(0)', transition: 'all 0.4s ease-out' }}>
 
-        {/* Logo + brand */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 0 12px rgba(34,197,94,0.7)) drop-shadow(0 0 24px rgba(139,92,246,0.4))' }} />
-          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#f0eeff', marginTop: 8 }}>CYBER PORTAL</div>
-          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '.1em', marginTop: 3 }}>● SECURE CHANNEL ESTABLISHED</div>
+        {/* Logo + brand — centered, orange neon glow */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: 28 }}>
+          <div style={{ position: 'relative', width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            {/* Orange neon pulse layers */}
+            <div style={{
+              position: 'absolute', inset: -12, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,120,20,0.35) 0%, rgba(255,80,0,0.15) 50%, transparent 70%)',
+              animation: 'auth-neon-pulse 1.8s ease-in-out infinite',
+            }} />
+            <div style={{
+              position: 'absolute', inset: -4, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,140,40,0.25) 0%, transparent 60%)',
+              animation: 'auth-neon-pulse 1.8s ease-in-out 0.3s infinite',
+            }} />
+            <img src="/logo.png" alt="CYBERSEC LAB" style={{
+              width: 72, height: 72, objectFit: 'contain', position: 'relative', zIndex: 1,
+              filter: 'drop-shadow(0 0 14px rgba(255,120,20,0.9)) drop-shadow(0 0 28px rgba(255,80,0,0.5))',
+            }} />
+          </div>
+          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, letterSpacing: '.14em', color: '#f0eeff' }}>CYBERSEC LAB</div>
+          <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.7)', letterSpacing: '.1em', marginTop: 4 }}>● SECURE CHANNEL ESTABLISHED</div>
         </div>
 
         {/* Auth card */}
@@ -648,6 +664,10 @@ function AuthReveal() {
 
       <style>{`
         @keyframes auth-reveal { from{opacity:0;background:white} 30%{opacity:1} to{opacity:1} }
+        @keyframes auth-neon-pulse {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.12); }
+        }
       `}</style>
     </div>
   );

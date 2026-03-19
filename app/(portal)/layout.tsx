@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'CYBER PORTAL — Threat Universe',
+  title: 'CYBERSEC LAB — Threat Universe',
   description: 'Threat Intelligence & Learning Platform · signal > noise',
   icons: {
     icon: '/favicon-32x32.png',
