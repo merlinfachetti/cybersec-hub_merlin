@@ -368,17 +368,7 @@ export default function PortalPage() {
           <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.07)', margin: '0 24px', flexShrink: 0 }} />
 
           {/* ── Back to Home ── */}
-          <Link href="/home" style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
-            color: 'rgba(255,140,40,0.6)', letterSpacing: '0.08em',
-            textDecoration: 'none', flexShrink: 0, marginRight: 20,
-            padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(139,92,246,0.15)',
-            transition: 'all 150ms',
-          }}
-          onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'rgba(139,92,246,0.9)'; el.style.borderColor = 'rgba(139,92,246,0.4)'; }}
-          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = 'rgba(139,92,246,0.5)'; el.style.borderColor = 'rgba(139,92,246,0.15)'; }}
-          >
+          <Link href="/home" className="hub-btn">
             ← Hub
           </Link>
 
