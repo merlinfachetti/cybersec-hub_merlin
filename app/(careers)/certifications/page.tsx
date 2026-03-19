@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, X, Shield, ChevronRight, ExternalLink, Clock, Award } from 'lucide-react';
 
@@ -187,7 +188,8 @@ function CertCard({ cert }: { cert: Cert }) {
 export default function CertificationsPage() {
   const [certs, setCerts] = useState<Cert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [level, setLevel] = useState('all');
   const [category, setCategory] = useState('all');
 

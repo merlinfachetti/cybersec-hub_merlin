@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ExternalLink, Star, Clock, DollarSign, BookOpen, Monitor, FlaskConical, FileText } from 'lucide-react';
 
 const RESOURCES = [
@@ -152,7 +153,8 @@ const LEVELS_F = [
 ];
 
 export default function ResourcesPage() {
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [freeOnly, setFreeOnly] = useState(false);
   const [type, setType] = useState('all');
   const [level, setLevel] = useState('all');

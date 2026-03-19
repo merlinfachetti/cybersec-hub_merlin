@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Menu, Radio } from 'lucide-react';
+import { GlobalSearch } from '@/components/global-search';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -55,6 +56,11 @@ export function MainNav() {
           ))}
         </nav>
 
+        {/* Global Search */}
+        <div className="flex items-center">
+          <GlobalSearch />
+        </div>
+
         {/* Threat Universe CTA — sempre visível no desktop */}
         <div className="hidden items-center gap-3 md:flex">
           <Link href="/threat-universe">
@@ -69,7 +75,12 @@ export function MainNav() {
           </Link>
         </div>
 
-        {/* Mobile menu */}
+        {/* Search — mobile */}
+        <div className="md:hidden flex items-center gap-2">
+          <GlobalSearch />
+        </div>
+
+        {/* Mobile hamburger menu */}
         <div className="md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
