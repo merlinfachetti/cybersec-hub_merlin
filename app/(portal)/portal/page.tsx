@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import SignalLost from '@/components/signal-lost';
 import { useRouter } from 'next/navigation';
 
@@ -23,18 +24,18 @@ type NodeId = typeof NODES[number]['id'];
 type TeamColor = 'red' | 'blue' | 'purple';
 
 const NODE_DETAILS: Record<NodeId, {
-  title: string; desc: string; mitre: string; severity: string; actions: [string, string, string]; team: TeamColor;
+  title: string; desc: string; mitre: string; severity: string; actions: [string, string, string]; team: TeamColor; routes: [string, string, string];
 }> = {
-  'sec-plus':     { title: 'SEC+ Exam Prep',           desc: 'Prepare for CompTIA Security+ certification with labs and practice exams.',  mitre: '',                            severity: 'N/A',    actions: ['Start Study', 'Practice Exam', 'Add Notes'],   team: 'red' },
-  'phishing':     { title: 'Phishing Kit Analysis',    desc: 'Investigate how the kit works and potential IOCs.',                          mitre: 'MITRE ATT&CK: T1566 · T1204', severity: 'Medium', actions: ['Start Lab', 'Read Report', 'Add Notes'],       team: 'red' },
-  'patch':        { title: 'Patch Analysis',           desc: 'Evaluate latest patches for critical CVEs and prioritize deployment.',       mitre: 'MITRE ATT&CK: T1190',         severity: 'High',   actions: ['Start Lab', 'View CVEs', 'Add Notes'],         team: 'blue' },
-  'siem':         { title: 'SIEM Log Review',          desc: 'Analyze SIEM alerts and correlate events for threat hunting.',               mitre: 'MITRE ATT&CK: T1070',         severity: 'Low',    actions: ['Open SIEM', 'Read Report', 'Add Notes'],       team: 'blue' },
-  'recon':        { title: 'Recon & OSINT',            desc: 'Gather open-source intelligence and map the attack surface.',               mitre: 'MITRE ATT&CK: T1595 · T1592', severity: 'Medium', actions: ['Start Lab', 'View Targets', 'Add Notes'],      team: 'red' },
-  'hardening':    { title: 'System Hardening',         desc: 'Apply CIS benchmarks and verify baseline configurations.',                  mitre: '',                            severity: 'Medium', actions: ['Start Lab', 'View Checklist', 'Add Notes'],    team: 'blue' },
-  'threat-model': { title: 'Threat Modeling',          desc: 'Identify threats using STRIDE and map to mitigations.',                     mitre: '',                            severity: 'N/A',    actions: ['Start Session', 'Read Guide', 'Add Notes'],    team: 'purple' },
-  'tabletop':     { title: 'Tabletop Exercise',        desc: 'Simulate incident response scenarios with your team.',                      mitre: '',                            severity: 'N/A',    actions: ['Start Exercise', 'View Scenarios', 'Add Notes'], team: 'purple' },
-  'vuln-scan':    { title: 'Vulnerability Scanning',   desc: 'Run automated scans and triage findings by severity.',                      mitre: 'MITRE ATT&CK: T1595.002',     severity: 'High',   actions: ['Run Scan', 'View Results', 'Add Notes'],       team: 'red' },
-  'ir-plan':      { title: 'IR Plan & Playbook',       desc: 'Review and update incident response procedures.',                          mitre: '',                            severity: 'N/A',    actions: ['Open Playbook', 'Edit Steps', 'Add Notes'],    team: 'purple' },
+  'sec-plus':     { title: 'SEC+ Exam Prep',           desc: 'CompTIA Security+ é a certificação de entrada mais reconhecida. Cobre ameaças, criptografia, identidade e redes.',   mitre: '',                            severity: 'N/A',    actions: ['Start Study', 'Practice Exam', 'Add Notes'],      team: 'red',    routes: ['/certifications?search=security%2B', '/certifications', '/profile'] },
+  'phishing':     { title: 'Phishing Kit Analysis',    desc: 'Analise kits de phishing reais: infraestrutura, credenciais capturadas e IOCs para detecção e atribuição.',          mitre: 'MITRE ATT&CK: T1566 · T1204', severity: 'Medium', actions: ['Start Lab', 'Read Report', 'Add Notes'],           team: 'red',    routes: ['/resources?category=OFFENSIVE_SECURITY', '/resources', '/profile'] },
+  'patch':        { title: 'Patch Analysis',           desc: 'Avalie patches críticos de CVEs, priorize por CVSS e verifique exposição antes e depois da aplicação.',             mitre: 'MITRE ATT&CK: T1190',         severity: 'High',   actions: ['View CVEs', 'Read Report', 'Add Notes'],           team: 'blue',   routes: ['/resources?category=DEFENSIVE_SECURITY', '/resources', '/profile'] },
+  'siem':         { title: 'SIEM Log Review',          desc: 'Correlacione eventos de SIEM, reduza falsos positivos e crie regras de detecção baseadas em TTPs conhecidas.',      mitre: 'MITRE ATT&CK: T1070',         severity: 'Low',    actions: ['View Resources', 'Read Report', 'Add Notes'],      team: 'blue',   routes: ['/resources?category=DEFENSIVE_SECURITY', '/resources', '/profile'] },
+  'recon':        { title: 'Recon & OSINT',            desc: 'Mapeie a superfície de ataque usando fontes abertas: DNS, WHOIS, redes sociais, vazamentos e infraestrutura.',     mitre: 'MITRE ATT&CK: T1595 · T1592', severity: 'Medium', actions: ['Start Lab', 'View Resources', 'Add Notes'],        team: 'red',    routes: ['/resources?category=OFFENSIVE_SECURITY', '/resources', '/profile'] },
+  'hardening':    { title: 'System Hardening',         desc: 'Aplique benchmarks CIS, remova serviços desnecessários e verifique configurações de linha de base.',                mitre: '',                            severity: 'Medium', actions: ['View Checklist', 'View Resources', 'Add Notes'],   team: 'blue',   routes: ['/resources?category=DEFENSIVE_SECURITY', '/resources', '/profile'] },
+  'threat-model': { title: 'Threat Modeling',          desc: 'Use STRIDE/PASTA para mapear ameaças, identificar superfícies e priorizar controles por impacto e probabilidade.',  mitre: '',                            severity: 'N/A',    actions: ['View Roadmap', 'Read Guide', 'Add Notes'],         team: 'purple', routes: ['/roadmap', '/resources', '/profile'] },
+  'tabletop':     { title: 'Tabletop Exercise',        desc: 'Simule cenários de resposta a incidentes com sua equipe: ransomware, breach de dados, APT e comprometimento cloud.', mitre: '',                            severity: 'N/A',    actions: ['View Roadmap', 'View Scenarios', 'Add Notes'],     team: 'purple', routes: ['/roadmap', '/resources', '/profile'] },
+  'vuln-scan':    { title: 'Vulnerability Scanning',   desc: 'Execute scans automatizados com Nessus/OpenVAS, faça triagem por severidade e integre ao ciclo de patch.',         mitre: 'MITRE ATT&CK: T1595.002',     severity: 'High',   actions: ['View Resources', 'View Results', 'Add Notes'],     team: 'red',    routes: ['/resources?category=OFFENSIVE_SECURITY', '/resources', '/profile'] },
+  'ir-plan':      { title: 'IR Plan & Playbook',       desc: 'Revise e atualize o plano de resposta a incidentes: contenção, erradicação, recuperação e lições aprendidas.',     mitre: '',                            severity: 'N/A',    actions: ['View Roadmap', 'Edit Steps', 'Add Notes'],         team: 'purple', routes: ['/roadmap', '/resources', '/profile'] },
 };
 
 const TEAM_COLORS = {
@@ -550,9 +551,9 @@ export default function PortalPage() {
               <p style={{ fontSize: 13, color: 'rgba(232,232,240,0.75)', lineHeight: 1.5, marginBottom: 14, maxWidth: 640 }}>{panel.desc}</p>
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                <button style={{ padding: '7px 16px', borderRadius: 6, background: panelIconColor, border: 'none', cursor: 'pointer', fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '0.04em' }}>{panel.actions[0]}</button>
-                <button style={{ padding: '7px 16px', borderRadius: 6, background: `rgba(${panelRgb},0.12)`, border: `1px solid rgba(${panelRgb},0.3)`, cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: panelIconColor }}>{panel.actions[1]}</button>
-                <button style={{ padding: '7px 16px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: '#e8e8f0' }}>{panel.actions[2]}</button>
+                <button onClick={() => router.push(panel.routes[0])} style={{ padding: '7px 16px', borderRadius: 6, background: panelIconColor, border: 'none', cursor: 'pointer', fontFamily: '"Space Grotesk", sans-serif', fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '0.04em' }}>{panel.actions[0]}</button>
+                <button onClick={() => router.push(panel.routes[1])} style={{ padding: '7px 16px', borderRadius: 6, background: `rgba(${panelRgb},0.12)`, border: `1px solid rgba(${panelRgb},0.3)`, cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: panelIconColor }}>{panel.actions[1]}</button>
+                <button onClick={() => router.push(panel.routes[2])} style={{ padding: '7px 16px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12, color: '#e8e8f0' }}>{panel.actions[2]}</button>
               </div>
 
               {panel.mitre && (
