@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {
   Shield, Map, BookOpen, TrendingUp,
   FileText, User, Zap, ChevronRight,
-  Radio
+  Radio, Lock as LockIcon
 } from 'lucide-react';
 
 interface UserSession {
@@ -213,7 +213,7 @@ export default function HomePage() {
         {/* Bottom status */}
         <div style={{ marginTop: 48, display: 'flex', alignItems: 'center', gap: 16, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Lock size={11} style={{ color: 'rgba(34,197,94,0.6)' }} />
+            <LockIcon size={11} style={{ color: 'rgba(34,197,94,0.6)' }} />
             <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.35)', letterSpacing: '0.06em' }}>
               SESSION AUTHENTICATED
             </span>
