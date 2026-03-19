@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Berlin",
+  "schedule": ["before 9am on Monday"],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 3,
+  "labels": ["dependencies", "automated"],
+  "commitMessagePrefix": "chore(deps):",
+  "packageRules": [
+    {
+      "description": "Prisma — manual only, never auto-update",
+      "matchPackageNames": ["prisma", "@prisma/client"],
+      "enabled": false
+    },
+    {
+      "description": "Next.js — manual only",
+      "matchPackageNames": ["next"],
+      "enabled": false
+    },
+    {
+      "description": "Group all non-critical patch updates together",
+      "matchUpdateTypes": ["patch"],
+      "groupName": "patch updates",
+      "automerge": false
+    },
+    {
+      "description": "Group minor updates together",
+      "matchUpdateTypes": ["minor"],
+      "groupName": "minor updates",
+      "automerge": false
+    },
+    {
+      "description": "Major updates — never auto, require manual review",
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ],
+  "ignoreDeps": [
+    "node"
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "automerge": false
+  }
+}
