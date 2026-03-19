@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SignalLost from '@/components/signal-lost';
 import { useRouter } from 'next/navigation';
