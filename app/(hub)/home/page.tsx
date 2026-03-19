@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {
   Shield, Map, BookOpen, TrendingUp,
   FileText, User, Zap, ChevronRight,
-  Radio, Lock
+  Radio
 } from 'lucide-react';
 
 interface UserSession {

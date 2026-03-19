@@ -679,6 +679,29 @@ export default function PortalPage() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#060610;overflow:hidden}
+        .hub-btn {
+          display:inline-flex; align-items:center; gap:5px;
+          font-family:"JetBrains Mono",monospace; font-size:10px;
+          color:rgba(255,140,40,0.85); letter-spacing:0.08em;
+          text-decoration:none; flex-shrink:0; margin-right:20px;
+          padding:4px 12px; border-radius:6px;
+          border:1px solid rgba(255,140,40,0.35);
+          background:rgba(255,140,40,0.08);
+          box-shadow:0 0 10px rgba(255,140,40,0.12), inset 0 0 8px rgba(255,140,40,0.04);
+          transition:color 150ms,border-color 150ms,background 150ms,box-shadow 150ms;
+          animation:hub-pulse 2.5s ease-in-out infinite;
+        }
+        .hub-btn:hover, .hub-btn:focus, .hub-btn:active {
+          color:rgba(255,160,60,1) !important;
+          border-color:rgba(255,140,40,0.7) !important;
+          background:rgba(255,140,40,0.15) !important;
+          box-shadow:0 0 20px rgba(255,140,40,0.35), 0 0 40px rgba(255,140,40,0.1), inset 0 0 12px rgba(255,140,40,0.08) !important;
+          animation:none;
+        }
+        @keyframes hub-pulse {
+          0%,100%{box-shadow:0 0 8px rgba(255,140,40,0.1),inset 0 0 6px rgba(255,140,40,0.03)}
+          50%{box-shadow:0 0 16px rgba(255,140,40,0.25),inset 0 0 10px rgba(255,140,40,0.06)}
+        }
         button{font-family:inherit}
       `}</style>
     </>

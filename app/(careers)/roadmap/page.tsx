@@ -1,393 +1,405 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRoadmap } from '@/lib/hooks/use-roadmap';
-import { RoadmapViewer } from '@/components/roadmap/roadmap-viewer';
-import { RoadmapLegend } from '@/components/roadmap/roadmap-legend';
-import { RoadmapSelector } from '@/components/roadmap/roadmap-selector';
-import { RoadmapSkeleton } from '@/components/roadmap/roadmap-skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Map, TrendingUp, RotateCcw } from 'lucide-react';
-import { fetchApi } from '@/lib/api-client';
+import { useState } from 'react';
+import Link from 'next/link';
+import { ChevronRight, Clock, DollarSign, Target, BookOpen, CheckCircle, ArrowRight, Layers } from 'lucide-react';
 
-interface PredefinedRoadmap {
-  id: string;
-  title: string;
-  description: string;
-  fromRole: string;
-  toRole: string;
-  duration: string;
-  difficulty: string;
-}
+// ── Career paths data ──────────────────────────────────────────────────────
+const CAREER_PATHS = {
+  beginner: {
+    id: 'beginner',
+    label: 'Beginner',
+    color: '#22c55e',
+    rgb: '34,197,94',
+    desc: 'Sem experiência em security · 0–12 meses',
+    icon: '🌱',
+    goal: 'Primeira certificação + emprego entry-level',
+    totalHours: '180–240h',
+    totalCost: '$370–$600',
+    steps: [
+      {
+        order: 1, name: 'CompTIA Security+', acronym: 'SEC+', slug: 'comptia-security-plus',
+        provider: 'CompTIA', level: 'ENTRY', color: '#22c55e',
+        hours: '80–120h', cost: '$392', duration: '2–3 meses',
+        why: 'Certificação baseline mais reconhecida mundialmente. Exigida pelo DoD dos EUA. Abre portas para qualquer role entry-level em security.',
+        topics: ['Threats & Attacks', 'Network Security', 'Cryptography', 'Identity Management', 'Risk Management'],
+        resources: [
+          { name: 'Professor Messer SY0-701', type: 'Vídeo Gratuito', url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/', free: true },
+          { name: 'CompTIA CertMaster Learn', type: 'Curso Oficial', url: 'https://www.comptia.org/training/certmaster-learn/security', free: false },
+          { name: 'Jason Dion Practice Exams (Udemy)', type: 'Simulado', url: 'https://www.udemy.com/user/jasonrobertdion/', free: false },
+        ],
+        outcome: 'Analyst / SOC Tier 1 / IT Security Specialist',
+      },
+      {
+        order: 2, name: 'eJPT', acronym: 'eJPT', slug: 'ejpt',
+        provider: 'INE Security', level: 'ENTRY', color: '#22c55e',
+        hours: '60–80h', cost: '$200', duration: '1–2 meses',
+        why: 'Certificação prática de pentest para quem quer explorar o lado ofensivo. Exame 100% labs — sem questões de múltipla escolha.',
+        topics: ['Networking Fundamentals', 'Web App Testing', 'Host Discovery', 'Exploitation Basics', 'Reporting'],
+        resources: [
+          { name: 'INE Starter Pass', type: 'Plataforma', url: 'https://ine.com/pages/cybersecurity', free: false },
+          { name: 'TryHackMe — Pre-Security Path', type: 'Gratuito/Freemium', url: 'https://tryhackme.com/path/outline/presecurity', free: true },
+          { name: 'HackTheBox Starting Point', type: 'Gratuito', url: 'https://www.hackthebox.com/starting-point', free: true },
+        ],
+        outcome: 'Junior Penetration Tester / Security Researcher',
+      },
+    ],
+  },
 
-interface RoadmapData {
-  nodes: Array<{
-    id: string;
-    certificationId: string;
-    name: string;
-    level: string;
-    category: string;
-    highlighted?: boolean;
-  }>;
-  edges: Array<{
-    id: string;
-    source: string;
-    target: string;
-    type: string;
-  }>;
-}
+  intermediate: {
+    id: 'intermediate',
+    label: 'Intermediate',
+    color: '#3b82f6',
+    rgb: '59,130,246',
+    desc: '1–3 anos de experiência · SEC+ concluída',
+    icon: '⚡',
+    goal: 'Especialização + roles mais técnicos',
+    totalHours: '300–500h',
+    totalCost: '$1.000–$2.500',
+    steps: [
+      {
+        order: 1, name: 'CompTIA CySA+', acronym: 'CySA+', slug: 'comptia-cysa-plus',
+        provider: 'CompTIA', level: 'INTERMEDIATE', color: '#3b82f6',
+        hours: '80–100h', cost: '$392', duration: '2–3 meses',
+        why: 'Evolução natural da Security+. Foca em análise de ameaças, threat hunting e resposta a incidentes. Muito valorizado em SOC e Blue Team.',
+        topics: ['Threat Intelligence', 'Vulnerability Management', 'Log Analysis', 'Incident Response', 'SIEM Operations'],
+        resources: [
+          { name: 'Jason Dion CySA+ Course (Udemy)', type: 'Curso', url: 'https://www.udemy.com/user/jasonrobertdion/', free: false },
+          { name: 'Professor Messer CySA+', type: 'Vídeo', url: 'https://www.professormesser.com', free: true },
+          { name: 'TryHackMe SOC Level 1', type: 'Lab', url: 'https://tryhackme.com/path/outline/soclevel1', free: false },
+        ],
+        outcome: 'SOC Analyst Tier 2 / Threat Hunter / IR Analyst',
+      },
+      {
+        order: 2, name: 'CEH', acronym: 'CEH', slug: 'ceh-certified-ethical-hacker',
+        provider: 'EC-Council', level: 'INTERMEDIATE', color: '#3b82f6',
+        hours: '120–160h', cost: '$1.199', duration: '3–4 meses',
+        why: 'Referência global em ethical hacking. Cobre as 20 disciplinas do hacking desde recon até análise de malware. Reconhecido por Fortune 500.',
+        topics: ['Footprinting & Recon', 'Scanning', 'Exploitation', 'Malware Analysis', 'Social Engineering', 'Web App Hacking', 'SQL Injection'],
+        resources: [
+          { name: 'EC-Council Official Courseware', type: 'Oficial', url: 'https://www.eccouncil.org', free: false },
+          { name: 'Zaid Sabih — CEH v12 (Udemy)', type: 'Curso', url: 'https://www.udemy.com', free: false },
+          { name: 'OWASP Testing Guide', type: 'Gratuito', url: 'https://owasp.org/www-project-web-security-testing-guide/', free: true },
+        ],
+        outcome: 'Penetration Tester / Red Team Analyst / Security Consultant',
+      },
+      {
+        order: 3, name: 'GPEN', acronym: 'GPEN', slug: 'gpen',
+        provider: 'SANS / GIAC', level: 'INTERMEDIATE', color: '#3b82f6',
+        hours: '120–140h', cost: '$979', duration: '3–4 meses',
+        why: 'GIAC é uma das organizações mais respeitadas do setor. GPEN valida metodologia real de pentest com foco em Active Directory e ambientes corporativos.',
+        topics: ['Pen Testing Methodology', 'Password Attacks', 'Reconnaissance', 'Web App Exploitation', 'Post-Exploitation', 'Active Directory Attacks'],
+        resources: [
+          { name: 'SANS SEC560: Enterprise Pen Testing', type: 'Oficial (caro)', url: 'https://www.sans.org/cyber-security-courses/network-penetration-testing-ethical-hacking/', free: false },
+          { name: 'TCM Security PEH Course', type: 'Alternativa acessível', url: 'https://academy.tcm-sec.com', free: false },
+          { name: 'HackTheBox Pro Labs', type: 'Lab', url: 'https://www.hackthebox.com/hacker/pro-labs', free: false },
+        ],
+        outcome: 'Senior Penetration Tester / Red Team Operator',
+      },
+    ],
+  },
+
+  advanced: {
+    id: 'advanced',
+    label: 'Advanced',
+    color: '#f59e0b',
+    rgb: '245,158,11',
+    desc: '3–6 anos de experiência · múltiplas certs',
+    icon: '🔥',
+    goal: 'Credencial elite + liderança técnica',
+    totalHours: '500–800h',
+    totalCost: '$2.000–$6.000',
+    steps: [
+      {
+        order: 1, name: 'OSCP', acronym: 'OSCP', slug: 'oscp',
+        provider: 'Offensive Security', level: 'ADVANCED', color: '#f59e0b',
+        hours: '300–500h', cost: '$1.499', duration: '3–6 meses',
+        why: 'A certificação ofensiva mais respeitada do mercado. Exame prático de 24h em rede isolada. "Try Harder" é o mantra. Diferencia candidatos seriamente.',
+        topics: ['Buffer Overflows', 'Active Directory Attacks', 'Web App Exploitation', 'Post-Exploitation', 'Pivoting & Tunneling', 'Privilege Escalation'],
+        resources: [
+          { name: 'OffSec PEN-200 (PWK)', type: 'Oficial', url: 'https://www.offensive-security.com/pwk-oscp/', free: false },
+          { name: 'TJ Null OSCP Prep List', type: 'Gratuito — HTB/PG boxes', url: 'https://docs.google.com/spreadsheets/d/1dwSMIAPIam0PuRBkCiDI88pU3yzrqqHkDtBngUHNCw8', free: true },
+          { name: 'ippsec YouTube', type: 'Gratuito — walkthroughs', url: 'https://www.youtube.com/@ippsec', free: true },
+        ],
+        outcome: 'Senior Pen Tester / Red Team Lead / Security Researcher',
+      },
+      {
+        order: 2, name: 'CISSP', acronym: 'CISSP', slug: 'cissp',
+        provider: '(ISC)²', level: 'ADVANCED', color: '#f59e0b',
+        hours: '200–300h', cost: '$749', duration: '4–6 meses',
+        why: 'O padrão ouro para liderança em security. Cobre 8 domínios completos. Exigido para roles de CISO, Security Architect e posições sênior em grandes empresas.',
+        topics: ['Security & Risk Management', 'Asset Security', 'Security Architecture', 'Network Security', 'IAM', 'Security Assessment', 'Security Operations', 'Software Security'],
+        resources: [
+          { name: 'Destination Certification MindMap', type: 'Gratuito', url: 'https://www.destinationcertification.com', free: true },
+          { name: 'Official ISC2 CISSP CBK', type: 'Livro Oficial', url: 'https://www.isc2.org/Training/Self-Study-Resources', free: false },
+          { name: 'Larry Greenblatt CISSP (Udemy)', type: 'Curso', url: 'https://www.udemy.com', free: false },
+        ],
+        outcome: 'CISO / Security Architect / Security Director',
+      },
+      {
+        order: 3, name: 'CISM', acronym: 'CISM', slug: 'cism',
+        provider: 'ISACA', level: 'ADVANCED', color: '#f59e0b',
+        hours: '150–200h', cost: '$575', duration: '3–4 meses',
+        why: 'Complemento ao CISSP com foco em gestão. Muito valorizado em empresas europeias e em roles que combinam técnica com negócio.',
+        topics: ['IS Governance', 'Risk Management', 'Security Program Development & Management', 'Incident Management'],
+        resources: [
+          { name: 'ISACA CISM Review Manual', type: 'Oficial', url: 'https://www.isaca.org/credentialing/cism/cism-exam-resources', free: false },
+          { name: 'Hemang Doshi CISM (Udemy)', type: 'Curso', url: 'https://www.udemy.com', free: false },
+          { name: 'ISACA Community Questions', type: 'Gratuito parcial', url: 'https://www.isaca.org', free: true },
+        ],
+        outcome: 'IS Manager / Risk Manager / GRC Lead',
+      },
+    ],
+  },
+};
+
+const CERT_LEVELS = [
+  { id: 'ENTRY',        label: 'Entry',        color: '#22c55e' },
+  { id: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
+  { id: 'ADVANCED',     label: 'Advanced',     color: '#f59e0b' },
+  { id: 'EXPERT',       label: 'Expert',       color: '#ef4444' },
+];
+
+const ALL_CERTS = [
+  { name: 'Security+',  acronym: 'SEC+',  level: 'ENTRY',        category: 'DEFENSIVE_SECURITY',  slug: 'comptia-security-plus', provider: 'CompTIA',          cost: '$392',   hours: '80–120h' },
+  { name: 'eJPT',       acronym: 'eJPT',  level: 'ENTRY',        category: 'OFFENSIVE_SECURITY',  slug: 'ejpt',                  provider: 'INE Security',     cost: '$200',   hours: '60–80h'  },
+  { name: 'CySA+',      acronym: 'CySA+', level: 'INTERMEDIATE', category: 'DEFENSIVE_SECURITY',  slug: 'comptia-cysa-plus',     provider: 'CompTIA',          cost: '$392',   hours: '80–100h' },
+  { name: 'CEH',        acronym: 'CEH',   level: 'INTERMEDIATE', category: 'OFFENSIVE_SECURITY',  slug: 'ceh-certified-ethical-hacker', provider: 'EC-Council', cost: '$1.199', hours: '120–160h' },
+  { name: 'GPEN',       acronym: 'GPEN',  level: 'INTERMEDIATE', category: 'OFFENSIVE_SECURITY',  slug: 'gpen',                  provider: 'SANS/GIAC',        cost: '$979',   hours: '120–140h' },
+  { name: 'OSCP',       acronym: 'OSCP',  level: 'ADVANCED',     category: 'OFFENSIVE_SECURITY',  slug: 'oscp',                  provider: 'Offensive Sec',    cost: '$1.499', hours: '300–500h' },
+  { name: 'CISSP',      acronym: 'CISSP', level: 'ADVANCED',     category: 'GOVERNANCE_RISK',      slug: 'cissp',                 provider: '(ISC)²',           cost: '$749',   hours: '200–300h' },
+  { name: 'CISM',       acronym: 'CISM',  level: 'ADVANCED',     category: 'GOVERNANCE_RISK',      slug: 'cism',                  provider: 'ISACA',            cost: '$575',   hours: '150–200h' },
+];
+
+type PathId = keyof typeof CAREER_PATHS;
 
 export default function RoadmapPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'predefined'>(
-    'predefined'
-  );
-  const [predefinedRoadmaps, setPredefinedRoadmaps] = useState<
-    PredefinedRoadmap[]
-  >([]);
-  const [selectedRoadmapId, setSelectedRoadmapId] = useState<string | null>(
-    null
-  );
-  const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
-  const [loadingRoadmap, setLoadingRoadmap] = useState(false);
+  const [activeTab, setActiveTab] = useState<'paths' | 'all'>('paths');
+  const [activePath, setActivePath] = useState<PathId>('beginner');
+  const [openStep, setOpenStep] = useState<number | null>(0);
+  const [allLevel, setAllLevel] = useState('ENTRY');
 
-  const { data: allData, loading: loadingAll, error: errorAll } = useRoadmap();
+  const path = CAREER_PATHS[activePath];
+  const filteredAll = ALL_CERTS.filter(c => c.level === allLevel);
 
-  // Carregar lista de roadmaps predefinidos
-  useEffect(() => {
-    const fetchPredefined = async () => {
-      try {
-        const result = await fetchApi<{ roadmaps: PredefinedRoadmap[] }>(
-          '/api/roadmap/predefined'
-        );
-        setPredefinedRoadmaps(result.roadmaps);
-
-        // Selecionar primeiro roadmap por padrão
-        if (result.roadmaps.length > 0) {
-          setSelectedRoadmapId((previous) => previous || result.roadmaps[0].id);
-        }
-      } catch (err) {
-        console.error('Failed to fetch predefined roadmaps:', err);
-      }
-    };
-
-    fetchPredefined();
-  }, []);
-
-  // Carregar dados do roadmap selecionado
-  useEffect(() => {
-    if (!selectedRoadmapId) return;
-
-    const fetchRoadmapData = async () => {
-      try {
-        setLoadingRoadmap(true);
-        const result = await fetchApi<{ nodes: any[]; edges: any[] }>(
-          `/api/roadmap/predefined?id=${selectedRoadmapId}`
-        );
-        setRoadmapData(result);
-      } catch (err) {
-        console.error('Failed to fetch roadmap data:', err);
-      } finally {
-        setLoadingRoadmap(false);
-      }
-    };
-
-    if (activeTab === 'predefined') {
-      fetchRoadmapData();
-    }
-  }, [selectedRoadmapId, activeTab]);
-
-  const handleResetView = () => {
-    setActiveTab('all');
-    setSelectedRoadmapId(null);
+  const S = {
+    card: { background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12 },
+    mono: { fontFamily: '"JetBrains Mono", monospace' },
+    grotesk: { fontFamily: '"Space Grotesk", sans-serif' },
   };
 
-  const currentData = activeTab === 'all' ? allData : roadmapData;
-  const isLoading = activeTab === 'all' ? loadingAll : loadingRoadmap;
-  const error = activeTab === 'all' ? errorAll : null;
-
-  if (isLoading && !currentData) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <RoadmapSkeleton />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error.message || 'Failed to load roadmap'}
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <Map className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Certification Roadmap
-            </h1>
+    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>
+            CAREERS / ROADMAP
           </div>
-          {selectedRoadmapId && (
-            <Button variant="outline" onClick={handleResetView} className="w-full sm:w-auto">
-              <RotateCcw className="h-4 w-4 mr-2" />
-              View All
-            </Button>
-          )}
+          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: '#f0eeff', marginBottom: 6 }}>
+            Certification Roadmap
+          </h1>
+          <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.55)', maxWidth: 540 }}>
+            Planos de carreira baseados no mercado real — do iniciante ao especialista. Cada passo tem recursos, custos e horas estimadas.
+          </p>
         </div>
-        <p className="text-lg text-muted-foreground">
-          {activeTab === 'predefined'
-            ? 'Follow proven career paths designed for your goals'
-            : 'Explore all certifications and create your own path'}
-        </p>
-      </div>
 
-      {/* Tabs */}
-      <Tabs
-        value={activeTab}
-        onValueChange={(v) => setActiveTab(v as any)}
-        className="mb-6"
-      >
-        <TabsList className="grid w-full grid-cols-2 sm:max-w-md">
-          <TabsTrigger value="predefined">Career Paths</TabsTrigger>
-          <TabsTrigger value="all">All Certifications</TabsTrigger>
-        </TabsList>
+        {/* Tab switcher */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+          {[
+            { id: 'paths', label: 'Career Paths' },
+            { id: 'all',   label: 'All Certifications' },
+          ].map(t => (
+            <button key={t.id} onClick={() => setActiveTab(t.id as any)} style={{
+              padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer',
+              ...S.grotesk, fontSize: 13, fontWeight: 600, transition: 'all 150ms',
+              background: activeTab === t.id ? 'rgba(139,92,246,0.15)' : 'rgba(255,255,255,0.04)',
+              color: activeTab === t.id ? '#a78bfa' : 'rgba(155,176,198,0.5)',
+              boxShadow: activeTab === t.id ? '0 0 0 1px rgba(139,92,246,0.3)' : 'none',
+            }}>{t.label}</button>
+          ))}
+        </div>
 
-        <TabsContent value="predefined" className="space-y-6 mt-6">
-          {/* Roadmap Selector */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">
-              Choose Your Career Path
-            </h2>
-            <RoadmapSelector
-              roadmaps={predefinedRoadmaps}
-              selectedId={selectedRoadmapId || undefined}
-              onSelect={setSelectedRoadmapId}
-            />
+        {/* ── CAREER PATHS TAB ── */}
+        {activeTab === 'paths' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 24, alignItems: 'start' }}>
+
+            {/* Left: path selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'sticky', top: 24 }}>
+              {(Object.values(CAREER_PATHS) as typeof path[]).map(p => (
+                <button key={p.id} onClick={() => { setActivePath(p.id as PathId); setOpenStep(0); }} style={{
+                  padding: '14px 16px', borderRadius: 10, border: `1px solid ${activePath === p.id ? p.color + '50' : 'rgba(255,255,255,0.07)'}`,
+                  background: activePath === p.id ? `rgba(${p.rgb},0.1)` : 'rgba(12,8,28,0.6)',
+                  cursor: 'pointer', textAlign: 'left', transition: 'all 150ms',
+                  boxShadow: activePath === p.id ? `0 0 20px rgba(${p.rgb},0.15)` : 'none',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 16 }}>{p.icon}</span>
+                    <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 14, color: activePath === p.id ? p.color : '#e6eef8' }}>{p.label}</span>
+                  </div>
+                  <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.45)', letterSpacing: '0.04em', lineHeight: 1.5 }}>{p.desc}</div>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                    <span style={{ ...S.mono, fontSize: 9, color: `${p.color}80` }}>{p.totalHours}</span>
+                    <span style={{ ...S.mono, fontSize: 9, color: `${p.color}80` }}>{p.totalCost}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Right: steps */}
+            <div>
+              <div style={{ ...S.card, padding: '16px 20px', marginBottom: 16, borderColor: `${path.color}25`, background: `rgba(${path.rgb},0.05)` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 24 }}>{path.icon}</span>
+                  <div>
+                    <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: path.color }}>{path.label} Path</div>
+                    <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.55)', marginTop: 2 }}>{path.goal}</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ ...S.mono, fontSize: 11, color: path.color }}>{path.totalHours}</div>
+                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>total horas</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ ...S.mono, fontSize: 11, color: path.color }}>{path.totalCost}</div>
+                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>total custo</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {path.steps.map((step, i) => {
+                  const isOpen = openStep === i;
+                  return (
+                    <div key={step.order} style={{ ...S.card, overflow: 'hidden', borderColor: isOpen ? `${step.color}35` : 'rgba(255,255,255,0.07)', transition: 'border-color 200ms' }}>
+                      {/* Step header — always visible */}
+                      <button onClick={() => setOpenStep(isOpen ? null : i)} style={{
+                        width: '100%', padding: '16px 20px', background: 'none', border: 'none',
+                        cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 14,
+                      }}>
+                        <div style={{ width: 28, height: 28, borderRadius: '50%', background: `rgba(${path.rgb},0.15)`, border: `1.5px solid ${step.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <span style={{ ...S.mono, fontSize: 11, color: step.color, fontWeight: 700 }}>{step.order}</span>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>{step.acronym}</span>
+                            <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)' }}>{step.name}</span>
+                            <span style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>by {step.provider}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexShrink: 0 }}>
+                          <span style={{ ...S.mono, fontSize: 11, color: step.color }}>{step.cost}</span>
+                          <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.hours}</span>
+                          <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.duration}</span>
+                          <ChevronRight size={14} style={{ color: 'rgba(155,176,198,0.3)', transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 200ms' }} />
+                        </div>
+                      </button>
+
+                      {/* Expanded content */}
+                      <div style={{ maxHeight: isOpen ? '800px' : '0', overflow: 'hidden', transition: 'max-height 350ms cubic-bezier(0.4,0,0.2,1)' }}>
+                        <div style={{ padding: '0 20px 20px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                          <p style={{ fontSize: 13, color: 'rgba(220,215,240,0.7)', lineHeight: 1.65, margin: '14px 0 16px' }}>{step.why}</p>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                            {/* Topics */}
+                            <div>
+                              <div style={{ ...S.mono, fontSize: 9, color: `${step.color}70`, letterSpacing: '0.1em', marginBottom: 8 }}>TÓPICOS COBERTOS</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                {step.topics.map(t => (
+                                  <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                    <div style={{ width: 4, height: 4, borderRadius: '50%', background: step.color, flexShrink: 0 }} />
+                                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.65)' }}>{t}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            {/* Resources */}
+                            <div>
+                              <div style={{ ...S.mono, fontSize: 9, color: `${step.color}70`, letterSpacing: '0.1em', marginBottom: 8 }}>RECURSOS RECOMENDADOS</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                {step.resources.map(r => (
+                                  <a key={r.name} href={r.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'flex-start', gap: 8, textDecoration: 'none' }}>
+                                    <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 3, background: r.free ? 'rgba(34,197,94,0.1)' : 'rgba(245,158,11,0.1)', color: r.free ? '#22c55e' : '#f59e0b', ...S.mono, flexShrink: 0, marginTop: 1 }}>
+                                      {r.free ? 'FREE' : 'PAGO'}
+                                    </span>
+                                    <div>
+                                      <div style={{ fontSize: 12, color: '#e6eef8' }}>{r.name}</div>
+                                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)' }}>{r.type}</div>
+                                    </div>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Outcome + CTA */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: 8, background: `rgba(${path.rgb},0.06)`, border: `1px solid rgba(${path.rgb},0.15)` }}>
+                            <div>
+                              <div style={{ ...S.mono, fontSize: 9, color: `${step.color}70`, marginBottom: 4 }}>ABRE PORTAS PARA</div>
+                              <div style={{ fontSize: 12, color: 'rgba(220,215,240,0.8)' }}>{step.outcome}</div>
+                            </div>
+                            <Link href={`/certifications/${step.slug}`} style={{
+                              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 7,
+                              background: `rgba(${path.rgb},0.15)`, border: `1px solid rgba(${path.rgb},0.3)`,
+                              color: step.color, textDecoration: 'none', fontSize: 12, ...S.grotesk, fontWeight: 600,
+                            }}>
+                              Ver detalhes <ArrowRight size={12} />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
+        )}
 
-          {/* Stats Cards */}
-          {roadmapData && (
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Certifications
-                  </CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {roadmapData.nodes.length}
-                  </div>
-                  <p className="text-xs text-muted-foreground">In this path</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Prerequisites
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {roadmapData.edges.length}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Dependencies tracked
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Difficulty
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold capitalize">
-                    {predefinedRoadmaps.find((r) => r.id === selectedRoadmapId)
-                      ?.difficulty || 'N/A'}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {predefinedRoadmaps.find((r) => r.id === selectedRoadmapId)
-                      ?.duration || 'N/A'}
-                  </p>
-                </CardContent>
-              </Card>
+        {/* ── ALL CERTIFICATIONS TAB ── */}
+        {activeTab === 'all' && (
+          <div>
+            {/* Level filter */}
+            <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
+              {CERT_LEVELS.map(l => (
+                <button key={l.id} onClick={() => setAllLevel(l.id)} style={{
+                  padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                  ...S.grotesk, fontSize: 12, fontWeight: 600, transition: 'all 150ms',
+                  background: allLevel === l.id ? `rgba(${l.color.replace('#','')},0.15)` : 'rgba(255,255,255,0.04)',
+                  color: allLevel === l.id ? l.color : 'rgba(155,176,198,0.5)',
+                  boxShadow: allLevel === l.id ? `0 0 0 1px ${l.color}40` : 'none',
+                }}>{l.label}</button>
+              ))}
             </div>
-          )}
 
-          {/* Roadmap Viewer */}
-          {roadmapData && (
-            <div className="grid gap-6 lg:grid-cols-4">
-              <div className="order-2 lg:order-1 lg:col-span-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      {
-                        predefinedRoadmaps.find(
-                          (r) => r.id === selectedRoadmapId
-                        )?.title
-                      }
-                    </CardTitle>
-                    <CardDescription>
-                      Click on any certification to view details
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <RoadmapViewer data={roadmapData} />
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="order-1 space-y-6 lg:order-2">
-                <RoadmapLegend />
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Path Info</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <dl className="space-y-2 text-sm">
-                      <div>
-                        <dt className="text-muted-foreground">From:</dt>
-                        <dd className="font-medium">
-                          {
-                            predefinedRoadmaps.find(
-                              (r) => r.id === selectedRoadmapId
-                            )?.fromRole
-                          }
-                        </dd>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
+              {filteredAll.map(cert => {
+                const lvlColor = CERT_LEVELS.find(l => l.id === cert.level)?.color ?? '#8b5cf6';
+                return (
+                  <Link key={cert.slug} href={`/certifications/${cert.slug}`} style={{ textDecoration: 'none' }}>
+                    <div style={{
+                      ...S.card, padding: '18px', cursor: 'pointer', transition: 'all 200ms', position: 'relative', overflow: 'hidden',
+                    }}
+                    onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = lvlColor + '40'; el.style.transform = 'translateY(-2px)'; }}
+                    onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.07)'; el.style.transform = 'none'; }}
+                    >
+                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${lvlColor}60,transparent)` }} />
+                      <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: '#f0eeff', marginBottom: 2 }}>{cert.acronym}</div>
+                      <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)', marginBottom: 10 }}>{cert.provider}</div>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        <span style={{ ...S.mono, fontSize: 11, color: lvlColor }}>{cert.cost}</span>
+                        <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{cert.hours}</span>
                       </div>
-                      <div>
-                        <dt className="text-muted-foreground">To:</dt>
-                        <dd className="font-medium">
-                          {
-                            predefinedRoadmaps.find(
-                              (r) => r.id === selectedRoadmapId
-                            )?.toRole
-                          }
-                        </dd>
-                      </div>
-                      <div>
-                        <dt className="text-muted-foreground">Duration:</dt>
-                        <dd className="font-medium">
-                          {
-                            predefinedRoadmaps.find(
-                              (r) => r.id === selectedRoadmapId
-                            )?.duration
-                          }
-                        </dd>
-                      </div>
-                    </dl>
-                  </CardContent>
-                </Card>
-              </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="all" className="space-y-6 mt-6">
-          {allData && (
-            <>
-              {/* Stats Cards */}
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Total Certifications
-                    </CardTitle>
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {allData.nodes.length}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Across all levels
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Entry Level
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {allData.nodes.filter((n) => n.level === 'ENTRY').length}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Great starting points
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Learning Paths
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {allData.edges.length}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Prerequisites tracked
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Roadmap Viewer */}
-              <div className="grid gap-6 lg:grid-cols-4">
-                <div className="order-2 lg:order-1 lg:col-span-3">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>All Certifications</CardTitle>
-                      <CardDescription>
-                        Complete overview of all available certifications
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      <RoadmapViewer data={allData} />
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="order-1 space-y-6 lg:order-2">
-                  <RoadmapLegend />
-                </div>
-              </div>
-            </>
-          )}
-        </TabsContent>
-      </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
