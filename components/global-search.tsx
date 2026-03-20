@@ -203,7 +203,7 @@ function scoreItem(item: SearchItem, q: string): number {
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
-export function GlobalSearch() {
+export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
   const [open, setOpen]         = useState(false);
   const [query, setQuery]       = useState('');
   const [active, setActive]     = useState(0);
