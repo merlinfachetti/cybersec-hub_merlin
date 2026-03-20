@@ -95,6 +95,19 @@ export default function SignalLost() {
   const [scannerColor, setScannerColor] = useState('#e53e3e');
   const [compactMode, setCompactMode] = useState(false);
   const [showAuthReveal, setShowAuthReveal] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  // Verificar sessão ativa — redirecionar direto pro hub se já autenticado
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.user) { window.location.href = '/home'; }
+        else { setChecking(false); }
+      })
+      .catch(() => setChecking(false));
+  }, []);
+
 
   const logoRef = useRef<HTMLDivElement>(null);
   const scannerRef = useRef<HTMLDivElement>(null);
@@ -294,6 +307,13 @@ export default function SignalLost() {
   if (showAuthReveal) {
     return <AuthReveal />;
   }
+
+  if (checking) return (
+    <div style={{ position: 'fixed', inset: 0, background: '#060610', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+      <div style={{ width: 40, height: 40, border: '2px solid rgba(139,92,246,0.2)', borderTopColor: '#8b5cf6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
 
   return (
     <div

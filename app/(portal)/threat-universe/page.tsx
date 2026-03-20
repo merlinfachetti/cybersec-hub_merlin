@@ -661,12 +661,130 @@ export default function PortalPage() {
         </div>
       </div>
 
-      {/* Signal Lost — mobile block */}
-      <div className="cp-signal-lost">
-        <SignalLost />
+      {/* ── Mobile UI ── */}
+      <div className="cp-signal-lost" style={{ overflowY: 'auto', paddingBottom: 80, background: '#060610' }}>
+        {/* Header */}
+        <div style={{
+          position: 'sticky', top: 0, zIndex: 10, padding: '10px 16px',
+          background: 'rgba(6,4,18,0.97)', borderBottom: '1px solid rgba(139,92,246,0.15)',
+          backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none' }}>
+            <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 30, height: 30, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.6))' }} />
+            <div>
+              <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 12, color: '#f0eeff', letterSpacing: '0.1em' }}>CYBERSEC LAB</div>
+              <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.08em' }}>THREAT UNIVERSE</div>
+            </div>
+          </Link>
+          <ThemeToggle />
+        </div>
+
+        {/* Mode selector */}
+        <div style={{ display: 'flex', gap: 8, padding: '12px 16px 8px' }}>
+          {(['red','blue','purple'] as TeamColor[]).map(m => {
+            const clr = m === 'red' ? '#e53e3e' : m === 'blue' ? '#3b82f6' : '#8b5cf6';
+            const rgb = m === 'red' ? '229,62,62' : m === 'blue' ? '59,130,246' : '139,92,246';
+            const lbl = m === 'red' ? 'ATTACK' : m === 'blue' ? 'DEFEND' : 'IMPROVE';
+            const isCurrent = activeMode === m;
+            return (
+              <button key={m} onClick={() => setActiveMode(m)} style={{
+                flex: 1, padding: '8px 4px', borderRadius: 8, cursor: 'pointer',
+                background: isCurrent ? `rgba(${rgb},0.15)` : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${isCurrent ? clr + '50' : 'rgba(255,255,255,0.08)'}`,
+                color: isCurrent ? clr : 'rgba(155,176,198,0.5)',
+                fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 11,
+                transition: 'all 150ms',
+              }}>{lbl}</button>
+            );
+          })}
+        </div>
+
+        {/* Node cards */}
+        <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {NODES.filter(n => n.team === activeMode).map(node => {
+            const detail = NODE_DETAILS[node.id];
+            const clr = activeMode === 'red' ? '#e53e3e' : activeMode === 'blue' ? '#3b82f6' : '#8b5cf6';
+            const rgb = activeMode === 'red' ? '229,62,62' : activeMode === 'blue' ? '59,130,246' : '139,92,246';
+            const isOpen = selectedNode === node.id;
+            const sevColor = detail.severity === 'High' ? '#ef4444' : detail.severity === 'Medium' ? '#f59e0b' : '#22c55e';
+            return (
+              <div key={node.id}
+                onClick={() => setSelectedNode(isOpen ? null : node.id)}
+                style={{
+                  padding: '12px 14px', borderRadius: 10, cursor: 'pointer',
+                  background: isOpen ? `rgba(${rgb},0.1)` : 'rgba(12,8,28,0.85)',
+                  border: `1px solid ${isOpen ? clr + '40' : 'rgba(255,255,255,0.08)'}`,
+                  transition: 'all 180ms',
+                }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 14, color: '#f0eeff' }}>{detail.title}</div>
+                    <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, color: 'rgba(155,176,198,0.45)', marginTop: 2 }}>{node.sublabel}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {detail.severity !== 'N/A' && (
+                      <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8, color: sevColor, background: sevColor + '18', border: `1px solid ${sevColor}30`, padding: '2px 5px', borderRadius: 3 }}>
+                        {detail.severity.toUpperCase()}
+                      </span>
+                    )}
+                    <div style={{ width: 7, height: 7, borderRadius: '50%', background: clr, boxShadow: `0 0 6px ${clr}` }} />
+                  </div>
+                </div>
+
+                {isOpen && (
+                  <div style={{ marginTop: 10, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 10 }}>
+                    <p style={{ fontSize: 12, color: 'rgba(200,195,225,0.7)', lineHeight: 1.6, marginBottom: 10 }}>{detail.desc}</p>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                      {detail.routes.map((route, i) => (
+                        <Link key={i} href={route} onClick={() => setSelectedNode(null)} style={{
+                          padding: '6px 12px', borderRadius: 6, textDecoration: 'none',
+                          fontFamily: '"Space Grotesk",sans-serif', fontWeight: 600, fontSize: 11,
+                          background: i === 0 ? `rgba(${rgb},0.18)` : 'rgba(255,255,255,0.05)',
+                          border: `1px solid ${i === 0 ? clr + '40' : 'rgba(255,255,255,0.08)'}`,
+                          color: i === 0 ? clr : 'rgba(155,176,198,0.65)',
+                        }}>
+                          {detail.actions[i]}
+                        </Link>
+                      ))}
+                    </div>
+                    {detail.mitre && (
+                      <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, color: 'rgba(155,176,198,0.3)' }}>{detail.mitre}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom nav */}
+        <div style={{
+          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20,
+          background: 'rgba(6,4,18,0.97)', borderTop: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(20px)', paddingBottom: 'env(safe-area-inset-bottom,0px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '6px 4px',
+        }}>
+          {([
+            ['/home',           '🏠', 'Hub'],
+            ['/certifications', '🛡️', 'Certs'],
+            ['/roadmap',        '🗺️', 'Roadmap'],
+            ['/resources',      '📚', 'Recursos'],
+            ['/market',         '📊', 'Mercado'],
+            ['/profile',        '👤', 'Perfil'],
+          ] as [string,string,string][]).map(([href, icon, label]) => (
+            <Link key={href} href={href} style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+              textDecoration: 'none', color: 'rgba(155,176,198,0.5)', padding: '4px 2px',
+              fontFamily: '"JetBrains Mono",monospace', fontSize: 9,
+            }}>
+              <span style={{ fontSize: 17 }}>{icon}</span>
+              {label}
+            </Link>
+          ))}
+        </div>
       </div>
 
-      <style>{`
+            <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#060610;overflow:hidden}
