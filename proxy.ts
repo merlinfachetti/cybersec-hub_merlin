@@ -31,6 +31,20 @@ function isPublic(pathname: string): boolean {
 async function handler(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
+  // Se autenticado e tenta acessar login → redirecionar para /home
+  if (pathname === '/auth/login' || pathname === '/auth/register') {
+    const token = request.cookies.get(COOKIE_NAME)?.value;
+    if (token) {
+      try {
+        await jwtVerify(token, getSecret());
+        return NextResponse.redirect(new URL('/home', request.url));
+      } catch {
+        // token inválido, deixar ir para o login
+      }
+    }
+    return NextResponse.next();
+  }
+
   if (isPublic(pathname)) return NextResponse.next();
 
   const token = request.cookies.get(COOKIE_NAME)?.value;

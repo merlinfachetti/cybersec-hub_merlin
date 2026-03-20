@@ -371,8 +371,8 @@
   .cp-signal-lost { display: block !important; }
   .cp-main-app    { display: none !important; }
   .cp-unsupported { display: none !important; }
-  /* Prevent scroll/bounce on mobile */
-  body { overflow: hidden; position: fixed; width: 100%; }
+  /* cp-signal-lost is position:fixed+inset:0 — acts as its own viewport
+     No body lock needed; overflowY handled per-container */
 }
 
 /* ── Hub Button — orange neon, beats Tailwind specificity ── */

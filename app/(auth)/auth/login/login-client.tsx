@@ -200,7 +200,7 @@ export default function LoginClient() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, passphrase }),
+        body: JSON.stringify({ identifier, passphrase, rememberDevice }),
       });
       if (!res.ok) {
         const msg = res.status === 429 ? 'Too many attempts. Try again later.' : 'Could not verify credentials.';

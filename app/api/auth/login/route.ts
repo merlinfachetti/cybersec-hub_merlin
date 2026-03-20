@@ -82,6 +82,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const { identifier, passphrase } = parsed.data;
+  const rememberDevice = typeof body === 'object' && body !== null && 'rememberDevice' in body
+    ? Boolean((body as Record<string, unknown>).rememberDevice)
+    : false;
 
   // 3. Lookup user
   const user = await prisma.user.findUnique({
@@ -113,7 +116,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   const tokenHash = hashToken(token);
-  const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8h
+  // 7 dias se rememberDevice, 8h caso contrário
+  const sessionTTL = rememberDevice ? 7 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
+  const expiresAt = new Date(Date.now() + sessionTTL);
 
   await prisma.session.create({
     data: {
@@ -133,7 +138,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   // 7. Set httpOnly cookie
-  await setSessionCookie(token);
+  await setSessionCookie(token, rememberDevice ? 7 * 24 * 60 * 60 : undefined);
 
   return NextResponse.json(
     {

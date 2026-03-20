@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils';
 import { Menu, Radio } from 'lucide-react';
 import { GlobalSearch } from '@/components/global-search';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useTheme } from 'next-themes';
+import { Sun, Moon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,6 +17,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
+function ThemeToggleMenuItem() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  const isDark = theme === 'dark';
+  return (
+    <button
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      className="flex w-full items-center gap-2 text-sm"
+      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0' }}
+    >
+      {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-purple-400" />}
+      <span>{isDark ? 'Modo claro' : 'Modo escuro'}</span>
+    </button>
+  );
+}
 
 export function MainNav() {
   const pathname = usePathname();
@@ -101,10 +122,7 @@ export function MainNav() {
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/threat-universe" className="w-full gap-2 text-purple-400">
-                  <Radio className="h-3.5 w-3.5" />
-                  Threat Universe
-                </Link>
+                <ThemeToggleMenuItem />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

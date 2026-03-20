@@ -58,13 +58,13 @@ export async function verifyToken(token: string): Promise<SessionPayload | null>
 
 // ── Cookie management ──────────────────────────────────────────────────────
 
-export async function setSessionCookie(token: string): Promise<void> {
+export async function setSessionCookie(token: string, customMaxAge?: number): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: COOKIE_MAX_AGE,
+    maxAge: customMaxAge ?? COOKIE_MAX_AGE,
     path: '/',
   });
 }
