@@ -79,15 +79,40 @@ function ThemeStyleInjector() {
         input::placeholder,
         textarea::placeholder { color: rgba(50,60,90,0.4) !important; }
 
-        /* ── Header: dark slate, like the Threat Universe vibe ── */
+        /* ── Search trigger button ── */
+        button.search-trigger {
+          background: rgba(139,92,246,0.07) !important;
+          border-color: rgba(139,92,246,0.3) !important;
+          color: rgba(50,60,90,0.7) !important;
+        }
+        button.search-trigger svg {
+          stroke: rgba(50,60,90,0.6) !important;
+        }
+
+        /* ── Hamburger button ── */
+        header button[aria-label="Menu"] {
+          background: rgba(139,92,246,0.07) !important;
+          border-color: rgba(139,92,246,0.3) !important;
+          color: #1a1d2e !important;
+        }
+        header button[aria-label="Menu"] svg {
+          stroke: #1a1d2e !important;
+        }
+
+        /* ── Header light mode ── */
         header {
-          background: #1e2233 !important;
-          border-color: rgba(255,255,255,0.08) !important;
+          background: #eef0fa !important;
+          border-color: rgba(139,92,246,0.18) !important;
+          box-shadow: 0 1px 0 rgba(139,92,246,0.12) !important;
         }
-        header a, header span, header button {
-          color: rgba(220,228,248,0.9) !important;
+        /* Keep nav text dark and readable */
+        header a, header p, header h1, header h2 {
+          color: #1a1d2e !important;
         }
-        header svg { stroke: rgba(220,228,248,0.7) !important; }
+        /* Muted text in header */
+        header span {
+          color: #1a1d2e !important;
+        }
 
         /* ── Footer ── */
         footer {
@@ -95,13 +120,27 @@ function ThemeStyleInjector() {
           border-color: rgba(0,0,0,0.07) !important;
         }
 
-        /* ── Dropdown menus ── */
-        [role="menu"], [data-radix-popper-content-wrapper] > div {
-          background: #ffffff !important;
-          border-color: rgba(0,0,0,0.09) !important;
+        /* ── Dropdown menus — match header tone ── */
+        [role="menu"],
+        [data-radix-popper-content-wrapper] > div {
+          background: #eef0fa !important;
+          border-color: rgba(139,92,246,0.18) !important;
+          box-shadow: 0 4px 20px rgba(139,92,246,0.12) !important;
         }
         [role="menuitem"] { color: #1a1d2e !important; }
-        [role="menuitem"]:hover { background: rgba(139,92,246,0.08) !important; }
+        [role="menuitem"]:hover { background: rgba(139,92,246,0.1) !important; }
+        [role="separator"] { background: rgba(139,92,246,0.12) !important; }
+
+        /* ── Hero featured card (home) — roxo vibrante no light mode ── */
+        /* rgba(8,5,22) = rgb(8, 5, 22) — escuro do gradiente do card */
+        [style*="rgba(8, 5, 22"] {
+          background: rgba(248,246,255,0.95) !important;
+        }
+        /* O card hero em si — gradiente com rgba(featured.rgb) como início */
+        /* Targeta divs com border-radius 16 e padding 28px */
+        div[style*="linear-gradient(135deg"] {
+          background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(255,255,255,0.95) 60%) !important;
+        }
 
         /* ── Keep accent colors untouched ── */
         [style*="color: rgb(34, 197, 94)"],

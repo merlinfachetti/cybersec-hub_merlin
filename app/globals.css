@@ -465,6 +465,15 @@ a.hub-btn:active {
   .step-header-meta { display: none !important; }
 }
 
+
+/* ── Header dark mode — slightly elevated from page bg ── */
+html.dark header,
+:root header {
+  background: rgba(13, 18, 28, 0.98) !important;
+  border-bottom: 1px solid rgba(139,92,246,0.15) !important;
+  box-shadow: 0 1px 0 rgba(139,92,246,0.08) !important;
+}
+
 /* ============================================================
    LIGHT MODE — Handled by ThemeStyleInjector in app/providers.tsx
    JS-based injection to reliably override React inline styles.
