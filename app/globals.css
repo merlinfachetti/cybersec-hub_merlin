@@ -1,3 +1,85 @@
+/* ============================================================
+   CYBERSEC LAB — Semantic theme vars (dark/light)
+   Todas as páginas do portal usam estas vars via CSS overrides
+   ============================================================ */
+
+:root,
+.dark {
+  /* Backgrounds */
+  --p-bg:           #0b0f14;
+  --p-bg-deep:      #080c10;
+  --p-bg-card:      rgba(12, 8, 28, 0.85);
+  --p-bg-card-hover:rgba(14, 10, 32, 0.95);
+  --p-surface:      rgba(15, 10, 35, 0.80);
+
+  /* Text */
+  --p-text:         #e6eef8;
+  --p-text-bright:  #f0eeff;
+  --p-text-muted:   rgba(155, 176, 198, 0.6);
+  --p-text-dim:     rgba(155, 176, 198, 0.4);
+  --p-text-faint:   rgba(155, 176, 198, 0.25);
+
+  /* Borders */
+  --p-border:       rgba(255, 255, 255, 0.07);
+  --p-border-soft:  rgba(255, 255, 255, 0.05);
+
+  /* Accents (unchanged in both themes) */
+  --p-red:    #e53e3e;
+  --p-blue:   #3b82f6;
+  --p-purple: #8b5cf6;
+  --p-orange: rgba(255, 140, 40, 0.85);
+  --p-green:  #22c55e;
+  --p-amber:  #f59e0b;
+
+  /* Nav */
+  --p-nav-bg:     rgba(8, 6, 18, 0.92);
+  --p-nav-border: rgba(255, 255, 255, 0.07);
+
+  /* Input */
+  --p-input-bg:     rgba(15, 10, 35, 0.80);
+  --p-input-border: rgba(139, 92, 246, 0.20);
+
+  /* Search modal */
+  --p-modal-bg:     rgba(10, 6, 24, 0.98);
+
+  /* Overlay */
+  --p-overlay: rgba(6, 4, 18, 0.82);
+}
+
+.light {
+  /* Backgrounds */
+  --p-bg:            #f4f6fa;
+  --p-bg-deep:       #edf0f7;
+  --p-bg-card:       rgba(255, 255, 255, 0.90);
+  --p-bg-card-hover: rgba(255, 255, 255, 1);
+  --p-surface:       rgba(240, 244, 252, 0.80);
+
+  /* Text */
+  --p-text:        #1a1d2e;
+  --p-text-bright: #0d0f1a;
+  --p-text-muted:  rgba(60, 70, 100, 0.75);
+  --p-text-dim:    rgba(60, 70, 100, 0.55);
+  --p-text-faint:  rgba(60, 70, 100, 0.35);
+
+  /* Borders */
+  --p-border:      rgba(0, 0, 0, 0.09);
+  --p-border-soft: rgba(0, 0, 0, 0.05);
+
+  /* Nav */
+  --p-nav-bg:     rgba(255, 255, 255, 0.95);
+  --p-nav-border: rgba(0, 0, 0, 0.08);
+
+  /* Input */
+  --p-input-bg:     rgba(255, 255, 255, 0.95);
+  --p-input-border: rgba(139, 92, 246, 0.30);
+
+  /* Search modal */
+  --p-modal-bg: rgba(248, 248, 252, 0.98);
+
+  /* Overlay */
+  --p-overlay: rgba(180, 185, 210, 0.75);
+}
+
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -382,3 +464,82 @@ a.hub-btn:active {
   /* Roadmap step header: stack em mobile */
   .step-header-meta { display: none !important; }
 }
+
+/* ============================================================
+   LIGHT MODE — Override inline styles via CSS vars cascade
+   ============================================================ */
+
+.light {
+  /* Body background */
+  background-color: var(--p-bg) !important;
+  color: var(--p-text) !important;
+}
+
+/* Page wrappers (minHeight: 100vh com background hardcoded) */
+.light div[style*="background: #0b0f14"],
+.light div[style*="background: rgb(11, 15, 20)"],
+.light div[style*="background:#0b0f14"] {
+  background: var(--p-bg) !important;
+  color: var(--p-text) !important;
+}
+
+/* Cards (background: rgba(12,8,28,0.8)) */
+.light div[style*="rgba(12,8,28"],
+.light div[style*="rgba(12, 8, 28"] {
+  background: var(--p-bg-card) !important;
+  border-color: var(--p-border) !important;
+}
+
+/* Texts muted */
+.light [style*="color: 'rgba(155,176,198"],
+.light [style*='color: "rgba(155,176,198'] {
+  color: var(--p-text-muted) !important;
+}
+
+/* Nav header (MainNav — usa bg-background do shadcn, já funciona via .dark/.light) */
+
+/* Inputs */
+.light input[style*="rgba(15,10,35"],
+.light input[style*="rgba(15, 10, 35"] {
+  background: var(--p-input-bg) !important;
+  color: var(--p-text) !important;
+  border-color: var(--p-input-border) !important;
+}
+.light input[style*="rgba(15,22,32"] {
+  background: var(--p-input-bg) !important;
+  color: var(--p-text) !important;
+}
+.light input::placeholder { color: var(--p-text-dim) !important; }
+
+/* Select */
+.light select { background: var(--p-input-bg) !important; color: var(--p-text) !important; }
+
+/* Modal overlay */
+.light div[style*="rgba(6,4,18"],
+.light div[style*="rgba(6, 4, 18"] {
+  background: var(--p-overlay) !important;
+}
+
+/* Modal/card backgrounds dark */
+.light div[style*="rgba(10,6,24"],
+.light div[style*="rgba(10, 6, 24"] {
+  background: var(--p-modal-bg) !important;
+  color: var(--p-text) !important;
+}
+
+/* Section headers mono text */
+.light [style*="#f0eeff"] { color: var(--p-text-bright) !important; }
+.light [style*="#e6eef8"] { color: var(--p-text) !important; }
+
+/* Borders */
+.light [style*="rgba(255,255,255,0.07)"] { border-color: var(--p-border) !important; }
+.light [style*="rgba(255,255,255,0.05)"] { border-color: var(--p-border-soft) !important; }
+
+/* Search global modal */
+.light .search-modal-bg { background: var(--p-modal-bg) !important; }
+
+/* Footer */
+.light footer { background: var(--p-nav-bg) !important; border-color: var(--p-border) !important; }
+
+/* Nav override para MainNav (usa Tailwind bg-background que já segue o tema) */
+.light header { background: var(--p-nav-bg) !important; border-color: var(--p-border) !important; }

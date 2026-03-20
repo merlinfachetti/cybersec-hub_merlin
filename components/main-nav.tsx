@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Menu, Radio } from 'lucide-react';
 import { GlobalSearch } from '@/components/global-search';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -56,9 +57,10 @@ export function MainNav() {
           ))}
         </nav>
 
-        {/* Global Search */}
-        <div className="flex items-center">
+        {/* Global Search + Theme Toggle */}
+        <div className="flex items-center gap-2">
           <GlobalSearch />
+          <ThemeToggle />
         </div>
 
         {/* Threat Universe CTA — sempre visível no desktop */}
@@ -75,9 +77,10 @@ export function MainNav() {
           </Link>
         </div>
 
-        {/* Search — mobile */}
+        {/* Search + Theme — mobile */}
         <div className="md:hidden flex items-center gap-2">
           <GlobalSearch />
+          <ThemeToggle />
         </div>
 
         {/* Mobile hamburger menu */}

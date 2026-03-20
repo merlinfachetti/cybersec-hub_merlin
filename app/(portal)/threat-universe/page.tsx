@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 import SignalLost from '@/components/signal-lost';
 
 // ── Node data (matching mock exactly) ─────────────────────────────────────
