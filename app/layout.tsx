@@ -35,6 +35,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Critical CSS inline — prevents FOUC of desktop content on mobile */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (max-width: 1023px) {
+            .cp-main-app { display: none !important; visibility: hidden !important; opacity: 0 !important; }
+          }
+        ` }} />
+      </head>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>

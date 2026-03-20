@@ -314,6 +314,13 @@ export default function PortalPage() {
 
   return (
     <>
+      {/* Anti-FOUC: hide cp-main-app instantly on mobile before external CSS loads */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (max-width: 1023px) {
+          .cp-main-app { display: none !important; visibility: hidden !important; }
+        }
+      ` }} />
+
       {/* Universe canvas */}
       <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, zIndex: 0, cursor: 'grab' }} />
 
