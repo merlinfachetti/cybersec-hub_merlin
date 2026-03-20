@@ -34,8 +34,13 @@ export function MainNav() {
         {/* Logo — fixed width */}
         <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
           <img src="/logo.png" alt="CYBERSEC LAB"
-            style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-          <span className="hidden sm:block font-bold text-lg whitespace-nowrap">CyberSec Lab</span>
+            style={{ width: 30, height: 30, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
+          <div className="flex items-baseline gap-1">
+            <span className="font-bold text-base whitespace-nowrap" style={{ letterSpacing: '-0.01em' }}>
+              CyberSec Lab
+            </span>
+            <span style={{ fontSize: 14, lineHeight: 1 }} title="Laboratório conceitual">🧪</span>
+          </div>
         </Link>
 
         {/* Desktop nav */}

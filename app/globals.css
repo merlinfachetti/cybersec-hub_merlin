@@ -475,8 +475,123 @@ html.dark header,
 }
 
 /* ============================================================
-   LIGHT MODE — Handled by ThemeStyleInjector in app/providers.tsx
-   JS-based injection to reliably override React inline styles.
+   LIGHT MODE — Pure CSS, html.light prefix (instant, no JS delay)
+   next-themes adds class="light" to <html> immediately on change.
+   Attribute selectors use DOM-serialized values (React converts hex→rgb).
+   All selectors prefixed with html.light for maximum specificity.
    ============================================================ */
 
-html.light body { color-scheme: light; }
+/* ── Body ── */
+html.light body {
+  background: #f0f4fa !important;
+  color: #1a1d2e !important;
+  color-scheme: light;
+}
+
+/* ── Page backgrounds (React serializes hex → rgb with spaces) ── */
+html.light [style*="rgb(11, 15, 20)"]  { background: #f0f4fa !important; color: #1a1d2e !important; }
+html.light [style*="rgb(6, 6, 16)"]    { background: #f0f4fa !important; color: #1a1d2e !important; }
+html.light [style*="rgb(10, 8, 20)"]   { background: #eef0f8 !important; color: #1a1d2e !important; }
+html.light [style*="rgb(15, 22, 32)"]  { background: #f4f6fc !important; }
+html.light [style*="rgb(20, 31, 45)"]  { background: #f0f4fa !important; }
+
+/* ── Cards (rgba normalizes to spaces after commas in DOM) ── */
+html.light [style*="rgba(12, 8, 28"]   { background: rgba(255,255,255,0.96) !important; border-color: rgba(139,92,246,0.1) !important; }
+html.light [style*="rgba(10, 6, 24"]   { background: rgba(255,255,255,0.96) !important; border-color: rgba(139,92,246,0.1) !important; }
+html.light [style*="rgba(15, 10, 35"]  { background: rgba(255,255,255,0.92) !important; border-color: rgba(139,92,246,0.1) !important; }
+html.light [style*="rgba(15, 22, 40"]  { background: rgba(235,238,250,0.8) !important; }
+html.light [style*="rgba(9, 12, 16"]   { background: rgba(255,255,255,0.92) !important; }
+
+/* ── Semi-transparent whites (section strips, hover states) ── */
+html.light [style*="rgba(255, 255, 255, 0.04)"] { background: rgba(0,0,0,0.03) !important; }
+html.light [style*="rgba(255, 255, 255, 0.05)"] { background: rgba(0,0,0,0.04) !important; }
+html.light [style*="rgba(255, 255, 255, 0.03)"] { background: rgba(0,0,0,0.02) !important; }
+
+/* ── Modal / overlay ── */
+html.light [style*="rgba(6, 4, 18"]    { background: rgba(200,205,230,0.88) !important; }
+
+/* ── Text — hex colors (React converts) ── */
+html.light [style*="rgb(230, 238, 248)"]  { color: #1a1d2e !important; }
+html.light [style*="rgb(240, 238, 255)"]  { color: #1a1d2e !important; }
+
+/* ── Text — muted rgba ── */
+html.light [style*="rgba(155, 176, 198, 0.7)"]  { color: rgba(50,60,90,0.8)  !important; }
+html.light [style*="rgba(155, 176, 198, 0.6)"]  { color: rgba(50,60,90,0.75) !important; }
+html.light [style*="rgba(155, 176, 198, 0.55)"] { color: rgba(50,60,90,0.7)  !important; }
+html.light [style*="rgba(155, 176, 198, 0.5)"]  { color: rgba(50,60,90,0.65) !important; }
+html.light [style*="rgba(155, 176, 198, 0.45)"] { color: rgba(50,60,90,0.6)  !important; }
+html.light [style*="rgba(155, 176, 198, 0.4)"]  { color: rgba(50,60,90,0.55) !important; }
+html.light [style*="rgba(155, 176, 198, 0.35)"] { color: rgba(50,60,90,0.5)  !important; }
+
+/* ── Borders ── */
+html.light [style*="rgba(255, 255, 255, 0.14)"] { border-color: rgba(139,92,246,0.14) !important; }
+html.light [style*="rgba(255, 255, 255, 0.12)"] { border-color: rgba(139,92,246,0.12) !important; }
+html.light [style*="rgba(255, 255, 255, 0.1)"]  { border-color: rgba(139,92,246,0.1)  !important; }
+html.light [style*="rgba(255, 255, 255, 0.09)"] { border-color: rgba(0,0,0,0.09) !important; }
+html.light [style*="rgba(255, 255, 255, 0.08)"] { border-color: rgba(0,0,0,0.08) !important; }
+html.light [style*="rgba(255, 255, 255, 0.07)"] { border-color: rgba(0,0,0,0.07) !important; }
+
+/* ── Inputs ── */
+html.light input, html.light select, html.light textarea {
+  background: #ffffff !important;
+  color: #1a1d2e !important;
+  border-color: rgba(139,92,246,0.25) !important;
+}
+html.light input::placeholder, html.light textarea::placeholder {
+  color: rgba(50,60,90,0.4) !important;
+}
+
+/* ── Header ── */
+html.light header {
+  background: #eef0fa !important;
+  border-color: rgba(139,92,246,0.18) !important;
+  box-shadow: 0 1px 0 rgba(139,92,246,0.1) !important;
+}
+html.light header a,
+html.light header span,
+html.light header p { color: #1a1d2e !important; }
+html.light header svg { stroke: #1a1d2e !important; }
+
+/* ── Search trigger button ── */
+html.light button.search-trigger {
+  background: rgba(139,92,246,0.07) !important;
+  border-color: rgba(139,92,246,0.28) !important;
+  color: rgba(50,60,90,0.7) !important;
+}
+html.light button.search-trigger svg { stroke: rgba(50,60,90,0.6) !important; }
+
+/* ── Hamburger ── */
+html.light header button[aria-label="Menu"] {
+  background: rgba(139,92,246,0.07) !important;
+  border-color: rgba(139,92,246,0.28) !important;
+}
+html.light header button[aria-label="Menu"] svg { stroke: #1a1d2e !important; }
+
+/* ── Dropdown menu ── */
+html.light [role="menu"],
+html.light [data-radix-popper-content-wrapper] > div {
+  background: #eef0fa !important;
+  border-color: rgba(139,92,246,0.18) !important;
+  box-shadow: 0 4px 20px rgba(139,92,246,0.1) !important;
+}
+html.light [role="menuitem"]       { color: #1a1d2e !important; }
+html.light [role="menuitem"]:hover { background: rgba(139,92,246,0.1) !important; }
+html.light [role="separator"]      { background: rgba(139,92,246,0.1) !important; }
+
+/* ── Footer ── */
+html.light footer {
+  background: #edf0f8 !important;
+  border-color: rgba(0,0,0,0.07) !important;
+}
+
+/* ── Hero featured card (home/page.tsx) — purple gradient ── */
+/* The card uses: linear-gradient(135deg, rgba(R,G,B,0.15) 0%, rgba(8,5,22,0.8) 60%) */
+/* rgba(8, 5, 22) is the dark end — override to white */
+html.light [style*="rgba(8, 5, 22"] { background: rgba(248,246,255,0.95) !important; }
+
+/* ── Search modal background ── */
+html.light [style*="rgba(10, 6, 24, 0.98)"],
+html.light [style*="rgba(10, 6, 24, 1)"] {
+  background: rgba(240,242,252,0.99) !important;
+  color: #1a1d2e !important;
+}
