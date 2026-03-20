@@ -488,11 +488,17 @@ html.light body {
   color-scheme: light;
 }
 
-/* ── Page backgrounds (React serializes hex → rgb with spaces) ── */
+/* ── Page backgrounds ── */
+/* Both hex (SSR/server-rendered) and rgb (client-hydrated) forms */
+html.light [style*="#0b0f14"],
 html.light [style*="rgb(11, 15, 20)"]  { background: #f0f4fa !important; color: #1a1d2e !important; }
+html.light [style*="#060610"],
 html.light [style*="rgb(6, 6, 16)"]    { background: #f0f4fa !important; color: #1a1d2e !important; }
+html.light [style*="#0a0814"],
 html.light [style*="rgb(10, 8, 20)"]   { background: #eef0f8 !important; color: #1a1d2e !important; }
+html.light [style*="#0f1620"],
 html.light [style*="rgb(15, 22, 32)"]  { background: #f4f6fc !important; }
+html.light [style*="#141f2d"],
 html.light [style*="rgb(20, 31, 45)"]  { background: #f0f4fa !important; }
 
 /* ── Cards (rgba normalizes to spaces after commas in DOM) ── */
@@ -510,8 +516,10 @@ html.light [style*="rgba(255, 255, 255, 0.03)"] { background: rgba(0,0,0,0.02) !
 /* ── Modal / overlay ── */
 html.light [style*="rgba(6, 4, 18"]    { background: rgba(200,205,230,0.88) !important; }
 
-/* ── Text — hex colors (React converts) ── */
+/* ── Text — both hex (SSR) and rgb (client) ── */
+html.light [style*="#e6eef8"],
 html.light [style*="rgb(230, 238, 248)"]  { color: #1a1d2e !important; }
+html.light [style*="#f0eeff"],
 html.light [style*="rgb(240, 238, 255)"]  { color: #1a1d2e !important; }
 
 /* ── Text — muted rgba ── */
@@ -531,17 +539,30 @@ html.light [style*="rgba(255, 255, 255, 0.09)"] { border-color: rgba(0,0,0,0.09)
 html.light [style*="rgba(255, 255, 255, 0.08)"] { border-color: rgba(0,0,0,0.08) !important; }
 html.light [style*="rgba(255, 255, 255, 0.07)"] { border-color: rgba(0,0,0,0.07) !important; }
 
-/* ── Inputs — scoped away from auth/login page ── */
-html.light :not([data-page="auth"]) input,
-html.light :not([data-page="auth"]) select,
-html.light :not([data-page="auth"]) textarea {
+/* ── Inputs — all pages except auth/login ── */
+html.light input,
+html.light select,
+html.light textarea {
   background: #ffffff !important;
   color: #1a1d2e !important;
   border-color: rgba(139,92,246,0.25) !important;
 }
-html.light :not([data-page="auth"]) input::placeholder,
-html.light :not([data-page="auth"]) textarea::placeholder {
+html.light input::placeholder,
+html.light textarea::placeholder {
   color: rgba(50,60,90,0.4) !important;
+}
+
+/* ── Auth/login page: restore dark glass inputs ── */
+html.light [data-page="auth"] input,
+html.light [data-page="auth"] select,
+html.light [data-page="auth"] textarea {
+  background: rgba(5, 5, 20, 0.7) !important;
+  color: rgb(232, 232, 240) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+html.light [data-page="auth"] input::placeholder,
+html.light [data-page="auth"] textarea::placeholder {
+  color: rgb(106, 106, 138) !important;
 }
 
 /* ── Header ── */
