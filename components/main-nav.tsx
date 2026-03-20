@@ -28,36 +28,28 @@ export function MainNav() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 items-center gap-3">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+      <div className="flex h-16 items-center px-4 gap-3">
 
-        {/* Logo */}
-        <Link href="/home" className="flex min-w-0 items-center gap-2 flex-shrink-0">
-          <img
-            src="/logo.png"
-            alt="CYBERSEC LAB"
-            style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }}
-          />
-          <span className="hidden sm:block truncate font-bold text-lg">CyberSec Lab</span>
+        {/* Logo — fixed width */}
+        <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
+          <img src="/logo.png" alt="CYBERSEC LAB"
+            style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
+          <span className="hidden sm:block font-bold text-lg whitespace-nowrap">CyberSec Lab</span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           {routes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                'transition-colors hover:text-primary whitespace-nowrap',
-                route.active ? 'text-primary' : 'text-muted-foreground'
-              )}
-            >
+            <Link key={route.href} href={route.href}
+              className={cn('transition-colors hover:text-primary whitespace-nowrap',
+                route.active ? 'text-primary' : 'text-muted-foreground')}>
               {route.label}
             </Link>
           ))}
         </nav>
 
-        {/* Desktop: Search + Theme Toggle + Threat Universe */}
+        {/* Desktop right: Search + Toggle + Portal */}
         <div className="hidden md:flex items-center gap-2 ml-auto">
           <GlobalSearch />
           <ThemeToggle />
@@ -69,20 +61,16 @@ export function MainNav() {
           </Link>
         </div>
 
-        {/* Mobile: Search full-width + hamburger */}
-        <div className="flex md:hidden items-center gap-2 ml-auto w-full max-w-[280px]">
-          {/* Search expande no espaço disponível */}
-          <div className="flex-1">
-            <GlobalSearch fullWidth />
-          </div>
-          {/* Hamburger com toggle + links */}
+        {/* Mobile: Search fills gap, Hamburger right-aligned next to it */}
+        <div className="md:hidden flex items-center gap-2 ml-auto">
+          <GlobalSearch fullWidth />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="flex-shrink-0" aria-label="Menu">
+              <Button variant="outline" size="icon" aria-label="Menu" className="flex-shrink-0">
                 <Menu className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuContent align="end" className="w-56">
               {routes.map((route) => (
                 <DropdownMenuItem key={route.href} asChild>
                   <Link href={route.href} className={cn('w-full', route.active && 'font-semibold text-primary')}>
@@ -91,8 +79,8 @@ export function MainNav() {
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
-              {/* Theme toggle pill — sem texto */}
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center justify-between">
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}
+                className="flex items-center justify-between cursor-default">
                 <span className="text-sm text-muted-foreground">Tema</span>
                 <ThemeToggle />
               </DropdownMenuItem>

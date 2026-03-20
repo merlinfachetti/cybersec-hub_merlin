@@ -466,80 +466,8 @@ a.hub-btn:active {
 }
 
 /* ============================================================
-   LIGHT MODE — Override inline styles via CSS vars cascade
+   LIGHT MODE — Handled by ThemeStyleInjector in app/providers.tsx
+   JS-based injection to reliably override React inline styles.
    ============================================================ */
 
-.light {
-  /* Body background */
-  background-color: var(--p-bg) !important;
-  color: var(--p-text) !important;
-}
-
-/* Page wrappers (minHeight: 100vh com background hardcoded) */
-.light div[style*="background: #0b0f14"],
-.light div[style*="background: rgb(11, 15, 20)"],
-.light div[style*="background:#0b0f14"] {
-  background: var(--p-bg) !important;
-  color: var(--p-text) !important;
-}
-
-/* Cards (background: rgba(12,8,28,0.8)) */
-.light div[style*="rgba(12,8,28"],
-.light div[style*="rgba(12, 8, 28"] {
-  background: var(--p-bg-card) !important;
-  border-color: var(--p-border) !important;
-}
-
-/* Texts muted */
-.light [style*="color: 'rgba(155,176,198"],
-.light [style*='color: "rgba(155,176,198'] {
-  color: var(--p-text-muted) !important;
-}
-
-/* Nav header (MainNav — usa bg-background do shadcn, já funciona via .dark/.light) */
-
-/* Inputs */
-.light input[style*="rgba(15,10,35"],
-.light input[style*="rgba(15, 10, 35"] {
-  background: var(--p-input-bg) !important;
-  color: var(--p-text) !important;
-  border-color: var(--p-input-border) !important;
-}
-.light input[style*="rgba(15,22,32"] {
-  background: var(--p-input-bg) !important;
-  color: var(--p-text) !important;
-}
-.light input::placeholder { color: var(--p-text-dim) !important; }
-
-/* Select */
-.light select { background: var(--p-input-bg) !important; color: var(--p-text) !important; }
-
-/* Modal overlay */
-.light div[style*="rgba(6,4,18"],
-.light div[style*="rgba(6, 4, 18"] {
-  background: var(--p-overlay) !important;
-}
-
-/* Modal/card backgrounds dark */
-.light div[style*="rgba(10,6,24"],
-.light div[style*="rgba(10, 6, 24"] {
-  background: var(--p-modal-bg) !important;
-  color: var(--p-text) !important;
-}
-
-/* Section headers mono text */
-.light [style*="#f0eeff"] { color: var(--p-text-bright) !important; }
-.light [style*="#e6eef8"] { color: var(--p-text) !important; }
-
-/* Borders */
-.light [style*="rgba(255,255,255,0.07)"] { border-color: var(--p-border) !important; }
-.light [style*="rgba(255,255,255,0.05)"] { border-color: var(--p-border-soft) !important; }
-
-/* Search global modal */
-.light .search-modal-bg { background: var(--p-modal-bg) !important; }
-
-/* Footer */
-.light footer { background: var(--p-nav-bg) !important; border-color: var(--p-border) !important; }
-
-/* Nav override para MainNav (usa Tailwind bg-background que já segue o tema) */
-.light header { background: var(--p-nav-bg) !important; border-color: var(--p-border) !important; }
+html.light body { color-scheme: light; }
