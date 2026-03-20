@@ -531,13 +531,16 @@ html.light [style*="rgba(255, 255, 255, 0.09)"] { border-color: rgba(0,0,0,0.09)
 html.light [style*="rgba(255, 255, 255, 0.08)"] { border-color: rgba(0,0,0,0.08) !important; }
 html.light [style*="rgba(255, 255, 255, 0.07)"] { border-color: rgba(0,0,0,0.07) !important; }
 
-/* ── Inputs ── */
-html.light input, html.light select, html.light textarea {
+/* ── Inputs — scoped away from auth/login page ── */
+html.light :not([data-page="auth"]) input,
+html.light :not([data-page="auth"]) select,
+html.light :not([data-page="auth"]) textarea {
   background: #ffffff !important;
   color: #1a1d2e !important;
   border-color: rgba(139,92,246,0.25) !important;
 }
-html.light input::placeholder, html.light textarea::placeholder {
+html.light :not([data-page="auth"]) input::placeholder,
+html.light :not([data-page="auth"]) textarea::placeholder {
   color: rgba(50,60,90,0.4) !important;
 }
 
