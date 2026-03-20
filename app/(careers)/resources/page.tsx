@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, Star, Clock, DollarSign, BookOpen, Monitor, FlaskConical, FileText } from 'lucide-react';
 
@@ -152,7 +152,7 @@ const LEVELS_F = [
   { id: 'ADVANCED',    label: 'Advanced',       color: '#f59e0b' },
 ];
 
-export default function ResourcesPage() {
+function ResourcesPageInner() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [freeOnly, setFreeOnly] = useState(false);
@@ -303,5 +303,13 @@ export default function ResourcesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResourcesPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0b0f14' }} />}>
+      <ResourcesPageInner />
+    </Suspense>
   );
 }

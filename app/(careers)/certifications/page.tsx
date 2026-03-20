@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, X, Shield, ChevronRight, ExternalLink, Clock, Award } from 'lucide-react';
@@ -185,7 +185,7 @@ function CertCard({ cert }: { cert: Cert }) {
 }
 
 // ── Main page ──────────────────────────────────────────────────────────────
-export default function CertificationsPage() {
+function CertificationsPageInner() {
   const [certs, setCerts] = useState<Cert[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -359,5 +359,13 @@ export default function CertificationsPage() {
         @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:0.7} }
       `}</style>
     </div>
+  );
+}
+
+export default function CertificationsPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0b0f14' }} />}>
+      <CertificationsPageInner />
+    </Suspense>
   );
 }
