@@ -4,8 +4,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'CYBERSEC LAB',
-    template: '%s | CYBERSEC LAB',
+    default: 'CYBERSEC HUB',
+    template: '%s | CYBERSEC HUB',
   },
   description: 'Threat Intelligence & Cybersecurity Learning Platform by Alden Merlin',
   icons: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'CYBERSEC LAB',
+    title: 'CYBERSEC HUB',
     description: 'Threat Intelligence & Cybersecurity Learning Platform',
     images: [{ url: '/logo-512.png', width: 512, height: 512 }],
   },

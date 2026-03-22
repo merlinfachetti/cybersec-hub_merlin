@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "CYBERSEC LAB API",
-    "description": "API REST do CYBERSEC LAB — Threat Intelligence & Cybersecurity Learning Platform",
+    "title": "CYBERSEC HUB API",
+    "description": "API REST do CYBERSEC HUB — Threat Intelligence & Cybersecurity Learning Platform",
     "version": "1.0.0",
     "contact": { "name": "Alden Merlin", "url": "https://cyberseclab.aldenmerlin.com" }
   },

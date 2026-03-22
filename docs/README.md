@@ -1,4 +1,4 @@
-# CYBERSEC LAB — Documentação
+# CYBERSEC HUB — Documentação
 
 ## Índice
 

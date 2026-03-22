@@ -829,3 +829,14 @@ html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.4)"],
 html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
   color: unset !important;
 }
+
+/* Footer expanded row: inline desktop, stack mobile */
+@media (max-width: 640px) {
+  .footer-expanded-row {
+    flex-direction: column !important;
+  }
+  .footer-links-row {
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+  }
+}

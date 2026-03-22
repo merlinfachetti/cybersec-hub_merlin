@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'CYBERSEC LAB — Identify',
+  title: 'CYBERSEC HUB — Identify',
   description: 'Secure authentication · signal > noise',
   icons: {
     icon: '/favicon-32x32.png',

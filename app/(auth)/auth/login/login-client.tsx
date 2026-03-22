@@ -253,14 +253,14 @@ export default function LoginClient() {
             <div style={{ position: 'relative', width: 51, height: 51, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ position: 'absolute', inset: -4, borderRadius: '50%',
                 background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
-              <img src="/logo.png" alt="CYBERSEC LAB" style={{
+              <img src="/logo.png" alt="CYBERSEC HUB" style={{
                 width: 51, height: 51, objectFit: 'contain', position: 'relative', zIndex: 1,
                 filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 14px rgba(59,130,246,0.35))' }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
               <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
                 fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff', lineHeight: 1 }}>
-                CYBERSEC LAB
+                CYBERSEC HUB
               </span>
               <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
                 color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em', lineHeight: 1 }}>

@@ -149,7 +149,7 @@ export default function HomePage() {
                 {/* Logo */}
                 <div style={{ position: 'relative', width: 64, height: 64, flexShrink: 0 }}>
                   <div style={{ position: 'absolute', inset: -6, borderRadius: '50%', background: `radial-gradient(circle, rgba(${featured.rgb},0.2) 0%, transparent 70%)` }} />
-                  <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 64, height: 64, objectFit: 'contain', position: 'relative', filter: `drop-shadow(0 0 12px rgba(${featured.rgb},0.8))` }} />
+                  <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 64, height: 64, objectFit: 'contain', position: 'relative', filter: `drop-shadow(0 0 12px rgba(${featured.rgb},0.8))` }} />
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>

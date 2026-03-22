@@ -150,9 +150,8 @@ export function MainNav() {
 
         {/* Logo */}
         <Link href="/home" className="flex min-w-0 items-center gap-2 flex-shrink-0">
-          <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-          <span className="truncate font-bold text-lg sm:text-xl">CyberSec Lab</span>
-          <span style={{ fontSize: 14 }} title="Laboratório conceitual">🧪</span>
+          <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
+          <span className="truncate font-bold text-lg sm:text-xl">CyberSec Hub</span>
         </Link>
 
         {/* Desktop nav */}

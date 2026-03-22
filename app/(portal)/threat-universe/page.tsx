@@ -383,7 +383,7 @@ export default function PortalPage() {
               <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%)', pointerEvents: 'none' }} />
               <img
                 src="/logo.png"
-                alt="CYBERSEC LAB"
+                alt="CYBERSEC HUB"
                 style={{ width: 55, height: 55, objectFit: 'contain', position: 'relative', zIndex: 1,
                   filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 16px rgba(59,130,246,0.4))' }}
               />
@@ -393,7 +393,7 @@ export default function PortalPage() {
                 fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
                 fontSize: 14, letterSpacing: '0.16em', color: '#f0eeff',
                 lineHeight: 1, textTransform: 'uppercase',
-              }}>CYBERSEC LAB</span>
+              }}>CYBERSEC HUB</span>
               <span style={{
                 fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
                 color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em', lineHeight: 1,
@@ -661,9 +661,9 @@ export default function PortalPage() {
           backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 9, textDecoration: 'none' }}>
-            <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 30, height: 30, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.6))' }} />
+            <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 30, height: 30, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.6))' }} />
             <div>
-              <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 12, color: '#f0eeff', letterSpacing: '0.1em' }}>CYBERSEC LAB</div>
+              <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 12, color: '#f0eeff', letterSpacing: '0.1em' }}>CYBERSEC HUB</div>
               <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.08em' }}>THREAT UNIVERSE</div>
             </div>
           </Link>

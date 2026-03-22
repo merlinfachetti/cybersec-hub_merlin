@@ -409,7 +409,7 @@ export default function SignalLost() {
                 animation: gateState === 'armed' ? 'sl-pulse-halo 1s ease-in-out infinite' : 'none',
               }} />
               <img
-                src="/logo.png" alt="CYBERSEC LAB"
+                src="/logo.png" alt="CYBERSEC HUB"
                 draggable={false}
                 onContextMenu={e => e.preventDefault()}
                 onDragStart={e => e.preventDefault()}
@@ -426,7 +426,7 @@ export default function SignalLost() {
             </div>
           </div>
 
-          <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBERSEC LAB</span>
+          <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBERSEC HUB</span>
           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '.1em' }}>signal &gt; noise</span>
 
           {/* Hold hint */}
@@ -612,12 +612,12 @@ function AuthReveal() {
               background: 'radial-gradient(circle, rgba(255,140,40,0.25) 0%, transparent 60%)',
               animation: 'auth-neon-pulse 1.8s ease-in-out 0.3s infinite',
             }} />
-            <img src="/logo.png" alt="CYBERSEC LAB" style={{
+            <img src="/logo.png" alt="CYBERSEC HUB" style={{
               width: 72, height: 72, objectFit: 'contain', position: 'relative', zIndex: 1,
               filter: 'drop-shadow(0 0 14px rgba(255,120,20,0.9)) drop-shadow(0 0 28px rgba(255,80,0,0.5))',
             }} />
           </div>
-          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, letterSpacing: '.14em', color: '#f0eeff' }}>CYBERSEC LAB</div>
+          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, letterSpacing: '.14em', color: '#f0eeff' }}>CYBERSEC HUB</div>
           <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.7)', letterSpacing: '.1em', marginTop: 4 }}>● SECURE CHANNEL ESTABLISHED</div>
         </div>
 
