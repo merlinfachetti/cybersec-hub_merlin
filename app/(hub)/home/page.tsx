@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { useEffect, useState } from 'react';
 import { useInactivity } from '@/lib/use-inactivity';
@@ -170,9 +171,19 @@ export default function HomePage() {
 
         {/* Grid — other sections */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
-          {rest.map(section => (
+          {rest.map(section => {
+            const [hovered, setHovered] = React.useState(false);
+            // perímetro = 2*(396+196) = 1184
+            // idle:  dois cantos de 80px = dasharray "80 512 80 512"
+            // hover: cada canto cresce para 592 (metade) → fecha o retângulo
+            const dashIdle  = '80 512 80 512';
+            const dashHover = '592 0 592 0';
+            return (
             <Link key={section.id} href={section.href} style={{ textDecoration: 'none', display: 'block' }}>
-              <div className={`hub-nav-card hub-nav-card--${section.id}`} style={{
+              <div className={`hub-nav-card hub-nav-card--${section.id}`}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                style={{
                 background: 'var(--ds-card)',
                 borderRadius: 12,
                 padding: '20px 22px',
@@ -180,9 +191,10 @@ export default function HomePage() {
                 height: '100%',
                 position: 'relative',
                 overflow: 'hidden',
+                transform: hovered ? 'translateY(-2px)' : 'none',
+                transition: 'transform 200ms ease',
               }}>
-                {/* SVG stroke border — efeito dasharray idêntico ao codepen */}
-                {/* viewBox fixo: perímetro calculável = 2*(396+196) = 1184 */}
+                {/* SVG border — inline style garante que a transition não é sobrescrita */}
                 <svg
                   viewBox="0 0 400 200"
                   preserveAspectRatio="none"
@@ -190,13 +202,16 @@ export default function HomePage() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <rect
-                    className={`hub-card-rect hub-card-rect--${section.id}`}
                     x="2" y="2"
                     width="396" height="196"
                     rx="11"
                     fill="none"
                     stroke={`rgba(${section.rgb},0.9)`}
-                    strokeWidth="3"
+                    strokeWidth={hovered ? 2 : 1.5}
+                    strokeDasharray={hovered ? dashHover : dashIdle}
+                    style={{
+                      transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out',
+                    }}
                   />
                 </svg>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -220,7 +235,8 @@ export default function HomePage() {
                 <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.65 }}>{section.description}</p>
               </div>
             </Link>
-          ))}
+          );
+          })}
         </div>
 
 
