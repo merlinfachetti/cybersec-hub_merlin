@@ -337,6 +337,7 @@ export default function PortalPage() {
 
   const handleLogout = useCallback(() => {
     // GET /api/auth/signout — server deletes session + cookie then redirects
+    try { localStorage.removeItem('cp_last_active'); } catch {}
     window.location.href = '/api/auth/signout';
   }, []);
 

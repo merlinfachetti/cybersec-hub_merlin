@@ -413,7 +413,6 @@ export default function LoginClient() {
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#060610;overflow:hidden}
         input{outline:none;border:none;background:transparent;font-family:'Inter',sans-serif;color:#e8e8f0;width:100%}

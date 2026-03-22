@@ -118,7 +118,8 @@ export function MainNav() {
     fetch('/api/auth/me').then(r => r.ok ? r.json() : null).then(d => d?.user && setUser(d.user)).catch(() => null);
   }, []);
 
-  const handleLogout = () => { window.location.href = '/api/auth/signout'; };
+  const handleLogout = () => { try { localStorage.removeItem('cp_last_active'); } catch {}
+    window.location.href = '/api/auth/signout'; };
 
   const routes = [
     { href: '/home',           label: 'Home',         active: pathname === '/home' },
