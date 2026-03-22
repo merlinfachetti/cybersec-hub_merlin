@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useInactivity } from '@/lib/use-inactivity';
 import { MerlinModal } from '@/components/merlin-modal';
@@ -316,7 +316,7 @@ interface UserProfile {
   avatarUrl: string | null;
 }
 
-export default function PortalPage() {
+function PortalPageInner() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const universeRef = useRef<ReturnType<typeof initUniverse> | null>(null);
@@ -939,3 +939,11 @@ export default function PortalPage() {
   );
 }
 // build: 2026-03-19T13:30:42Z
+
+export default function PortalPage() {
+  return (
+    <Suspense fallback={<div style={{ background: '#060610', height: '100vh' }} />}>
+      <PortalPageInner />
+    </Suspense>
+  );
+}

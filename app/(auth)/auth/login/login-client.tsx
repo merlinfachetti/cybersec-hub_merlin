@@ -170,6 +170,7 @@ export default function LoginClient() {
   const [hsState, setHsState] = useState<HsState>('idle');
   const [hsText, setHsText] = useState('Secure channel ready');
   const [errorMsg, setErrorMsg] = useState('');
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -395,14 +396,62 @@ export default function LoginClient() {
         </main>
       </div>
 
-      {/* Team badges */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20, display: 'flex', justifyContent: 'center', gap: 12, padding: '12px 24px' }}>
+      {/* Team badges — desktop only with speech bubble tooltips */}
+      <div className="cp-main-app" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20, display: 'flex', justifyContent: 'center', gap: 12, padding: '12px 24px' }}>
         {TEAM_BADGES.map(t => (
-          <div key={t.team} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 8, background: 'rgba(10,10,30,0.65)', border: `1px solid ${t.border}`, backdropFilter: 'blur(8px)', minWidth: 180 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={t.color} strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <div>
-              <span style={{ display: 'block', fontFamily: '"Space Grotesk", sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: t.soft }}>{t.label}</span>
-              <span style={{ display: 'block', fontSize: 10, color: '#6a6a8a', lineHeight: 1.3 }}>{t.desc}</span>
+          <div key={t.team} style={{ position: 'relative' }}
+            onMouseEnter={() => setActiveTooltip(t.team)}
+            onMouseLeave={() => setActiveTooltip(null)}
+          >
+            {/* Tooltip — speech bubble acima do card */}
+            {activeTooltip === t.team && (
+              <div style={{
+                position: 'absolute', bottom: 'calc(100% + 14px)', left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'rgba(8,6,20,0.98)',
+                border: `1px solid ${t.border}`,
+                borderRadius: 10, padding: '12px 14px',
+                width: 260, zIndex: 300,
+                backdropFilter: 'blur(20px)',
+                boxShadow: `0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px ${t.color}15`,
+                pointerEvents: 'none',
+                animation: 'cp-fade-in 0.12s ease-out both',
+              }}>
+                {/* Ponta da fala — aponta para baixo */}
+                <div style={{
+                  position: 'absolute', bottom: -6, left: '50%',
+                  transform: 'translateX(-50%) rotate(45deg)',
+                  width: 10, height: 10,
+                  background: 'rgba(8,6,20,0.98)',
+                  border: `1px solid ${t.border}`,
+                  borderTop: 'none', borderLeft: 'none',
+                }} />
+                <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 11, color: t.soft, letterSpacing: '0.1em', marginBottom: 8 }}>
+                  {t.tooltip.title}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {t.tooltip.lines.map((line, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 7, alignItems: 'flex-start' }}>
+                      <span style={{ color: t.color, flexShrink: 0, marginTop: 1, fontSize: 10 }}>{'→'}</span>
+                      <span style={{ fontFamily: '"Inter",sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.7)', lineHeight: 1.5 }}>{line}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Card */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px',
+              borderRadius: 8, background: 'rgba(10,10,30,0.65)',
+              border: `1px solid ${activeTooltip === t.team ? t.color + '70' : t.border}`,
+              backdropFilter: 'blur(8px)', minWidth: 180, cursor: 'default',
+              transition: 'border-color 150ms',
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={t.color} strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div>
+                <span style={{ display: 'block', fontFamily: '"Space Grotesk", sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: t.soft }}>{t.label}</span>
+                <span style={{ display: 'block', fontSize: 10, color: '#6a6a8a', lineHeight: 1.3 }}>{t.desc}</span>
+              </div>
             </div>
           </div>
         ))}
@@ -445,9 +494,42 @@ function InputField({ icon, placeholder, type, value, onChange, autoComplete, tr
 }
 
 const TEAM_BADGES = [
-  { team: 'red', label: 'RED TEAM', desc: 'Adversarial heuristics active', color: '#e53e3e', soft: '#ff6b6b', border: 'rgba(229,62,62,0.35)' },
-  { team: 'blue', label: 'BLUE TEAM', desc: 'Defensive session checks enabled', color: '#3b82f6', soft: '#60a5fa', border: 'rgba(59,130,246,0.35)' },
-  { team: 'purple', label: 'PURPLE TEAM', desc: 'Telemetry & improvement logging', color: '#8b5cf6', soft: '#a78bfa', border: 'rgba(139,92,246,0.35)' },
+  {
+    team: 'red', label: 'RED TEAM', desc: 'Adversarial heuristics active',
+    color: '#e53e3e', soft: '#ff6b6b', border: 'rgba(229,62,62,0.35)',
+    tooltip: {
+      title: 'Red Team — Ofensivo',
+      lines: [
+        'Pensa como o atacante: explora, testa e tenta comprometer sistemas.',
+        'Realiza pentests, simula APTs e desenvolve payloads dentro do escopo.',
+        'Objetivo: encontrar brechas antes que adversários reais o façam.',
+      ],
+    },
+  },
+  {
+    team: 'blue', label: 'BLUE TEAM', desc: 'Defensive session checks enabled',
+    color: '#3b82f6', soft: '#60a5fa', border: 'rgba(59,130,246,0.35)',
+    tooltip: {
+      title: 'Blue Team — Defensivo',
+      lines: [
+        'Monitora, detecta e responde: SIEM, logs, alertas e threat hunting.',
+        'Contém incidentes, endurece sistemas e cria regras de detecção.',
+        'Objetivo: manter a operação segura e o tempo de resposta baixo.',
+      ],
+    },
+  },
+  {
+    team: 'purple', label: 'PURPLE TEAM', desc: 'Telemetry & improvement logging',
+    color: '#8b5cf6', soft: '#a78bfa', border: 'rgba(139,92,246,0.35)',
+    tooltip: {
+      title: 'Purple Team — Melhoria contínua',
+      lines: [
+        'Une Red e Blue em ciclos de feedback: ataque → detecção → melhoria.',
+        'Mapeia cobertura MITRE ATT&CK e identifica lacunas nas defesas.',
+        'Objetivo: fechar o loop entre ofensivo e defensivo sem tribalismo.',
+      ],
+    },
+  },
 ];
 
 function UserIcon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>; }
