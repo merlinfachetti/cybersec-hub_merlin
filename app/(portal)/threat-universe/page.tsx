@@ -372,6 +372,17 @@ function PortalPageInner() {
   const centerHoveredRef = useRef(false);
   const searchParams = useSearchParams();
   const [showStudyTooltip, setShowStudyTooltip] = useState(false);
+  const studyTooltipTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showTooltip = () => {
+    if (studyTooltipTimeout.current) clearTimeout(studyTooltipTimeout.current);
+    setShowStudyTooltip(true);
+  };
+  const hideTooltip = () => {
+    studyTooltipTimeout.current = setTimeout(() => setShowStudyTooltip(false), 150);
+  };
+  const cancelHide = () => {
+    if (studyTooltipTimeout.current) clearTimeout(studyTooltipTimeout.current);
+  };
   const [showNodeDetail, setShowNodeDetail] = useState(false);
 
   // Filtered nodes based on search + activeMode
@@ -571,9 +582,11 @@ function PortalPageInner() {
               Threat Universe
             </span>
             {/* Study status tag — hover tooltip + clicável */}
-            <div style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
-              onMouseEnter={() => setShowStudyTooltip(true)}
-              onMouseLeave={() => setShowStudyTooltip(false)}
+            {/* Wrapper position:relative + largura explícita para tooltip se posicionar corretamente */}
+            <div
+              style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
+              onMouseEnter={showTooltip}
+              onMouseLeave={hideTooltip}
             >
               <Link href="/roadmap" style={{ textDecoration: 'none' }}>
                 <div style={{
@@ -593,14 +606,14 @@ function PortalPageInner() {
                 </div>
               </Link>
 
-              {/* Tooltip — aparece no hover */}
+              {/* Tooltip — position absolute dentro do wrapper, centralizado no viewport via left calc */}
               {showStudyTooltip && (
                 <>
-                {/* Invisible bridge closing the gap between tag and tooltip */}
-                <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, height: 14, background: 'transparent' }} />
+                {/* Ponte invisível: cobre o gap entre tag e tooltip */}
+                <div style={{ position: 'absolute', top: '100%', left: '-60px', right: '-60px', height: 14, background: 'transparent', zIndex: 199 }} />
                 <div style={{
-                  position: 'fixed', top: 72, left: '50%',
-                  transform: 'translateX(-50%)',
+                  position: 'absolute', top: 'calc(100% + 14px)',
+                  left: '50%', transform: 'translateX(-50%)',
                   background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)',
                   borderRadius: 10, padding: '12px 14px',
                   width: 240, zIndex: 200,
@@ -608,7 +621,9 @@ function PortalPageInner() {
                   boxShadow: '0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.08)',
                   animation: 'cp-fade-in 0.12s ease-out both',
                   pointerEvents: 'all',
-                }}>
+                }}
+                onMouseEnter={cancelHide}
+                onMouseLeave={hideTooltip}>
                   {/* Arrow */}
                   <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)', borderBottom: 'none', borderRight: 'none' }} />
 
