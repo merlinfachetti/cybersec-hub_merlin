@@ -133,39 +133,42 @@ export function MainNav() {
   return (
     <>
       <style>{`
-        /* ── Nav Link — border-drawing hover ── */
+        /* ── Nav Link ── */
         .nav-link {
           position: relative;
           font-size: 13px;
           font-weight: 500;
           color: rgba(155,176,198,0.6);
           text-decoration: none;
-          padding: 4px 8px;
+          padding: 5px 10px;
           white-space: nowrap;
-          transition: color 220ms ease;
+          transition: color 200ms ease;
         }
-        /* Underline pseudo-element — nasce do centro */
+
+        /* Underline: nasce do centro, vai até ~50% da largura do link no hover */
         .nav-link::after {
           content: '';
           position: absolute;
-          bottom: -1px;
+          bottom: 0px;
           left: 50%;
           transform: translateX(-50%);
           height: 1.5px;
-          width: 0;
-          background: rgba(255,140,40,0.7);
-          border-radius: 1px;
-          transition: width 260ms cubic-bezier(0.4, 0, 0.2, 1);
+          width: 0%;
+          background: rgba(255,140,40,0.75);
+          border-radius: 2px;
+          transition: width 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
           pointer-events: none;
         }
-        /* Hover: underline metade do texto (nasce do centro, ~50% da largura) */
+
+        /* Hover: underline ~50% do link (proporcional ao texto) */
         .nav-link:hover {
           color: rgba(230,220,200,0.9);
         }
         .nav-link:hover::after {
-          width: 50%;
+          width: 55%;
         }
-        /* Active: retângulo completo */
+
+        /* Active: retângulo completo + underline cheio */
         .nav-link-active {
           color: rgba(255,160,60,0.95) !important;
         }
@@ -173,13 +176,13 @@ export function MainNav() {
           content: '';
           position: absolute;
           inset: 0;
-          border: 1px solid rgba(255,140,40,0.35);
-          border-radius: 5px;
+          border: 1px solid rgba(255,140,40,0.3);
+          border-radius: 6px;
           pointer-events: none;
         }
         .nav-link-active::after {
-          width: 100% !important;
-          background: rgba(255,140,40,0.55) !important;
+          width: 70% !important;
+          background: rgba(255,140,40,0.6) !important;
           transition: none !important;
         }
 
