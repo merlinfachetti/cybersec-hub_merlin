@@ -133,13 +133,42 @@ function initUniverse(
   function drawCenter(t: number) {
     const sx = cx + panX, sy = cy + panY;
     const pulse = 0.9 + 0.1 * Math.sin(t * 0.002);
+    const blink = 0.7 + 0.3 * Math.sin(t * 0.003);
+
+    // Glow halo
     const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, 30 * zoom * pulse);
     g.addColorStop(0, 'rgba(255,245,200,0.6)'); g.addColorStop(0.3, 'rgba(255,200,100,0.15)'); g.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = g; ctx.fillRect(sx - 50 * zoom, sy - 50 * zoom, 100 * zoom, 100 * zoom);
-    ctx.beginPath(); ctx.arc(sx, sy, 3 * zoom, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-    ctx.font = `600 ${10 * zoom}px "Space Grotesk", sans-serif`;
-    ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.textAlign = 'center';
-    ctx.fillText('YOU ARE HERE', sx, sy - 14 * zoom);
+
+    // Planeta pulsante central
+    ctx.beginPath(); ctx.arc(sx, sy, 3.5 * zoom * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${blink})`; ctx.fill();
+    // Sonar ring do planeta
+    ctx.beginPath(); ctx.arc(sx, sy, 8 * zoom * pulse, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,245,200,${0.3 * (1 - pulse + 0.9)})`; ctx.lineWidth = 0.8 * zoom; ctx.stroke();
+
+    // Texto: YOU'RE  ●  HERE
+    const fs = Math.max(9, 10 * zoom);
+    ctx.textAlign = 'center';
+    const gap = 18 * zoom; // espaço entre texto e planeta
+
+    // "YOU'RE" à esquerda do centro
+    ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
+    ctx.fillStyle = `rgba(255,255,255,${0.65 * blink})`;
+    ctx.fillText("YOU'RE", sx - gap - ctx.measureText("YOU'RE").width / 2, sy - 18 * zoom);
+
+    // "HERE" à direita do centro
+    ctx.fillText('HERE', sx + gap + ctx.measureText('HERE').width / 2, sy - 18 * zoom);
+
+    // Planeta pequeno entre os dois textos (brilhante e pulsante)
+    const pr = 2.2 * zoom * (0.85 + 0.15 * Math.sin(t * 0.004));
+    const pg = ctx.createRadialGradient(sx, sy - 18 * zoom, 0, sx, sy - 18 * zoom, pr * 3);
+    pg.addColorStop(0, `rgba(255,250,210,${blink})`);
+    pg.addColorStop(0.4, `rgba(255,220,120,${0.4 * blink})`);
+    pg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = pg; ctx.fillRect(sx - pr * 3, sy - 18 * zoom - pr * 3, pr * 6, pr * 6);
+    ctx.beginPath(); ctx.arc(sx, sy - 18 * zoom, pr, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${blink})`; ctx.fill();
   }
 
   function drawNodes(t: number) {
@@ -953,7 +982,10 @@ function PortalPageInner() {
         </div>
       </div>
 
-            <style>{`
+            {/* Merlin Modal — YOU ARE HERE */}
+      {showMerlinModal && <MerlinModal onClose={() => setShowMerlinModal(false)} />}
+
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#060610;overflow:hidden}
