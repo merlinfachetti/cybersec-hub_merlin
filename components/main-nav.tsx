@@ -260,12 +260,20 @@ export function MainNav() {
         {/* 3-column layout: logo | nav center | actions right */}
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 24px', height: 64, position: 'relative', display: 'flex', alignItems: 'center' }}>
 
-          {/* LEFT — Logo */}
-          <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0, zIndex: 1 }}>
-            <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-            <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16, color: '#e6eef8', whiteSpace: 'nowrap' }}>
-              CyberSec Hub
-            </span>
+          {/* LEFT — Logo (identical to TU header) */}
+          <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0, zIndex: 1 }}>
+            <div style={{ position: 'relative', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ position: 'absolute', inset: -3, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+              <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 44, height: 44, objectFit: 'contain', position: 'relative', zIndex: 1, filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.8)) drop-shadow(0 0 14px rgba(59,130,246,0.35))' }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
+              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff', lineHeight: 1, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                CYBERSEC HUB
+              </span>
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em', lineHeight: 1 }}>
+                signal &gt; noise
+              </span>
+            </div>
           </Link>
 
           {/* CENTER — Nav: absolutely centered in header, independent of side blocks */}

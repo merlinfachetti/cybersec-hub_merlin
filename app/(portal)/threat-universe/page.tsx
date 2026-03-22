@@ -678,6 +678,23 @@ function PortalPageInner() {
 
 
 
+        {/* YOU ARE HERE — hotspot clicável sobre o centro da galáxia */}
+        <div
+          onClick={() => setShowMerlinModal(true)}
+          title="YOU ARE HERE"
+          style={{
+            position: 'fixed',
+            left: '50%', top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 80, height: 80,
+            zIndex: 35,
+            cursor: 'pointer',
+            pointerEvents: 'all',
+            borderRadius: '50%',
+            background: 'transparent',
+          }}
+        />
+
         {/* Bottom stack */}
         <div className="cp-dark-zone" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', flexDirection: 'column', gap: 0, pointerEvents: 'all' }}>
 
