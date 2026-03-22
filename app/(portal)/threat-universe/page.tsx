@@ -260,6 +260,7 @@ export default function PortalPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showMerlinModal, setShowMerlinModal] = useState(false);
+  const [showStudyTooltip, setShowStudyTooltip] = useState(false);
   const [showNodeDetail, setShowNodeDetail] = useState(false);
 
   // Filtered nodes based on search + activeMode
@@ -430,24 +431,79 @@ export default function PortalPage() {
             <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
               Threat Universe
             </span>
-            {/* Study status tag — clicável, vai ao roadmap */}
-            <Link href="/roadmap" style={{ textDecoration: 'none' }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '3px 10px', borderRadius: 12,
-                background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
-                cursor: 'pointer', transition: 'all 150ms',
-              }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.18)'; el.style.borderColor = 'rgba(245,158,11,0.5)'; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.1)'; el.style.borderColor = 'rgba(245,158,11,0.3)'; }}
-              >
-                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 5px #f59e0b', flexShrink: 0 }} />
-                <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
-                  2h Study · RISK: LOW
-                </span>
-                <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(245,158,11,0.5)' }}>→</span>
-              </div>
-            </Link>
+            {/* Study status tag — hover tooltip + clicável */}
+            <div style={{ position: 'relative' }}
+              onMouseEnter={() => setShowStudyTooltip(true)}
+              onMouseLeave={() => setShowStudyTooltip(false)}
+            >
+              <Link href="/roadmap" style={{ textDecoration: 'none' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '3px 10px', borderRadius: 12,
+                  background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                  cursor: 'pointer', transition: 'all 150ms',
+                }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.18)'; el.style.borderColor = 'rgba(245,158,11,0.5)'; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.1)'; el.style.borderColor = 'rgba(245,158,11,0.3)'; }}
+                >
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 5px #f59e0b', flexShrink: 0 }} />
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
+                    2h Study · RISK: LOW
+                  </span>
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(245,158,11,0.5)' }}>→</span>
+                </div>
+              </Link>
+
+              {/* Tooltip — aparece no hover */}
+              {showStudyTooltip && (
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 10px)', left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(245,158,11,0.25)',
+                  borderRadius: 10, padding: '12px 14px',
+                  width: 240, zIndex: 200,
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: '0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.08)',
+                  animation: 'cp-fade-in 0.12s ease-out both',
+                  pointerEvents: 'none',
+                }}>
+                  {/* Arrow */}
+                  <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(245,158,11,0.25)', borderBottom: 'none', borderRight: 'none' }} />
+
+                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.7)', letterSpacing: '0.1em', marginBottom: 8 }}>
+                    STATUS DO DIA
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {/* Horas de estudo */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>Estudo hoje</span>
+                      <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#f59e0b', fontWeight: 600 }}>2h / 2h</span>
+                    </div>
+                    {/* Progress bar */}
+                    <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: '100%', background: 'linear-gradient(90deg, #22c55e, #4ade80)', borderRadius: 2 }} />
+                    </div>
+
+                    {/* Risco */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>Nível de risco</span>
+                      <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', padding: '1px 7px', borderRadius: 4 }}>LOW</span>
+                    </div>
+
+                    {/* Contexto do risco */}
+                    <p style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(155,176,198,0.5)', lineHeight: 1.5, margin: 0, marginTop: 2, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 8 }}>
+                      Meta diária atingida. Risco baixo indica cobertura adequada das trilhas do dia. Continue assim para manter o streak.
+                    </p>
+
+                    {/* CTA */}
+                    <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.5)', marginTop: 2 }}>
+                      → clique para ver o roadmap
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ── Right: Search + User ── */}

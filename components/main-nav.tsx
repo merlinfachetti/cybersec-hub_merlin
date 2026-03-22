@@ -175,25 +175,25 @@ export function MainNav() {
         .nav-link:hover::before {
           width: 100%;
           left: 0;
-          border-color: rgba(139,92,246,0.5);
+          border-color: rgba(255,140,40,0.6);
         }
         .nav-link:hover::after {
           height: 100%;
           top: 0;
-          border-color: rgba(139,92,246,0.5);
+          border-color: rgba(255,140,40,0.6);
         }
         .nav-link-active {
-          color: #a78bfa !important;
+          color: rgba(255,160,60,0.95) !important;
         }
         .nav-link-active::before {
           width: 100% !important;
           left: 0 !important;
-          border-color: rgba(139,92,246,0.35) !important;
+          border-color: rgba(255,140,40,0.45) !important;
         }
         .nav-link-active::after {
           height: 100% !important;
           top: 0 !important;
-          border-color: rgba(139,92,246,0.35) !important;
+          border-color: rgba(255,140,40,0.45) !important;
         }
 
         /* ── Threat Universe Button — sonar ── */
@@ -258,23 +258,23 @@ export function MainNav() {
 
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         {/* 3-column layout: logo | nav center | actions right */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 24px', height: 64, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 24px', height: 64, position: 'relative', display: 'flex', alignItems: 'center' }}>
 
           {/* LEFT — Logo */}
-          <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+          <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0, zIndex: 1 }}>
             <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
             <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16, color: '#e6eef8', whiteSpace: 'nowrap' }}>
               CyberSec Hub
             </span>
           </Link>
 
-          {/* CENTER — Nav (desktop only) */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* CENTER — Nav: absolutely centered in header, independent of side blocks */}
+          <nav className="hidden md:flex items-center gap-1" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 0 }}>
             {routes.map(r => <NavLink key={r.href} href={r.href} label={r.label} active={r.active} />)}
           </nav>
 
           {/* RIGHT — Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto', zIndex: 1 }}>
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-2">
               <GlobalSearch />
