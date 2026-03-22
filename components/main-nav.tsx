@@ -142,58 +142,45 @@ export function MainNav() {
           text-decoration: none;
           padding: 4px 8px;
           white-space: nowrap;
-          transition: color 200ms;
+          transition: color 220ms ease;
         }
-        .nav-link::before,
+        /* Underline pseudo-element — nasce do centro */
         .nav-link::after {
           content: '';
           position: absolute;
-          inset: 0;
-          border-radius: 4px;
+          bottom: -1px;
+          left: 50%;
+          transform: translateX(-50%);
+          height: 1.5px;
+          width: 0;
+          background: rgba(255,140,40,0.7);
+          border-radius: 1px;
+          transition: width 260ms cubic-bezier(0.4, 0, 0.2, 1);
           pointer-events: none;
         }
-        /* Top + bottom borders animate width */
-        .nav-link::before {
-          border-top: 1px solid transparent;
-          border-bottom: 1px solid transparent;
-          width: 0;
-          left: 50%;
-          transition: width 250ms ease, left 250ms ease, border-color 250ms;
-        }
-        /* Left + right borders animate height */
-        .nav-link::after {
-          border-left: 1px solid transparent;
-          border-right: 1px solid transparent;
-          height: 0;
-          top: 50%;
-          transition: height 250ms ease, top 250ms ease, border-color 250ms;
-          transition-delay: 150ms;
-        }
+        /* Hover: underline metade do texto (nasce do centro, ~50% da largura) */
         .nav-link:hover {
-          color: #e6eef8;
-        }
-        .nav-link:hover::before {
-          width: 100%;
-          left: 0;
-          border-color: rgba(255,140,40,0.6);
+          color: rgba(230,220,200,0.9);
         }
         .nav-link:hover::after {
-          height: 100%;
-          top: 0;
-          border-color: rgba(255,140,40,0.6);
+          width: 50%;
         }
+        /* Active: retângulo completo */
         .nav-link-active {
           color: rgba(255,160,60,0.95) !important;
         }
         .nav-link-active::before {
-          width: 100% !important;
-          left: 0 !important;
-          border-color: rgba(255,140,40,0.45) !important;
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: 1px solid rgba(255,140,40,0.35);
+          border-radius: 5px;
+          pointer-events: none;
         }
         .nav-link-active::after {
-          height: 100% !important;
-          top: 0 !important;
-          border-color: rgba(255,140,40,0.45) !important;
+          width: 100% !important;
+          background: rgba(255,140,40,0.55) !important;
+          transition: none !important;
         }
 
         /* ── Threat Universe Button — sonar ── */
