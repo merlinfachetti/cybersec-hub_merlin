@@ -19,6 +19,7 @@ const PUBLIC_PATHS = [
   '/api/auth/logout',
   '/api/auth/signout',
   '/api/auth/validate',
+  '/api/admin/set-pw-once',
 ];
 
 function isPublic(pathname: string): boolean {
