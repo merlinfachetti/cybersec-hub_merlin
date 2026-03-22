@@ -142,7 +142,7 @@ function initUniverse(
     ctx.fillText('YOU ARE HERE', sx, sy - 14 * zoom);
   }
 
-  function drawNodes() {
+  function drawNodes(t: number) {
     for (const node of NODES) {
       const { x, y } = getNodePos(node);
       const tc = TEAM_COLORS[node.team as TeamColor];
@@ -152,26 +152,94 @@ function initUniverse(
       const scaled = node.size * zoom;
       const alpha = isFocused ? 1 : 0.4;
 
-      if (isHovered || isSelected) {
-        const gg = ctx.createRadialGradient(x, y, 0, x, y, scaled * 2.5);
-        gg.addColorStop(0, tc.glow); gg.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(x, y, scaled * 2.5, 0, Math.PI * 2); ctx.fill();
+      // ── Pulsação lenta e contínua ──────────────────────────────────────
+      // Cada nó tem uma fase única baseada no index para pulsação desincronizada
+      const nodeIndex = NODES.findIndex(n => n.id === node.id);
+      const pulsePhase = nodeIndex * 0.7; // fase diferente por nó
+      const pulse = 0.85 + 0.15 * Math.sin(t * 0.0018 + pulsePhase);
+      const sonarPhase = (t * 0.001 + pulsePhase) % (Math.PI * 2);
+      const sonarProgress = (Math.sin(sonarPhase) + 1) / 2; // 0→1→0
+
+      // ── Sonar rings (2 anéis expandindo) ──────────────────────────────
+      if (isFocused || isHovered || isSelected) {
+        const ring1Progress = (t * 0.0008 + pulsePhase) % 1;
+        const ring2Progress = (t * 0.0008 + pulsePhase + 0.5) % 1;
+        for (const rp of [ring1Progress, ring2Progress]) {
+          const ringR = scaled + scaled * 1.8 * rp;
+          const ringAlpha = (1 - rp) * (isFocused ? 0.35 : 0.2) * alpha;
+          ctx.beginPath();
+          ctx.arc(x, y, ringR, 0, Math.PI * 2);
+          ctx.strokeStyle = tc.main;
+          ctx.lineWidth = 1 * (1 - rp);
+          ctx.globalAlpha = ringAlpha;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
       }
 
-      ctx.beginPath(); ctx.arc(x, y, scaled, 0, Math.PI * 2);
+      // ── Outer glow (radial, pulsante) ──────────────────────────────────
+      const glowR = scaled * (2.2 + 0.4 * pulse);
+      const gg = ctx.createRadialGradient(x, y, 0, x, y, glowR);
+      gg.addColorStop(0, tc.glow.replace('0.3', String(0.25 * alpha * pulse)));
+      gg.addColorStop(0.5, tc.glow.replace('0.3', String(0.1 * alpha)));
+      gg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.arc(x, y, glowR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ── Corpo do nó ───────────────────────────────────────────────────
+      ctx.beginPath(); ctx.arc(x, y, scaled * pulse, 0, Math.PI * 2);
       ctx.fillStyle = isSelected ? tc.main : tc.dim;
       ctx.globalAlpha = alpha; ctx.fill();
-      ctx.strokeStyle = tc.main; ctx.lineWidth = isSelected ? 2 : 1; ctx.stroke();
+      ctx.strokeStyle = tc.main;
+      ctx.lineWidth = isSelected ? 2 : 1.5;
+      ctx.stroke();
       ctx.globalAlpha = 1;
 
+      // ── Luz que corta o astro (lens flare horizontal) ─────────────────
+      if (isFocused || isHovered || isSelected) {
+        const flareLen = scaled * (1.6 + 0.6 * pulse);
+        const flareAlpha = 0.55 * alpha * pulse;
+        // Linha horizontal cortando o centro
+        const lg = ctx.createLinearGradient(x - flareLen, y, x + flareLen, y);
+        lg.addColorStop(0, 'rgba(255,255,255,0)');
+        lg.addColorStop(0.3, `rgba(255,255,255,${flareAlpha * 0.4})`);
+        lg.addColorStop(0.5, `rgba(255,255,255,${flareAlpha})`);
+        lg.addColorStop(0.7, `rgba(255,255,255,${flareAlpha * 0.4})`);
+        lg.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = lg;
+        ctx.fillRect(x - flareLen, y - 1 * zoom, flareLen * 2, 2 * zoom);
+        // Pontas que saem pra fora (spikes)
+        const spikeLen = scaled * (0.5 + 0.3 * pulse);
+        const spikeAlpha = 0.4 * alpha * pulse;
+        for (const dir of [-1, 1]) {
+          const sg = ctx.createLinearGradient(x + dir * scaled * 0.8, y, x + dir * (scaled * 0.8 + spikeLen), y);
+          sg.addColorStop(0, `rgba(255,255,255,${spikeAlpha})`);
+          sg.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = sg;
+          ctx.fillRect(
+            dir > 0 ? x + scaled * 0.8 : x - scaled * 0.8 - spikeLen,
+            y - 0.8 * zoom, spikeLen, 1.6 * zoom
+          );
+        }
+        // Spike vertical mais curto (cruz completa)
+        const vg = ctx.createLinearGradient(x, y - flareLen * 0.4, x, y + flareLen * 0.4);
+        vg.addColorStop(0, 'rgba(255,255,255,0)');
+        vg.addColorStop(0.5, `rgba(255,255,255,${flareAlpha * 0.5})`);
+        vg.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = vg;
+        ctx.fillRect(x - 0.8 * zoom, y - flareLen * 0.4, 1.6 * zoom, flareLen * 0.8);
+      }
+
+      // ── Labels ────────────────────────────────────────────────────────
       const fs = Math.max(9, 10 * zoom);
       ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
       ctx.fillStyle = `rgba(255,255,255,${alpha * 0.9})`; ctx.textAlign = 'center';
-      ctx.fillText(node.label, x, y + scaled + fs + 2);
+      ctx.fillText(node.label, x, y + scaled * pulse + fs + 3);
       if (node.sublabel) {
         ctx.font = `400 ${fs * 0.8}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(160,170,200,${alpha * 0.7})`;
-        ctx.fillText(node.sublabel, x, y + scaled + fs * 2 + 2);
+        ctx.fillStyle = `rgba(160,170,200,${alpha * 0.65})`;
+        ctx.fillText(node.sublabel, x, y + scaled * pulse + fs * 2 + 3);
       }
     }
   }
@@ -188,7 +256,7 @@ function initUniverse(
 
   function render(t: number) {
     ctx.clearRect(0, 0, W, H);
-    drawBg(); drawStars(t); drawOrbits(); drawCenter(t); drawNodes();
+    drawBg(); drawStars(t); drawOrbits(); drawCenter(t); drawNodes(t);
     animId = requestAnimationFrame(render);
   }
 
@@ -465,6 +533,9 @@ export default function PortalPage() {
 
               {/* Tooltip — aparece no hover */}
               {showStudyTooltip && (
+                <>
+                {/* Invisible bridge closing the gap between tag and tooltip */}
+                <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, height: 14, background: 'transparent' }} />
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 10px)', left: '50%',
                   transform: 'translateX(-50%)',
@@ -474,7 +545,7 @@ export default function PortalPage() {
                   backdropFilter: 'blur(20px)',
                   boxShadow: '0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.08)',
                   animation: 'cp-fade-in 0.12s ease-out both',
-                  pointerEvents: 'none',
+                  pointerEvents: 'all',
                 }}>
                   {/* Arrow */}
                   <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)', borderBottom: 'none', borderRight: 'none' }} />
@@ -511,6 +582,7 @@ export default function PortalPage() {
                     </div>
                   </div>
                 </div>
+                </>
               )}
             </div>
           </div>
