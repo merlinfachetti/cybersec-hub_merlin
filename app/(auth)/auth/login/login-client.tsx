@@ -382,6 +382,7 @@ export default function LoginClient() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 14 }}>
               <a href="#" style={{ fontSize: 13, color: '#60a5fa', textDecoration: 'none' }}>Use passkey</a>
               <a href="#" style={{ fontSize: 13, color: '#6a6a8a', textDecoration: 'none' }}>Forgot passphrase?</a>
+              <a href="/auth/register" style={{ fontSize: 12, color: 'rgba(139,92,246,0.6)', textDecoration: 'none', marginTop: 6, letterSpacing: '0.04em' }}>Novo aqui? <span style={{ color: 'rgba(139,92,246,0.9)', fontWeight: 600 }}>Cadastre-se →</span></a>
             </div>
 
             {/* Handshake strip */}

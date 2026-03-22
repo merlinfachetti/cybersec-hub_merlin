@@ -7,7 +7,7 @@ html.light { color-scheme: light; }
   transition-duration: 120ms !important;
   transition-timing-function: ease !important;
 }
-canvas,[style*="animation"],.hub-btn,.secure-dot {
+canvas,[style*="animation"],.secure-dot {
   transition: none !important;
 }
 
@@ -555,7 +555,7 @@ a.hub-btn:active {
     0 0 48px rgba(255, 140, 40, 0.15),
     inset 0 0 16px rgba(255, 140, 40, 0.1) !important;
   transform: scale(1.08) !important;
-  animation: none !important;
+  animation: hub-orbit 1.2s ease-in-out infinite !important;
 }
 a.hub-btn:hover::before {
   animation: hub-dot-spin 0.4s linear infinite !important;

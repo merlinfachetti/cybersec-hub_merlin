@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useInactivity } from '@/lib/use-inactivity';
 import { MerlinModal } from '@/components/merlin-modal';
 import { useRouter } from 'next/navigation';
@@ -260,6 +261,7 @@ export default function PortalPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showMerlinModal, setShowMerlinModal] = useState(false);
+  const searchParams = useSearchParams();
   const [showStudyTooltip, setShowStudyTooltip] = useState(false);
   const [showNodeDetail, setShowNodeDetail] = useState(false);
 
@@ -341,6 +343,13 @@ export default function PortalPage() {
     try { localStorage.removeItem('cp_last_active'); } catch {}
     window.location.href = '/api/auth/signout';
   }, []);
+
+  // Abrir modal YOU ARE HERE se vier do footer (?youarehere=1)
+  useEffect(() => {
+    if (searchParams.get('youarehere') === '1') {
+      setShowMerlinModal(true);
+    }
+  }, [searchParams]);
 
   // Auto-logout por inatividade (30 min)
   useInactivity(30 * 60 * 1000, () => {
@@ -440,17 +449,17 @@ export default function PortalPage() {
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: 8,
                   padding: '3px 10px', borderRadius: 12,
-                  background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                  background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.28)',
                   cursor: 'pointer', transition: 'all 150ms',
                 }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.18)'; el.style.borderColor = 'rgba(245,158,11,0.5)'; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.1)'; el.style.borderColor = 'rgba(245,158,11,0.3)'; }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(34,197,94,0.15)'; el.style.borderColor = 'rgba(34,197,94,0.5)'; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(34,197,94,0.08)'; el.style.borderColor = 'rgba(34,197,94,0.28)'; }}
                 >
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 5px #f59e0b', flexShrink: 0 }} />
-                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 5px #22c55e', flexShrink: 0 }} />
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
                     2h Study · RISK: LOW
                   </span>
-                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(245,158,11,0.5)' }}>→</span>
+                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(34,197,94,0.5)' }}>→</span>
                 </div>
               </Link>
 
@@ -459,7 +468,7 @@ export default function PortalPage() {
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 10px)', left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(245,158,11,0.25)',
+                  background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)',
                   borderRadius: 10, padding: '12px 14px',
                   width: 240, zIndex: 200,
                   backdropFilter: 'blur(20px)',
@@ -468,9 +477,9 @@ export default function PortalPage() {
                   pointerEvents: 'none',
                 }}>
                   {/* Arrow */}
-                  <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(245,158,11,0.25)', borderBottom: 'none', borderRight: 'none' }} />
+                  <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)', borderBottom: 'none', borderRight: 'none' }} />
 
-                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.7)', letterSpacing: '0.1em', marginBottom: 8 }}>
+                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.7)', letterSpacing: '0.1em', marginBottom: 8 }}>
                     STATUS DO DIA
                   </div>
 
@@ -497,7 +506,7 @@ export default function PortalPage() {
                     </p>
 
                     {/* CTA */}
-                    <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.5)', marginTop: 2 }}>
+                    <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.5)', marginTop: 2 }}>
                       → clique para ver o roadmap
                     </div>
                   </div>
