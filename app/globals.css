@@ -1,3 +1,16 @@
+/* ── Theme transition ── */
+html { color-scheme: dark; }
+html.light { color-scheme: light; }
+
+*,*::before,*::after {
+  transition-property: background-color, border-color, color !important;
+  transition-duration: 120ms !important;
+  transition-timing-function: ease !important;
+}
+canvas,[style*="animation"],.hub-btn,.secure-dot {
+  transition: none !important;
+}
+
 /* ============================================================
    DESIGN SYSTEM — Typography + Color Semantic Scale
    Aplicado via CSS vars, compatível dark/light
@@ -165,6 +178,7 @@
   /* Backgrounds */
   --p-bg:            #f4f6fa;
   --p-bg-deep:       #edf0f7;
+  --p-bg-rgb:        240, 244, 250;
   --p-bg-card:       rgba(255, 255, 255, 0.90);
   --p-bg-card-hover: rgba(255, 255, 255, 1);
   --p-surface:       rgba(240, 244, 252, 0.80);
@@ -734,3 +748,28 @@ html.light [style*="rgba(10, 6, 24, 1)"] {
   background: rgba(240,242,252,0.99) !important;
   color: #1a1d2e !important;
 }
+
+/* Footer links row: inline desktop, stack mobile */
+@media (max-width: 640px) {
+  .footer-links-row {
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+  }
+  .footer-links-row > div {
+    min-width: 80px !important;
+  }
+}
+
+/* Threat Universe — always dark, never affected by light mode */
+[data-theme="dark"],
+[data-theme="dark"] * {
+  --p-bg: #0b0f14;
+  --p-bg-card: rgba(12, 8, 28, 0.85);
+  --p-text: #e6eef8;
+  --ds-title-card: #f0eeff;
+  --ds-title-section: #e6eef8;
+  --ds-body-muted: rgba(155, 176, 198, 0.65);
+}
+/* Prevent html.light from overriding data-theme="dark" elements */
+html.light [data-theme="dark"] { background: transparent !important; }
+html.light [data-theme="dark"] canvas { display: block !important; }

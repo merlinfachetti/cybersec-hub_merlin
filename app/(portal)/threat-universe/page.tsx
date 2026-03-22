@@ -210,7 +210,7 @@ function initUniverse(
   canvas.addEventListener('mouseleave', () => { isPanning = false; hoveredNode = null; canvas.style.cursor = 'default'; });
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    zoom = Math.max(0.4, Math.min(2.5, zoom + (e.deltaY > 0 ? -0.08 : 0.08)));
+    zoom = Math.max(0.75, Math.min(2.0, zoom + (e.deltaY > 0 ? -0.08 : 0.08)));
   }, { passive: false });
 
   resize();
@@ -331,7 +331,7 @@ export default function PortalPage() {
       </div>
 
       {/* ── UI layer ── */}
-      <div className="cp-main-app" style={{ position: 'relative', zIndex: 20, height: '100vh', display: 'flex', flexDirection: 'column', pointerEvents: 'none' }}>
+      <div className="cp-main-app" data-theme="dark" style={{ position: 'relative', zIndex: 20, height: '100vh', display: 'flex', flexDirection: 'column', pointerEvents: 'none' }}>
 
         {/* ── Topbar ── */}
         <header style={{

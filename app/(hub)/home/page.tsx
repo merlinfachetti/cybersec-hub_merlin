@@ -102,7 +102,7 @@ export default function HomePage() {
   const rest = NAV_SECTIONS.filter(s => !s.featured);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
@@ -123,7 +123,7 @@ export default function HomePage() {
         {featured && (
           <Link href={featured.href} style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
             <div style={{
-              background: `linear-gradient(135deg, rgba(${featured.rgb},0.15) 0%, rgba(8,5,22,0.8) 60%)`,
+              background: `linear-gradient(135deg, rgba(${featured.rgb},0.15) 0%, rgba(var(--p-bg-rgb,8,5,22),0.8) 60%)`,
               border: `1px solid rgba(${featured.rgb},0.25)`,
               borderRadius: 16,
               padding: '28px 32px',
@@ -166,8 +166,8 @@ export default function HomePage() {
           {rest.map(section => (
             <Link key={section.id} href={section.href} style={{ textDecoration: 'none' }}>
               <div style={{
-                background: 'rgba(15,22,40,0.7)',
-                border: `1px solid rgba(255,255,255,0.07)`,
+                background: 'var(--ds-card)',
+                border: `1px solid var(--ds-card-border)`,
                 borderRadius: 12,
                 padding: '20px 22px',
                 cursor: 'pointer',
@@ -182,8 +182,8 @@ export default function HomePage() {
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.borderColor = 'rgba(255,255,255,0.07)';
-                el.style.background = 'rgba(15,22,40,0.7)';
+                el.style.borderColor = 'var(--ds-card-border)';
+                el.style.background = 'var(--ds-card)';
                 el.style.transform = 'translateY(0)';
               }}
               >

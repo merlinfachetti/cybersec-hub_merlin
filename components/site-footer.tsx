@@ -84,8 +84,8 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Links — wrap naturally on mobile */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+          {/* Links — inline no desktop, stack no mobile */}
+          <div className="footer-links-row" style={{ display: 'flex', flexWrap: 'nowrap', gap: 32 }}>
             {Object.entries(FOOTER_LINKS).map(([group, links]) => (
               <div key={group} style={{ minWidth: 100 }}>
                 <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.6)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10 }}>
