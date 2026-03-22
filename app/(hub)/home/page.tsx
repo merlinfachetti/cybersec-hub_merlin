@@ -110,12 +110,13 @@ function NavCard({ section }: { section: {
           cursor: 'pointer',
           height: '100%',
           position: 'relative',
-          overflow: 'hidden',
+          /* sem overflow:hidden — permitir SVG absolutamente posicionado */
           transform: hovered ? 'translateY(-2px)' : 'none',
           transition: 'transform 200ms ease',
         }}
       >
-        {/* SVG border — inline style imune à regra global *{transition-duration:.12s!important} */}
+        {/* SVG border: atributos nativos SVG + transition via style inline */}
+        {/* strokeDasharray como atributo nativo garante animabilidade CSS */}
         <svg
           viewBox="0 0 400 200"
           preserveAspectRatio="none"
@@ -126,11 +127,9 @@ function NavCard({ section }: { section: {
             x="2" y="2" width="396" height="196" rx="11"
             fill="none"
             stroke={`rgba(${section.rgb},0.9)`}
-            style={{
-              strokeDasharray: dash,
-              strokeWidth: hovered ? 2 : 1.5,
-              transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out',
-            }}
+            strokeDasharray={dash}
+            strokeWidth={hovered ? 2 : 1.5}
+            style={{ transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out' }}
           />
         </svg>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>

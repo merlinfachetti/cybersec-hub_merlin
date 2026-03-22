@@ -856,23 +856,4 @@ html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
   transform: translateY(-2px);
 }
 
-.hub-card-rect {
-  /* idle: ~80px por canto — cobre o arredondamento + um toquinho além */
-  /* perímetro 1184: 80 + 512 + 80 + 512 = 1184 */
-  stroke-dasharray: 80 512 80 512;
-  stroke-dashoffset: 0;
-  stroke-width: 1.5;
-  /* !important necessário para vencer a regra global:
-     *{transition-duration:.12s!important} que sobrescreve todos os elementos SVG */
-  transition-property: stroke-dasharray, stroke-width !important;
-  transition-duration: 650ms !important;
-  transition-timing-function: ease-in-out !important;
-}
-
-.hub-nav-card:hover .hub-card-rect {
-  /* hover: cada segmento cresce para 592 (metade do perímetro) */
-  /* os dois se encontram nos pontos médios — retângulo completo */
-  stroke-dasharray: 592 0 592 0;
-  stroke-dashoffset: 0;
-  stroke-width: 2;
-}
+/* hub-card-rect: animação controlada via React state em NavCard — sem CSS aqui */
