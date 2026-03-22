@@ -126,9 +126,11 @@ function NavCard({ section }: { section: {
             x="2" y="2" width="396" height="196" rx="11"
             fill="none"
             stroke={`rgba(${section.rgb},0.9)`}
-            strokeWidth={hovered ? 2 : 1.5}
-            strokeDasharray={dash}
-            style={{ transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out' }}
+            style={{
+              strokeDasharray: dash,
+              strokeWidth: hovered ? 2 : 1.5,
+              transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out',
+            }}
           />
         </svg>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
