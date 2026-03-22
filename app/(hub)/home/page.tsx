@@ -1,6 +1,4 @@
 'use client';
-import React from 'react';
-
 import { useEffect, useState } from 'react';
 import { useInactivity } from '@/lib/use-inactivity';
 import Link from 'next/link';
@@ -87,6 +85,76 @@ const NAV_SECTIONS = [
   },
 ];
 
+
+// ── NavCard — componente isolado para usar useState (Rules of Hooks) ──────────
+function NavCard({ section }: { section: {
+  id: string; label: string; description: string; href: string;
+  icon: React.ReactNode; color: string; rgb: string; badge: string;
+}}) {
+  const [hovered, setHovered] = useState(false);
+  // perímetro do rect 396×196 = 1184px
+  // idle:  dois cantos de 80px — dasharray "80 512 80 512"
+  // hover: cada canto cresce até 592 (metade) → fecha o retângulo
+  const dash = hovered ? '592 0 592 0' : '80 512 80 512';
+
+  return (
+    <Link href={section.href} style={{ textDecoration: 'none', display: 'block' }}>
+      <div
+        className={`hub-nav-card hub-nav-card--${section.id}`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: 'var(--ds-card)',
+          borderRadius: 12,
+          padding: '20px 22px',
+          cursor: 'pointer',
+          height: '100%',
+          position: 'relative',
+          overflow: 'hidden',
+          transform: hovered ? 'translateY(-2px)' : 'none',
+          transition: 'transform 200ms ease',
+        }}
+      >
+        {/* SVG border — inline style imune à regra global *{transition-duration:.12s!important} */}
+        <svg
+          viewBox="0 0 400 200"
+          preserveAspectRatio="none"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="2" y="2" width="396" height="196" rx="11"
+            fill="none"
+            stroke={`rgba(${section.rgb},0.9)`}
+            strokeWidth={hovered ? 2 : 1.5}
+            strokeDasharray={dash}
+            style={{ transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out' }}
+          />
+        </svg>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: `rgba(${section.rgb},0.12)`,
+              border: `1px solid rgba(${section.rgb},0.2)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: section.color,
+            }}>
+              {section.icon}
+            </div>
+            <div>
+              <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 15, color: 'var(--ds-title-section, #e6eef8)' }}>{section.label}</div>
+              <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: `rgba(${section.rgb},0.6)`, letterSpacing: '0.1em', marginTop: 2 }}>{section.badge}</div>
+            </div>
+          </div>
+          <ChevronRight size={14} style={{ color: 'var(--ds-mono-dim)', marginTop: 4 }} />
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.65 }}>{section.description}</p>
+      </div>
+    </Link>
+  );
+}
+
 export default function HomePage() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [greeting, setGreeting] = useState('');
@@ -171,72 +239,9 @@ export default function HomePage() {
 
         {/* Grid — other sections */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
-          {rest.map(section => {
-            const [hovered, setHovered] = React.useState(false);
-            // perímetro = 2*(396+196) = 1184
-            // idle:  dois cantos de 80px = dasharray "80 512 80 512"
-            // hover: cada canto cresce para 592 (metade) → fecha o retângulo
-            const dashIdle  = '80 512 80 512';
-            const dashHover = '592 0 592 0';
-            return (
-            <Link key={section.id} href={section.href} style={{ textDecoration: 'none', display: 'block' }}>
-              <div className={`hub-nav-card hub-nav-card--${section.id}`}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                style={{
-                background: 'var(--ds-card)',
-                borderRadius: 12,
-                padding: '20px 22px',
-                cursor: 'pointer',
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                transform: hovered ? 'translateY(-2px)' : 'none',
-                transition: 'transform 200ms ease',
-              }}>
-                {/* SVG border — inline style garante que a transition não é sobrescrita */}
-                <svg
-                  viewBox="0 0 400 200"
-                  preserveAspectRatio="none"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="2" y="2"
-                    width="396" height="196"
-                    rx="11"
-                    fill="none"
-                    stroke={`rgba(${section.rgb},0.9)`}
-                    strokeWidth={hovered ? 2 : 1.5}
-                    strokeDasharray={hovered ? dashHover : dashIdle}
-                    style={{
-                      transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out',
-                    }}
-                  />
-                </svg>
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 10,
-                      background: `rgba(${section.rgb},0.12)`,
-                      border: `1px solid rgba(${section.rgb},0.2)`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: section.color,
-                    }}>
-                      {section.icon}
-                    </div>
-                    <div>
-                      <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 15, color: 'var(--ds-title-section, #e6eef8)' }}>{section.label}</div>
-                      <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: `rgba(${section.rgb},0.6)`, letterSpacing: '0.1em', marginTop: 2 }}>{section.badge}</div>
-                    </div>
-                  </div>
-                  <ChevronRight size={14} style={{ color: 'var(--ds-mono-dim)', marginTop: 4 }} />
-                </div>
-                <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.65 }}>{section.description}</p>
-              </div>
-            </Link>
-          );
-          })}
+          {rest.map(section => (
+            <NavCard key={section.id} section={section} />
+          ))}
         </div>
 
 
