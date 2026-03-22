@@ -135,40 +135,45 @@ function initUniverse(
     const pulse = 0.9 + 0.1 * Math.sin(t * 0.002);
     const blink = 0.7 + 0.3 * Math.sin(t * 0.003);
 
-    // Glow halo
-    const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, 30 * zoom * pulse);
-    g.addColorStop(0, 'rgba(255,245,200,0.6)'); g.addColorStop(0.3, 'rgba(255,200,100,0.15)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g; ctx.fillRect(sx - 50 * zoom, sy - 50 * zoom, 100 * zoom, 100 * zoom);
+    // Glow halo central
+    const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, 34 * zoom * pulse);
+    g.addColorStop(0, `rgba(255,245,200,${0.55 * pulse})`);
+    g.addColorStop(0.35, `rgba(255,200,100,${0.12 * pulse})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(sx - 50 * zoom, sy - 50 * zoom, 100 * zoom, 100 * zoom);
 
-    // Planeta pulsante central
-    ctx.beginPath(); ctx.arc(sx, sy, 3.5 * zoom * pulse, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${blink})`; ctx.fill();
-    // Sonar ring do planeta
-    ctx.beginPath(); ctx.arc(sx, sy, 8 * zoom * pulse, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255,245,200,${0.3 * (1 - pulse + 0.9)})`; ctx.lineWidth = 0.8 * zoom; ctx.stroke();
-
-    // Texto: YOU'RE  ●  HERE
+    // ── Layout VERTICAL: YOU'RE (cima) · planeta · HERE (baixo) ──
     const fs = Math.max(9, 10 * zoom);
-    ctx.textAlign = 'center';
-    const gap = 18 * zoom; // espaço entre texto e planeta
+    const lineH = fs * 1.6; // espaçamento vertical entre elementos
 
-    // "YOU'RE" à esquerda do centro
-    ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
-    ctx.fillStyle = `rgba(255,255,255,${0.65 * blink})`;
-    ctx.fillText("YOU'RE", sx - gap - ctx.measureText("YOU'RE").width / 2, sy - 18 * zoom);
-
-    // "HERE" à direita do centro
-    ctx.fillText('HERE', sx + gap + ctx.measureText('HERE').width / 2, sy - 18 * zoom);
-
-    // Planeta pequeno entre os dois textos (brilhante e pulsante)
-    const pr = 2.2 * zoom * (0.85 + 0.15 * Math.sin(t * 0.004));
-    const pg = ctx.createRadialGradient(sx, sy - 18 * zoom, 0, sx, sy - 18 * zoom, pr * 3);
-    pg.addColorStop(0, `rgba(255,250,210,${blink})`);
-    pg.addColorStop(0.4, `rgba(255,220,120,${0.4 * blink})`);
+    // Planeta único — no centro geométrico
+    const pr = 3 * zoom * (0.88 + 0.12 * Math.sin(t * 0.0025));
+    // Sonar ring do planeta
+    const sonarR = pr + pr * 2.2 * ((t * 0.0006) % 1);
+    const sonarAlpha = (1 - (t * 0.0006) % 1) * 0.35 * pulse;
+    ctx.beginPath(); ctx.arc(sx, sy, sonarR, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,240,180,${sonarAlpha})`;
+    ctx.lineWidth = 0.8 * zoom; ctx.stroke();
+    // Glow do planeta
+    const pg = ctx.createRadialGradient(sx, sy, 0, sx, sy, pr * 3.5);
+    pg.addColorStop(0, `rgba(255,252,220,${blink})`);
+    pg.addColorStop(0.5, `rgba(255,220,100,${0.35 * blink})`);
     pg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = pg; ctx.fillRect(sx - pr * 3, sy - 18 * zoom - pr * 3, pr * 6, pr * 6);
-    ctx.beginPath(); ctx.arc(sx, sy - 18 * zoom, pr, 0, Math.PI * 2);
+    ctx.fillStyle = pg;
+    ctx.fillRect(sx - pr * 4, sy - pr * 4, pr * 8, pr * 8);
+    // Corpo do planeta
+    ctx.beginPath(); ctx.arc(sx, sy, pr, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${blink})`; ctx.fill();
+
+    // "YOU'RE" — acima do planeta
+    ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = `rgba(255,255,255,${0.65 * blink})`;
+    ctx.fillText("YOU'RE", sx, sy - pr - lineH * 0.6);
+
+    // "HERE" — abaixo do planeta
+    ctx.fillText('HERE', sx, sy + pr + lineH * 1.1);
   }
 
   function drawNodes(t: number) {
@@ -451,6 +456,19 @@ function PortalPageInner() {
     }
   }, [searchParams]);
 
+  // Fechar modal ao entrar/voltar para a página (browser back)
+  // Next.js App Router pode restaurar estado via cache — garantir modal fechado
+  useEffect(() => {
+    // Ao montar o componente sem o param youarehere, garantir modal fechado
+    if (searchParams.get('youarehere') !== '1') {
+      setShowMerlinModal(false);
+    }
+    // Listener de popstate (browser back/forward)
+    const handlePop = () => setShowMerlinModal(false);
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
+
   // Auto-logout por inatividade (30 min)
   useInactivity(30 * 60 * 1000, () => {
     window.location.href = '/api/auth/signout?reason=timeout';
@@ -541,7 +559,7 @@ function PortalPageInner() {
               Threat Universe
             </span>
             {/* Study status tag — hover tooltip + clicável */}
-            <div style={{ position: 'relative' }}
+            <div style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}
               onMouseEnter={() => setShowStudyTooltip(true)}
               onMouseLeave={() => setShowStudyTooltip(false)}
             >
@@ -571,6 +589,7 @@ function PortalPageInner() {
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 10px)', left: '50%',
                   transform: 'translateX(-50%)',
+                  marginLeft: 0,
                   background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)',
                   borderRadius: 10, padding: '12px 14px',
                   width: 240, zIndex: 200,
