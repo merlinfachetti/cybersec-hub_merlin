@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useInactivity } from '@/lib/use-inactivity';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -321,8 +322,16 @@ export default function PortalPage() {
 
   const handleLogout = useCallback(async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/auth/login');
-  }, [router]);
+    // Hard redirect — garante que o cookie é lido de novo pelo middleware
+    window.location.href = '/auth/login';
+  }, []);
+
+  // Auto-logout por inatividade (30 min)
+  useInactivity(30 * 60 * 1000, () => {
+    fetch('/api/auth/logout', { method: 'POST' }).finally(() => {
+      window.location.href = '/auth/login?reason=timeout';
+    });
+  });
 
   const modeConfig = {
     red:    { label: 'ATTACK',  tag: 'RED TEAM',    color: '#e53e3e', border: 'rgba(229,62,62,0.5)',    glow: '0 0 20px rgba(229,62,62,0.4)' },
@@ -403,51 +412,21 @@ export default function PortalPage() {
             ← Hub
           </Link>
 
-          {/* ── Center: Status ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20, flex: 1, justifyContent: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6,
-              fontFamily: '"JetBrains Mono", monospace', fontSize: 11,
-              color: 'rgba(180,175,220,0.55)', letterSpacing: '0.04em' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e',
-                boxShadow: '0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.4)', flexShrink: 0 }} />
-              <span style={{ color: 'rgba(34,197,94,0.8)', letterSpacing: '0.08em', fontSize: 10 }}>LIVE</span>
-            </div>
-            <span style={{ color: 'rgba(255,255,255,0.06)' }}>|</span>
-            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10,
-              color: 'rgba(180,175,220,0.4)', letterSpacing: '0.04em' }}>
-              2h Study &nbsp;·&nbsp; 1 Lab &nbsp;·&nbsp; Risk: Low
+          {/* ── Center: Title ── */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, pointerEvents: 'none' }}>
+            <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)' }}>
+              Threat Universe
             </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 5px #22c55e', flexShrink: 0 }} />
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.7)', letterSpacing: '0.1em' }}>LIVE</span>
+            </div>
           </div>
 
           {/* ── Right: Search + User ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '0 0 auto' }}>
 
-            {/* Search pill */}
-            <button
-              style={{ display: 'flex', alignItems: 'center', gap: 8,
-                padding: '7px 14px', borderRadius: 8,
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                cursor: 'pointer', color: 'rgba(180,175,220,0.5)',
-                fontFamily: '"JetBrains Mono", monospace', fontSize: 11,
-                letterSpacing: '0.04em', transition: 'all 200ms ease' }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = 'rgba(139,92,246,0.08)';
-                el.style.borderColor = 'rgba(139,92,246,0.25)';
-                el.style.color = 'rgba(220,210,255,0.8)';
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = 'rgba(255,255,255,0.04)';
-                el.style.borderColor = 'rgba(255,255,255,0.08)';
-                el.style.color = 'rgba(180,175,220,0.5)';
-              }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-              Search
-            </button>
+
 
             {/* User pill */}
             <div style={{ position: 'relative' }}>
@@ -518,24 +497,7 @@ export default function PortalPage() {
                       {user?.email ?? 'merlin@cyberportal.dev'}
                     </div>
                   </div>
-                  {[
-                    { icon: '◉', label: 'Perfil',    href: '/profile' },
-                    { icon: '⌂', label: 'Hub',       href: '/home' },
-                    { icon: '📋', label: 'Roadmap',   href: '/roadmap' },
-                    { icon: '🏅', label: 'Certs',     href: '/certifications' },
-                  ].map(item => (
-                    <button key={item.label}
-                      onClick={() => { setShowUserMenu(false); router.push(item.href); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
-                        padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer',
-                        borderRadius: 8, color: 'rgba(200,195,240,0.6)', fontSize: 13,
-                        fontFamily: '"Inter", sans-serif', transition: 'all 150ms', textAlign: 'left' }}
-                      onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(139,92,246,0.08)'; el.style.color = '#e8e4ff'; }}
-                      onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'none'; el.style.color = 'rgba(200,195,240,0.6)'; }}>
-                      <span style={{ fontSize: 12, minWidth: 16 }}>{item.icon}</span>{item.label}
-                    </button>
-                  ))}
+
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 6, paddingTop: 6 }}>
                     <button onClick={handleLogout} style={{
                       display: 'flex', alignItems: 'center', gap: 10, width: '100%',
@@ -558,10 +520,7 @@ export default function PortalPage() {
           </div>
         </header>
 
-        {/* Universe title */}
-        <h1 className="cp-animate-in" style={{ position: 'fixed', top: 72, left: '50%', transform: 'translateX(-50%)', fontFamily: '"Space Grotesk", sans-serif', fontSize: 15, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', pointerEvents: 'none' }}>
-          Threat Universe
-        </h1>
+
 
         {/* Bottom stack */}
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', flexDirection: 'column', gap: 0, pointerEvents: 'all' }}>

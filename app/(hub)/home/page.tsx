@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useInactivity } from '@/lib/use-inactivity';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -100,6 +101,12 @@ export default function HomePage() {
 
   const featured = NAV_SECTIONS.find(s => s.featured);
   const rest = NAV_SECTIONS.filter(s => !s.featured);
+
+  // Auto-logout por inatividade (30 min)
+  useInactivity(30 * 60 * 1000, async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/auth/login?reason=timeout';
+  });
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
