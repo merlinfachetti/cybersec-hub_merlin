@@ -403,11 +403,24 @@ export default function LoginClient() {
             onMouseEnter={() => setActiveTooltip(t.team)}
             onMouseLeave={() => setActiveTooltip(null)}
           >
-            {/* Tooltip — speech bubble acima do card */}
-            {activeTooltip === t.team && (
+            {/* Tooltip — speech bubble acima do card, alinhado por posição */}
+            {activeTooltip === t.team && (() => {
+              // idx 0=red(left), 1=blue(center), 2=purple(right)
+              const idx = TEAM_BADGES.findIndex(b => b.team === t.team);
+              const pos = idx === 0
+                ? { left: 0, transform: 'none' }
+                : idx === 2
+                ? { right: 0, left: 'auto', transform: 'none' }
+                : { left: '50%', transform: 'translateX(-50%)' };
+              const arrowLeft = idx === 0 ? 24 : idx === 2 ? 'auto' : '50%';
+              const arrowRight = idx === 2 ? 24 : 'auto';
+              const arrowTransform = idx === 1
+                ? 'translateX(-50%) rotate(45deg)'
+                : 'rotate(45deg)';
+              return (
               <div style={{
-                position: 'absolute', bottom: 'calc(100% + 14px)', left: '50%',
-                transform: 'translateX(-50%)',
+                position: 'absolute', bottom: 'calc(100% + 14px)',
+                ...pos,
                 background: 'rgba(8,6,20,0.98)',
                 border: `1px solid ${t.border}`,
                 borderRadius: 10, padding: '12px 14px',
@@ -417,10 +430,11 @@ export default function LoginClient() {
                 pointerEvents: 'none',
                 animation: 'cp-fade-in 0.12s ease-out both',
               }}>
-                {/* Ponta da fala — aponta para baixo */}
+                {/* Ponta da fala */}
                 <div style={{
-                  position: 'absolute', bottom: -6, left: '50%',
-                  transform: 'translateX(-50%) rotate(45deg)',
+                  position: 'absolute', bottom: -6,
+                  left: arrowLeft, right: arrowRight,
+                  transform: arrowTransform,
                   width: 10, height: 10,
                   background: 'rgba(8,6,20,0.98)',
                   border: `1px solid ${t.border}`,
@@ -438,7 +452,8 @@ export default function LoginClient() {
                   ))}
                 </div>
               </div>
-            )}
+              );
+            })()}
             {/* Card */}
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px',

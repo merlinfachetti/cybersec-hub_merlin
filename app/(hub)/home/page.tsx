@@ -171,29 +171,29 @@ export default function HomePage() {
         {/* Grid — other sections */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
           {rest.map(section => (
-            <Link key={section.id} href={section.href} style={{ textDecoration: 'none' }}>
-              <div style={{
+            <Link key={section.id} href={section.href} style={{ textDecoration: 'none', display: 'block' }}>
+              <div className={`hub-nav-card hub-nav-card--${section.id}`} style={{
                 background: 'var(--ds-card)',
-                border: `1px solid var(--ds-card-border)`,
                 borderRadius: 12,
                 padding: '20px 22px',
                 cursor: 'pointer',
-                transition: 'all 200ms ease',
                 height: '100%',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.borderColor = `rgba(${section.rgb},0.3)`;
-                el.style.background = `rgba(${section.rgb},0.06)`;
-                el.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.borderColor = 'var(--ds-card-border)';
-                el.style.background = 'var(--ds-card)';
-                el.style.transform = 'translateY(0)';
-              }}
-              >
+                position: 'relative',
+                overflow: 'hidden',
+              }}>
+                {/* SVG stroke border — efeito dasharray no hover */}
+                <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', borderRadius: 12, overflow: 'hidden' }} xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    className={`hub-card-rect hub-card-rect--${section.id}`}
+                    x="1" y="1"
+                    width="calc(100% - 2px)" height="calc(100% - 2px)"
+                    rx="11"
+                    fill="none"
+                    stroke={`rgba(${section.rgb},0.7)`}
+                    strokeWidth="1.5"
+                    style={{ strokeDasharray: 1000, strokeDashoffset: 1000 } as React.CSSProperties}
+                  />
+                </svg>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{

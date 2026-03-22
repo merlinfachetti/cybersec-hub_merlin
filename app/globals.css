@@ -840,3 +840,27 @@ html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
     gap: 20px !important;
   }
 }
+
+/* ── Hub nav cards — SVG stroke-dasharray border effect ── */
+.hub-nav-card {
+  border: 1px solid var(--ds-card-border);
+  transition: background 200ms ease, transform 200ms ease;
+}
+.hub-nav-card:hover {
+  transform: translateY(-2px);
+}
+
+/* SVG rect inside each card */
+.hub-card-rect {
+  stroke-dashoffset: 1000;
+  stroke-dasharray: 1000;
+  transition:
+    stroke-dashoffset 700ms ease,
+    stroke-dasharray 700ms ease,
+    stroke-width 700ms ease;
+}
+.hub-nav-card:hover .hub-card-rect {
+  stroke-dasharray: 200 800;
+  stroke-dashoffset: -380;
+  stroke-width: 2.5;
+}
