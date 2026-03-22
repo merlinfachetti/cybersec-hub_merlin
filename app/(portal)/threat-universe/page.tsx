@@ -305,6 +305,7 @@ function initUniverse(
 
   return {
     setMode(mode: TeamColor) { activeMode = mode; },
+    resetView() { panX = 0; panY = 0; zoom = 1; },
     destroy() { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); },
   };
 }
@@ -552,7 +553,7 @@ function PortalPageInner() {
                   {/* Arrow */}
                   <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)', borderBottom: 'none', borderRight: 'none' }} />
 
-                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.7)', letterSpacing: '0.1em', marginBottom: 8 }}>
+                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.8)', letterSpacing: '0.1em', marginBottom: 8 }}>
                     STATUS DO DIA
                   </div>
 
@@ -578,10 +579,15 @@ function PortalPageInner() {
                       Meta diária atingida. Risco baixo indica cobertura adequada das trilhas do dia. Continue assim para manter o streak.
                     </p>
 
-                    {/* CTA */}
-                    <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.5)', marginTop: 2 }}>
-                      → clique para ver o roadmap
-                    </div>
+                    {/* CTA — clicável, vai ao roadmap */}
+                    <Link href="/roadmap" style={{ textDecoration: 'none' }}
+                      onClick={() => setShowStudyTooltip(false)}>
+                      <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.8)', marginTop: 2, cursor: 'pointer', transition: 'color 150ms' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,160,60,1)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,140,40,0.8)'; }}>
+                        → ver trilha de estudos
+                      </div>
+                    </Link>
                   </div>
                 </div>
                 </>
