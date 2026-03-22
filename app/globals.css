@@ -504,54 +504,78 @@ canvas,[style*="animation"],.hub-btn,.secure-dot {
      No body lock needed; overflowY handled per-container */
 }
 
-/* ── Hub Button — orange neon, beats Tailwind specificity ── */
+/* ── Hub Button — orange neon portal, orbital animation ── */
 a.hub-btn,
 a.hub-btn:link,
 a.hub-btn:visited {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 7px !important;
   font-family: "JetBrains Mono", monospace !important;
   font-size: 10px !important;
-  font-weight: 500 !important;
-  color: rgba(255, 140, 40, 0.85) !important;
-  letter-spacing: 0.08em !important;
+  font-weight: 600 !important;
+  color: rgba(255, 140, 40, 0.9) !important;
+  letter-spacing: 0.1em !important;
   text-decoration: none !important;
   flex-shrink: 0 !important;
-  margin-right: 20px !important;
-  padding: 5px 14px !important;
-  border-radius: 7px !important;
-  border: 1px solid rgba(255, 140, 40, 0.35) !important;
-  background: rgba(255, 140, 40, 0.07) !important;
-  box-shadow: 0 0 10px rgba(255, 140, 40, 0.12), inset 0 0 8px rgba(255, 140, 40, 0.03) !important;
+  margin-right: 16px !important;
+  padding: 5px 14px 5px 10px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 140, 40, 0.4) !important;
+  background: rgba(255, 140, 40, 0.08) !important;
+  box-shadow:
+    0 0 12px rgba(255, 140, 40, 0.15),
+    inset 0 0 10px rgba(255, 140, 40, 0.04) !important;
   transform: scale(1) !important;
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease,
-              box-shadow 180ms ease, transform 180ms ease !important;
-  animation: hub-neon-pulse 2.5s ease-in-out infinite !important;
+              box-shadow 180ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1) !important;
+  animation: hub-orbit 3s ease-in-out infinite !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Dot orbital prefix */
+a.hub-btn::before {
+  content: '◉' !important;
+  font-size: 9px !important;
+  color: rgba(255, 140, 40, 0.7) !important;
+  animation: hub-dot-spin 3s linear infinite !important;
+  display: inline-block !important;
 }
 
 a.hub-btn:hover,
 a.hub-btn:focus,
 a.hub-btn:active {
-  color: rgb(255, 165, 55) !important;
-  border-color: rgba(255, 140, 40, 0.75) !important;
-  background: rgba(255, 140, 40, 0.14) !important;
+  color: rgb(255, 168, 60) !important;
+  border-color: rgba(255, 140, 40, 0.8) !important;
+  background: rgba(255, 140, 40, 0.16) !important;
   box-shadow:
-    0 0 0 1px rgba(255, 140, 40, 0.3),
-    0 0 20px rgba(255, 140, 40, 0.4),
-    0 0 40px rgba(255, 140, 40, 0.15),
-    inset 0 0 14px rgba(255, 140, 40, 0.08) !important;
-  transform: scale(1.07) !important;
+    0 0 0 2px rgba(255, 140, 40, 0.25),
+    0 0 24px rgba(255, 140, 40, 0.45),
+    0 0 48px rgba(255, 140, 40, 0.15),
+    inset 0 0 16px rgba(255, 140, 40, 0.1) !important;
+  transform: scale(1.08) !important;
   animation: none !important;
 }
+a.hub-btn:hover::before {
+  animation: hub-dot-spin 0.4s linear infinite !important;
+  color: rgba(255, 168, 60, 1) !important;
+}
 
-@keyframes hub-neon-pulse {
+@keyframes hub-orbit {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(255, 140, 40, 0.1), inset 0 0 6px rgba(255, 140, 40, 0.03);
+    box-shadow: 0 0 10px rgba(255,140,40,0.12), inset 0 0 8px rgba(255,140,40,0.03);
+    border-color: rgba(255,140,40,0.35);
   }
   50% {
-    box-shadow: 0 0 18px rgba(255, 140, 40, 0.28), inset 0 0 12px rgba(255, 140, 40, 0.07);
+    box-shadow: 0 0 20px rgba(255,140,40,0.30), 0 0 40px rgba(255,140,40,0.08), inset 0 0 14px rgba(255,140,40,0.07);
+    border-color: rgba(255,140,40,0.55);
   }
+}
+@keyframes hub-dot-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.3); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 /* Secure session dot pulse */
@@ -773,3 +797,35 @@ html.light [style*="rgba(10, 6, 24, 1)"] {
 /* Prevent html.light from overriding data-theme="dark" elements */
 html.light [data-theme="dark"] { background: transparent !important; }
 html.light [data-theme="dark"] canvas { display: block !important; }
+
+/* ── Threat Universe dark zone — NUNCA afetado pelo light mode ── */
+/* Cobre: header, bottom stack, mode bar, panel, canvas, bottom nav */
+.cp-dark-zone,
+.cp-dark-zone * {
+  /* Force dark CSS vars */
+  --p-bg: #0b0f14 !important;
+  --p-bg-card: rgba(12, 8, 28, 0.85) !important;
+  --p-text: #e6eef8 !important;
+  --ds-title-card: #f0eeff !important;
+  --ds-body-muted: rgba(155, 176, 198, 0.65) !important;
+  --ds-card: rgba(12, 8, 28, 0.85) !important;
+  --ds-card-border: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Prevent html.light from touching anything in cp-dark-zone */
+html.light .cp-dark-zone [style*="rgba(6, 4, 18"],
+html.light .cp-dark-zone [style*="rgba(6,4,18"],
+html.light .cp-dark-zone [style*="rgba(6, 6, 16"],
+html.light .cp-dark-zone [style*="rgba(6,6,16"],
+html.light .cp-dark-zone [style*="rgba(8, 6, 20"],
+html.light .cp-dark-zone [style*="rgba(8,6,20"],
+html.light .cp-dark-zone [style*="rgba(8, 5, 22"],
+html.light .cp-dark-zone [style*="rgba(0, 0, 0"],
+html.light .cp-dark-zone button {
+  background: unset !important;
+  color: unset !important;
+}
+html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.4)"],
+html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
+  color: unset !important;
+}

@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Menu, Radio } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { GlobalSearch } from '@/components/global-search';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,21 @@ import {
 
 export function MainNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<{ name: string | null; email: string; role: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.user && setUser(d.user))
+      .catch(() => null);
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/auth/login';
+  };
 
   const routes = [
     { href: '/home',            label: 'Home',          active: pathname === '/home' },

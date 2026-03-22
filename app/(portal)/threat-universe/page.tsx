@@ -412,15 +412,29 @@ export default function PortalPage() {
             ← Hub
           </Link>
 
-          {/* ── Center: Title ── */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, pointerEvents: 'none' }}>
-            <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)' }}>
+          {/* ── Center: Title + Study Status ── */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+            <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
               Threat Universe
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 5px #22c55e', flexShrink: 0 }} />
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.7)', letterSpacing: '0.1em' }}>LIVE</span>
-            </div>
+            {/* Study status tag — clicável, vai ao roadmap */}
+            <Link href="/roadmap" style={{ textDecoration: 'none' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '3px 10px', borderRadius: 12,
+                background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                cursor: 'pointer', transition: 'all 150ms',
+              }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.18)'; el.style.borderColor = 'rgba(245,158,11,0.5)'; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(245,158,11,0.1)'; el.style.borderColor = 'rgba(245,158,11,0.3)'; }}
+              >
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 5px #f59e0b', flexShrink: 0 }} />
+                <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(245,158,11,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
+                  2h Study · RISK: LOW
+                </span>
+                <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(245,158,11,0.5)' }}>→</span>
+              </div>
+            </Link>
           </div>
 
           {/* ── Right: Search + User ── */}
@@ -523,7 +537,7 @@ export default function PortalPage() {
 
 
         {/* Bottom stack */}
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', flexDirection: 'column', gap: 0, pointerEvents: 'all' }}>
+        <div className="cp-dark-zone" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, display: 'flex', flexDirection: 'column', gap: 0, pointerEvents: 'all' }}>
 
           {/* Mode bar */}
           <div className="cp-animate-in" style={{ display: 'flex', gap: 0, padding: '0 0 0 0', animationDelay: '0.2s' }}>
@@ -754,7 +768,7 @@ export default function PortalPage() {
         </div>
 
         {/* Bottom nav */}
-        <div style={{
+        <div className="cp-dark-zone" style={{
           position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20,
           background: 'rgba(6,4,18,0.97)', borderTop: '1px solid rgba(255,255,255,0.08)',
           backdropFilter: 'blur(20px)', paddingBottom: 'env(safe-area-inset-bottom,0px)',
