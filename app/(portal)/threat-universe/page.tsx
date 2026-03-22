@@ -275,6 +275,29 @@ export default function PortalPage() {
 
   const panel = selectedNode ? NODE_DETAILS[selectedNode] : NODE_DETAILS['phishing'];
 
+  // ESC closes search + user menu; click outside closes user menu
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowSearch(false);
+        setSearchQuery('');
+        setShowUserMenu(false);
+      }
+    };
+    const onClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-user-menu]')) {
+        setShowUserMenu(false);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('mousedown', onClickOutside);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('mousedown', onClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     if (!canvasRef.current) return;
     universeRef.current = initUniverse(canvasRef.current, (id) => {
@@ -495,15 +518,22 @@ export default function PortalPage() {
                       {user?.email ?? 'merlin@cyberportal.dev'}
                     </div>
                   </div>
-                  {[{ icon: '◉', label: 'Profile' }, { icon: '⚙', label: 'Settings' }].map(item => (
-                    <button key={item.label} style={{
-                      display: 'flex', alignItems: 'center', gap: 10, width: '100%',
-                      padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer',
-                      borderRadius: 8, color: 'rgba(200,195,240,0.6)', fontSize: 13,
-                      fontFamily: '"Inter", sans-serif', transition: 'all 150ms', textAlign: 'left' }}
+                  {[
+                    { icon: '◉', label: 'Perfil',    href: '/profile' },
+                    { icon: '⌂', label: 'Hub',       href: '/home' },
+                    { icon: '📋', label: 'Roadmap',   href: '/roadmap' },
+                    { icon: '🏅', label: 'Certs',     href: '/certifications' },
+                  ].map(item => (
+                    <button key={item.label}
+                      onClick={() => { setShowUserMenu(false); router.push(item.href); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                        padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer',
+                        borderRadius: 8, color: 'rgba(200,195,240,0.6)', fontSize: 13,
+                        fontFamily: '"Inter", sans-serif', transition: 'all 150ms', textAlign: 'left' }}
                       onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(139,92,246,0.08)'; el.style.color = '#e8e4ff'; }}
                       onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'none'; el.style.color = 'rgba(200,195,240,0.6)'; }}>
-                      <span style={{ fontSize: 11, opacity: 0.5 }}>{item.icon}</span>{item.label}
+                      <span style={{ fontSize: 12, minWidth: 16 }}>{item.icon}</span>{item.label}
                     </button>
                   ))}
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 6, paddingTop: 6 }}>
