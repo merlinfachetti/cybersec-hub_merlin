@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useInactivity } from '@/lib/use-inactivity';
+import { MerlinModal } from '@/components/merlin-modal';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -57,7 +58,8 @@ const ORBITS = [
 
 function initUniverse(
   canvas: HTMLCanvasElement,
-  onNodeSelect: (id: NodeId) => void
+  onNodeSelect: (id: NodeId) => void,
+  onCenterClick: () => void
 ) {
   const ctx = canvas.getContext('2d')!;
   let W = 0, H = 0, cx = 0, cy = 0;
@@ -198,7 +200,13 @@ function initUniverse(
     if (isPanning) { panX = panOriginX + (e.clientX - panStartX); panY = panOriginY + (e.clientY - panStartY); return; }
     const hit = hitTest(e.clientX, e.clientY);
     hoveredNode = hit ? hit.id : null;
-    canvas.style.cursor = hit ? 'pointer' : 'grab';
+    if (!hit) {
+      const sx = cx + panX, sy = cy + panY;
+      const dist = Math.sqrt((e.clientX - sx) ** 2 + (e.clientY - sy) ** 2);
+      canvas.style.cursor = dist < 40 * zoom ? 'pointer' : 'grab';
+    } else {
+      canvas.style.cursor = 'pointer';
+    }
   });
   canvas.addEventListener('mouseup', (e) => {
     const dragged = Math.abs(e.clientX - panStartX) > 4 || Math.abs(e.clientY - panStartY) > 4;
@@ -206,6 +214,12 @@ function initUniverse(
     if (!dragged) {
       const hit = hitTest(e.clientX, e.clientY);
       if (hit) { selectedNode = hit.id; onNodeSelect(hit.id as NodeId); }
+      else {
+        // Check if clicked near center (YOU ARE HERE)
+        const sx = cx + panX, sy = cy + panY;
+        const dist = Math.sqrt((e.clientX - sx) ** 2 + (e.clientY - sy) ** 2);
+        if (dist < 40 * zoom) onCenterClick();
+      }
     }
   });
   canvas.addEventListener('mouseleave', () => { isPanning = false; hoveredNode = null; canvas.style.cursor = 'default'; });
@@ -245,6 +259,7 @@ export default function PortalPage() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [showMerlinModal, setShowMerlinModal] = useState(false);
   const [showNodeDetail, setShowNodeDetail] = useState(false);
 
   // Filtered nodes based on search + activeMode
@@ -311,7 +326,7 @@ export default function PortalPage() {
         setActiveMode(nodeTeam);
         universeRef.current?.setMode(nodeTeam);
       }
-    });
+    }, () => setShowMerlinModal(true));
     return () => universeRef.current?.destroy();
   }, []);
 
@@ -589,9 +604,9 @@ export default function PortalPage() {
                       </span>
                     )}
                   </div>
-                  <button onClick={() => setPanelHidden(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(155,176,198,0.4)', padding: 4, display: 'flex', transition: 'color 150ms' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.8)'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.4)'}>
+                  <button onClick={() => setPanelHidden(true)} style={{ background: 'none', border: '1px solid rgba(34,197,94,0.25)', borderRadius: 7, cursor: 'pointer', color: '#22c55e', padding: '4px 6px', display: 'flex', transition: 'all 150ms' }}
+                  onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#4ade80'; el.style.background = 'rgba(34,197,94,0.1)'; el.style.borderColor = 'rgba(34,197,94,0.5)'; }}
+                  onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#22c55e'; el.style.background = 'none'; el.style.borderColor = 'rgba(34,197,94,0.25)'; }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </div>

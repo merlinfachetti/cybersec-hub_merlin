@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { MerlinModal } from '@/components/merlin-modal';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
 
@@ -93,6 +94,7 @@ function FooterGroup({ title, links }: { title: string; links: { label: string; 
 
 export function SiteFooter() {
   const [expanded, setExpanded] = useState(false);
+  const [showMerlin, setShowMerlin] = useState(false);
 
   return (
     <footer style={{ background: '#0a0814', borderTop: '1px solid rgba(139,92,246,0.12)', marginTop: 'auto' }}>
@@ -153,7 +155,12 @@ export function SiteFooter() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <img src="/merlin.jpg" alt="Alden Merlin" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(139,92,246,0.3)', flexShrink: 0 }} />
           <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'var(--ds-mono-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Desenvolvido por <span style={{ color: 'var(--ds-body-muted)', fontWeight: 500 }}>Alden Merlin</span> © 2026
+            Desenvolvido por{' '}
+            <button onClick={() => setShowMerlin(true)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--ds-body-muted)', fontWeight: 500, fontSize: 11, fontFamily: 'inherit', textDecoration: 'underline dotted', textUnderlineOffset: 3, transition: 'color 150ms' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#a78bfa'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--ds-body-muted)'; }}>
+              Alden Merlin
+            </button>{' '}© 2026
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -163,6 +170,7 @@ export function SiteFooter() {
           </span>
         </div>
       </div>
+      {showMerlin && <MerlinModal onClose={() => setShowMerlin(false)} />}
     </footer>
   );
 }
