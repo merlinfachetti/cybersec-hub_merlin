@@ -17,6 +17,7 @@ const PUBLIC_PATHS = [
   '/auth/register',
   '/api/auth/login',
   '/api/auth/logout',
+  '/api/auth/validate',
 ];
 
 function isPublic(pathname: string): boolean {

@@ -18,7 +18,7 @@ function getJwtSecret(): Uint8Array {
 }
 
 const COOKIE_NAME = 'cp_session';
-const TOKEN_TTL_SECONDS = 60 * 60 * 8; // 8h
+const TOKEN_TTL_SECONDS = 60 * 60 * 2; // 2h (short-lived; remember device = 7d)
 const COOKIE_MAX_AGE = TOKEN_TTL_SECONDS;
 
 // ── Types ──────────────────────────────────────────────────────────────────

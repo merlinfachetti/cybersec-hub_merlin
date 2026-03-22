@@ -309,21 +309,56 @@ export default function LoginClient() {
               />
 
               {/* Passphrase strength */}
-              {passphrase.length > 0 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 2px' }}>
-                  {[
-                    passphrase.length >= 12,
-                    /[A-Z]/.test(passphrase),
-                    /[0-9]/.test(passphrase),
-                    /[^A-Za-z0-9]/.test(passphrase),
-                  ].map((ok, i) => (
-                    <div key={i} style={{ flex: 1, height: 2, borderRadius: 1, background: ok ? ['#e53e3e','#f59e0b','#3b82f6','#22c55e'][i] : 'rgba(255,255,255,0.08)', transition: 'background 300ms' }} />
-                  ))}
-                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(150,140,200,0.5)', whiteSpace: 'nowrap', minWidth: 32 }}>
-                    {passphrase.length < 12 ? 'weak' : !/[A-Z]/.test(passphrase) ? 'fair' : !/[0-9]/.test(passphrase) ? 'good' : !/[^A-Za-z0-9]/.test(passphrase) ? 'strong' : 'max'}
-                  </span>
-                </div>
-              )}
+              {passphrase.length > 0 && (() => {
+                const checks = [
+                  { ok: passphrase.length >= 12, label: '12+ chars' },
+                  { ok: /[A-Z]/.test(passphrase),         label: 'Maiúscula' },
+                  { ok: /[0-9]/.test(passphrase),         label: 'Número' },
+                  { ok: /[^A-Za-z0-9]/.test(passphrase),  label: 'Símbolo' },
+                ];
+                const score = checks.filter(c => c.ok).length;
+                const COLORS = ['#e53e3e','#f59e0b','#3b82f6','#22c55e'];
+                const BAR_COLOR = COLORS[score - 1] ?? 'rgba(255,255,255,0.08)';
+                const LABELS = ['', 'fraca', 'regular', 'boa', 'forte'];
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '4px 0' }}>
+                    {/* Bar segments */}
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {checks.map((ch, i) => (
+                        <div key={i} style={{
+                          flex: 1, height: 3, borderRadius: 2,
+                          background: ch.ok ? COLORS[i] : 'rgba(255,255,255,0.07)',
+                          transition: 'background 250ms ease',
+                          boxShadow: ch.ok ? `0 0 6px ${COLORS[i]}60` : 'none',
+                        }} />
+                      ))}
+                    </div>
+                    {/* Criteria chips */}
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {checks.map((ch, i) => (
+                        <span key={i} style={{
+                          fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+                          padding: '1px 6px', borderRadius: 3,
+                          color: ch.ok ? COLORS[i] : 'rgba(255,255,255,0.2)',
+                          background: ch.ok ? `${COLORS[i]}15` : 'rgba(255,255,255,0.03)',
+                          border: `1px solid ${ch.ok ? COLORS[i] + '40' : 'rgba(255,255,255,0.06)'}`,
+                          transition: 'all 250ms ease',
+                          textDecoration: ch.ok ? 'none' : 'line-through',
+                        }}>
+                          {ch.label}
+                        </span>
+                      ))}
+                      <span style={{
+                        fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
+                        marginLeft: 'auto', color: BAR_COLOR,
+                        transition: 'color 250ms',
+                      }}>
+                        {LABELS[score] || ''}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Remember device */}
               <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
