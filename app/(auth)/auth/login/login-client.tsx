@@ -407,11 +407,13 @@ export default function LoginClient() {
             {activeTooltip === t.team && (() => {
               // idx 0=red(left), 1=blue(center), 2=purple(right)
               const idx = TEAM_BADGES.findIndex(b => b.team === t.team);
+              // card minWidth=180, tooltip width=260
+              // blue center: left = (180-260)/2 = -40px → arrow at 130px = 50% de 260
               const pos = idx === 0
                 ? { left: 0, transform: 'none' }
                 : idx === 2
                 ? { right: 0, left: 'auto', transform: 'none' }
-                : { left: '50%', transform: 'translateX(-50%)' };
+                : { left: '-40px', transform: 'none' };
               const arrowLeft = idx === 0 ? 24 : idx === 2 ? 'auto' : '50%';
               const arrowRight = idx === 2 ? 24 : 'auto';
               const arrowTransform = idx === 1
