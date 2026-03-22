@@ -233,13 +233,15 @@ function initUniverse(
 
       // ── Labels ────────────────────────────────────────────────────────
       const fs = Math.max(9, 10 * zoom);
-      ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
-      ctx.fillStyle = `rgba(255,255,255,${alpha * 0.9})`; ctx.textAlign = 'center';
+      // Label — laranja negrito (domínio de conhecimento)
+      ctx.font = `800 ${fs}px "Space Grotesk", sans-serif`;
+      ctx.fillStyle = `rgba(255,140,40,${alpha * 0.95})`; ctx.textAlign = 'center';
       ctx.fillText(node.label, x, y + scaled * pulse + fs + 3);
       if (node.sublabel) {
-        ctx.font = `400 ${fs * 0.8}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(160,170,200,${alpha * 0.65})`;
-        ctx.fillText(node.sublabel, x, y + scaled * pulse + fs * 2 + 3);
+        // Sublabel — verde legível (contexto operacional)
+        ctx.font = `500 ${fs * 0.85}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(34,197,94,${alpha * 0.75})`;
+        ctx.fillText(node.sublabel, x, y + scaled * pulse + fs * 2 + 4);
       }
     }
   }
