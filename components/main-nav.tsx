@@ -65,18 +65,30 @@ export function MainNav() {
       <button
         onClick={() => setMenuOpen(v => !v)}
         style={{
-          display: 'flex', alignItems: 'center', gap: 7,
-          padding: '4px 10px 4px 4px', borderRadius: 10, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 8,
+          padding: '4px 12px 4px 4px', borderRadius: 10, cursor: 'pointer',
           background: menuOpen ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.03)',
           border: `1px solid ${menuOpen ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.08)'}`,
           transition: 'all 150ms',
         }}
       >
-        <div style={{ width: 26, height: 26, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid rgba(139,92,246,0.4)', flexShrink: 0 }}>
-          <img src="/merlin.jpg" alt="Merlin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        {/* Avatar com dot verde de status */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid rgba(139,92,246,0.4)' }}>
+            <img src="/merlin.jpg" alt="Merlin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          {/* Status dot — verde = autenticado */}
+          <span style={{
+            position: 'absolute', bottom: 0, right: 0,
+            width: 8, height: 8, borderRadius: '50%',
+            background: '#22c55e',
+            boxShadow: '0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.4)',
+            border: '1.5px solid rgba(8,6,20,0.9)',
+          }} />
         </div>
+        {/* Nome preferido */}
         <span style={{ fontFamily: '"Space Grotesk",sans-serif', fontSize: 12, fontWeight: 600, color: '#e6eef8' }}>
-          {user?.name ?? 'Merlin'}
+          {user?.name?.split(' ')[0] ?? 'Merlin'}
         </span>
       </button>
 
@@ -104,11 +116,11 @@ export function MainNav() {
           {/* Perfil */}
           <button
             onClick={() => { setMenuOpen(false); router.push('/profile'); }}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: 'rgba(200,195,240,0.7)', fontSize: 13, fontFamily: '"Inter",sans-serif', transition: 'all 150ms', textAlign: 'left' }}
-            onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(139,92,246,0.08)'; el.style.color = '#e8e4ff'; }}
-            onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = 'rgba(200,195,240,0.7)'; }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: '#22c55e', fontSize: 13, fontFamily: '"Inter",sans-serif', fontWeight: 600, transition: 'all 150ms', textAlign: 'left' }}
+            onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(34,197,94,0.08)'; el.style.color = '#4ade80'; }}
+            onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = '#22c55e'; }}
           >
-            <span style={{ fontSize: 13 }}>◉</span> Perfil
+            <span style={{ fontWeight: 900, fontSize: 14 }}>⇒</span> Perfil
           </button>
 
           {/* Sign out */}
@@ -186,7 +198,7 @@ export function MainNav() {
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/profile" className="w-full">◉ Perfil</Link>
+                <Link href="/profile" className="w-full" style={{ color: "#22c55e", fontWeight: 600 }}>⇒ Perfil</Link>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleLogout} className="text-red-400 cursor-pointer">
                 Sign out

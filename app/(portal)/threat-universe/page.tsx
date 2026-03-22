@@ -440,7 +440,7 @@ export default function PortalPage() {
 
 
             {/* User pill */}
-            <div style={{ position: 'relative' }}>
+            <div data-user-menu style={{ position: 'relative' }}>
               <button
                 onClick={() => setShowUserMenu(v => !v)}
                 style={{ display: 'flex', alignItems: 'center', gap: 9,
@@ -450,40 +450,24 @@ export default function PortalPage() {
                   cursor: 'pointer', transition: 'all 200ms ease' }}
                 onMouseEnter={e => {
                   const el = e.currentTarget as HTMLElement;
-                  if (!showUserMenu) {
-                    el.style.background = 'rgba(139,92,246,0.08)';
-                    el.style.borderColor = 'rgba(139,92,246,0.2)';
-                  }
+                  if (!showUserMenu) { el.style.background = 'rgba(139,92,246,0.08)'; el.style.borderColor = 'rgba(139,92,246,0.2)'; }
                 }}
                 onMouseLeave={e => {
                   const el = e.currentTarget as HTMLElement;
-                  if (!showUserMenu) {
-                    el.style.background = 'rgba(255,255,255,0.04)';
-                    el.style.borderColor = 'rgba(255,255,255,0.08)';
-                  }
+                  if (!showUserMenu) { el.style.background = 'rgba(255,255,255,0.04)'; el.style.borderColor = 'rgba(255,255,255,0.08)'; }
                 }}>
-                {/* Avatar */}
-                <div style={{ width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
-                  border: '1.5px solid rgba(139,92,246,0.45)',
-                  background: 'linear-gradient(135deg, rgba(139,92,246,0.3), rgba(59,130,246,0.2))' }}>
-                  <img src="/merlin.jpg" alt="Merlin"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                {/* Avatar com dot verde de status */}
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid rgba(139,92,246,0.45)', background: 'linear-gradient(135deg, rgba(139,92,246,0.3), rgba(59,130,246,0.2))' }}>
+                    <img src="/merlin.jpg" alt="Merlin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  </div>
+                  <span style={{ position: 'absolute', bottom: 0, right: 0, width: 8, height: 8, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e, 0 0 12px rgba(34,197,94,0.4)', border: '1.5px solid rgba(8,6,20,0.9)' }} />
                 </div>
-                {/* Name + role */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
-                  <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 12,
-                    fontWeight: 600, color: '#e8e4ff', lineHeight: 1 }}>
-                    {user?.name ?? 'Merlin'}
-                  </span>
-                  <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
-                    color: 'rgba(139,92,246,0.7)', letterSpacing: '0.08em', lineHeight: 1 }}>
-                    {user?.role ?? 'ADMIN'}
-                  </span>
-                </div>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
-                  stroke="rgba(139,92,246,0.5)" strokeWidth="2.5"
-                  style={{ transform: showUserMenu ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 200ms' }}>
+                {/* Nome preferido */}
+                <span style={{ fontFamily: '"Space Grotesk",sans-serif', fontSize: 12, fontWeight: 600, color: '#e8e4ff', lineHeight: 1 }}>
+                  {user?.name?.split(' ')[0] ?? 'Merlin'}
+                </span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(139,92,246,0.5)" strokeWidth="2.5" style={{ transform: showUserMenu ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 200ms' }}>
                   <polyline points="6 9 12 15 18 9"/>
                 </svg>
               </button>
