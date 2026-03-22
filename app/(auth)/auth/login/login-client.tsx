@@ -399,7 +399,7 @@ export default function LoginClient() {
       {/* Team badges — desktop only with speech bubble tooltips */}
       <div className="cp-main-app" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20, display: 'flex', justifyContent: 'center', gap: 12, padding: '12px 24px' }}>
         {TEAM_BADGES.map(t => (
-          <div key={t.team} style={{ position: 'relative' }}
+          <div key={t.team} style={{ position: 'relative', display: 'inline-flex' }}
             onMouseEnter={() => setActiveTooltip(t.team)}
             onMouseLeave={() => setActiveTooltip(null)}
           >
