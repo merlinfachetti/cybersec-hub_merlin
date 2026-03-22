@@ -166,13 +166,15 @@ function initUniverse(
     ctx.beginPath(); ctx.arc(sx, sy, pr, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${blink})`; ctx.fill();
 
-    // "YOU'RE" — acima do planeta
+    // "YOU'RE" / "HERE" — cor muda no hover (laranja)
+    const isHoveredCenter = canvas.dataset.centerHovered === '1';
+    const textColor = isHoveredCenter
+      ? `rgba(255,140,40,${0.9 * blink})`
+      : `rgba(255,255,255,${0.65 * blink})`;
     ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
     ctx.textAlign = 'center';
-    ctx.fillStyle = `rgba(255,255,255,${0.65 * blink})`;
+    ctx.fillStyle = textColor;
     ctx.fillText("YOU'RE", sx, sy - pr - lineH * 0.6);
-
-    // "HERE" — abaixo do planeta
     ctx.fillText('HERE', sx, sy + pr + lineH * 1.1);
   }
 
@@ -366,6 +368,8 @@ function PortalPageInner() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showMerlinModal, setShowMerlinModal] = useState(false);
+  const [centerHovered, setCenterHovered] = useState(false);
+  const centerHoveredRef = useRef(false);
   const searchParams = useSearchParams();
   const [showStudyTooltip, setShowStudyTooltip] = useState(false);
   const [showNodeDetail, setShowNodeDetail] = useState(false);
@@ -424,7 +428,8 @@ function PortalPageInner() {
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    universeRef.current = initUniverse(canvasRef.current, (id) => {
+    const canvas = canvasRef.current;
+    universeRef.current = initUniverse(canvas, (id) => {
       setSelectedNode(id);
       setPanelHidden(false);
       setShowNodeDetail(true);
@@ -448,6 +453,13 @@ function PortalPageInner() {
     try { localStorage.removeItem('cp_last_active'); } catch {}
     window.location.href = '/api/auth/signout';
   }, []);
+
+  useEffect(() => {
+    centerHoveredRef.current = centerHovered;
+    if (canvasRef.current) {
+      canvasRef.current.dataset.centerHovered = centerHovered ? '1' : '0';
+    }
+  }, [centerHovered]);
 
   // Abrir modal YOU ARE HERE se vier do footer (?youarehere=1)
   useEffect(() => {
@@ -587,9 +599,8 @@ function PortalPageInner() {
                 {/* Invisible bridge closing the gap between tag and tooltip */}
                 <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, height: 14, background: 'transparent' }} />
                 <div style={{
-                  position: 'absolute', top: 'calc(100% + 10px)', left: '50%',
+                  position: 'fixed', top: 72, left: '50%',
                   transform: 'translateX(-50%)',
-                  marginLeft: 0,
                   background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)',
                   borderRadius: 10, padding: '12px 14px',
                   width: 240, zIndex: 200,
@@ -729,6 +740,8 @@ function PortalPageInner() {
         {/* YOU ARE HERE — hotspot clicável sobre o centro da galáxia */}
         <div
           onClick={() => setShowMerlinModal(true)}
+          onMouseEnter={() => { setCenterHovered(true); centerHoveredRef.current = true; }}
+          onMouseLeave={() => { setCenterHovered(false); centerHoveredRef.current = false; }}
           title="YOU ARE HERE"
           style={{
             position: 'fixed',
