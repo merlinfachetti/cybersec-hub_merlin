@@ -862,9 +862,11 @@ html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
   stroke-dasharray: 80 512 80 512;
   stroke-dashoffset: 0;
   stroke-width: 1.5;
-  transition:
-    stroke-dasharray 650ms ease-in-out,
-    stroke-width 500ms ease-in-out;
+  /* !important necessário para vencer a regra global:
+     *{transition-duration:.12s!important} que sobrescreve todos os elementos SVG */
+  transition-property: stroke-dasharray, stroke-width !important;
+  transition-duration: 650ms !important;
+  transition-timing-function: ease-in-out !important;
 }
 
 .hub-nav-card:hover .hub-card-rect {
