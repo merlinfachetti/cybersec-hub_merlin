@@ -606,14 +606,15 @@ function PortalPageInner() {
                 </div>
               </Link>
 
-              {/* Tooltip — position absolute dentro do wrapper, centralizado no viewport via left calc */}
+              {/* Tooltip — position:fixed centralizado no viewport */}
+              {/* O delay 150ms em hideTooltip permite mouse transitar tag→tooltip */}
               {showStudyTooltip && (
                 <>
-                {/* Ponte invisível: cobre o gap entre tag e tooltip */}
-                <div style={{ position: 'absolute', top: '100%', left: '-60px', right: '-60px', height: 14, background: 'transparent', zIndex: 199 }} />
+                {/* Ponte invisível cobre o gap vertical entre tag e tooltip */}
+                <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', width: 260, height: 16, background: 'transparent', zIndex: 199 }} />
                 <div style={{
-                  position: 'absolute', top: 'calc(100% + 14px)',
-                  left: '50%', transform: 'translateX(-50%)',
+                  position: 'fixed', top: 72, left: '50%',
+                  transform: 'translateX(-50%)',
                   background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)',
                   borderRadius: 10, padding: '12px 14px',
                   width: 240, zIndex: 200,
