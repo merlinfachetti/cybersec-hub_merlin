@@ -320,17 +320,14 @@ export default function PortalPage() {
     universeRef.current?.setMode(mode);
   }, []);
 
-  const handleLogout = useCallback(async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    // Hard redirect — garante que o cookie é lido de novo pelo middleware
-    window.location.href = '/auth/login';
+  const handleLogout = useCallback(() => {
+    // GET /api/auth/signout — server deletes session + cookie then redirects
+    window.location.href = '/api/auth/signout';
   }, []);
 
   // Auto-logout por inatividade (30 min)
   useInactivity(30 * 60 * 1000, () => {
-    fetch('/api/auth/logout', { method: 'POST' }).finally(() => {
-      window.location.href = '/auth/login?reason=timeout';
-    });
+    window.location.href = '/api/auth/signout?reason=timeout';
   });
 
   const modeConfig = {

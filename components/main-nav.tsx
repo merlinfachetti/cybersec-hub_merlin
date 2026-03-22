@@ -2,25 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, Radio } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { GlobalSearch } from '@/components/global-search';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { GlobalSearch } from '@/components/global-search';
+import { ThemeToggle } from '@/components/theme-toggle';
+
+interface NavUser { name: string | null; email: string; role: string; }
 
 export function MainNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string | null; email: string; role: string } | null>(null);
+  const [user, setUser] = useState<NavUser | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -29,34 +29,118 @@ export function MainNav() {
       .catch(() => null);
   }, []);
 
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/auth/login';
+  // Click outside closes menu
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // ESC closes menu
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  const handleLogout = () => {
+    window.location.href = '/api/auth/signout';
   };
 
+  // Nav routes — Perfil is in user menu only, not here
   const routes = [
-    { href: '/home',            label: 'Home',          active: pathname === '/home' },
-    { href: '/certifications',  label: 'Certificações', active: pathname.startsWith('/certifications') },
-    { href: '/roadmap',         label: 'Roadmap',       active: pathname === '/roadmap' },
-    { href: '/resources',       label: 'Recursos',      active: pathname === '/resources' },
-    { href: '/market',          label: 'Mercado',       active: pathname === '/market' },
-    { href: '/profile',         label: 'Perfil',        active: pathname === '/profile' },
+    { href: '/home',           label: 'Home',          active: pathname === '/home' },
+    { href: '/certifications', label: 'Certificações', active: pathname.startsWith('/certifications') },
+    { href: '/roadmap',        label: 'Roadmap',       active: pathname === '/roadmap' },
+    { href: '/resources',      label: 'Recursos',      active: pathname === '/resources' },
+    { href: '/market',         label: 'Mercado',       active: pathname === '/market' },
   ];
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-      <div className="flex h-16 items-center px-4 gap-3">
+  const UserAvatar = () => (
+    <div ref={menuRef} style={{ position: 'relative', flexShrink: 0 }}>
+      <button
+        onClick={() => setMenuOpen(v => !v)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 7,
+          padding: '4px 10px 4px 4px', borderRadius: 10, cursor: 'pointer',
+          background: menuOpen ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.03)',
+          border: `1px solid ${menuOpen ? 'rgba(139,92,246,0.3)' : 'rgba(255,255,255,0.08)'}`,
+          transition: 'all 150ms',
+        }}
+      >
+        <div style={{ width: 26, height: 26, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid rgba(139,92,246,0.4)', flexShrink: 0 }}>
+          <img src="/merlin.jpg" alt="Merlin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <span style={{ fontFamily: '"Space Grotesk",sans-serif', fontSize: 12, fontWeight: 600, color: '#e6eef8' }}>
+          {user?.name ?? 'Merlin'}
+        </span>
+      </button>
 
-        {/* Logo — fixed width */}
-        <Link href="/home" className="flex items-center gap-2 flex-shrink-0">
-          <img src="/logo.png" alt="CYBERSEC LAB"
-            style={{ width: 30, height: 30, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
-          <div className="flex items-baseline gap-1">
-            <span className="font-bold text-base whitespace-nowrap" style={{ letterSpacing: '-0.01em' }}>
-              CyberSec Lab
-            </span>
-            <span style={{ fontSize: 14, lineHeight: 1 }} title="Laboratório conceitual">🧪</span>
+      {menuOpen && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+          background: 'rgba(8,6,20,0.97)',
+          border: '1px solid rgba(139,92,246,0.15)',
+          borderRadius: 12, padding: 6, minWidth: 200,
+          backdropFilter: 'blur(24px)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+          zIndex: 200,
+          animation: 'cp-fade-in 0.12s ease-out both',
+        }}>
+          {/* User info */}
+          <div style={{ padding: '10px 12px 12px', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 6 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#e8e4ff', fontFamily: '"Space Grotesk",sans-serif' }}>
+              {user?.name ?? 'Merlin'}
+            </div>
+            <div style={{ fontSize: 10, color: 'rgba(255,140,40,0.6)', fontFamily: '"JetBrains Mono",monospace', marginTop: 3 }}>
+              {user?.email}
+            </div>
           </div>
+
+          {/* Perfil */}
+          <button
+            onClick={() => { setMenuOpen(false); router.push('/profile'); }}
+            style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: 'rgba(200,195,240,0.7)', fontSize: 13, fontFamily: '"Inter",sans-serif', transition: 'all 150ms', textAlign: 'left' }}
+            onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(139,92,246,0.08)'; el.style.color = '#e8e4ff'; }}
+            onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = 'rgba(200,195,240,0.7)'; }}
+          >
+            <span style={{ fontSize: 13 }}>◉</span> Perfil
+          </button>
+
+          {/* Sign out */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 6, paddingTop: 6 }}>
+            <button
+              onClick={handleLogout}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: 'rgba(255,100,100,0.7)', fontSize: 13, fontFamily: '"Inter",sans-serif', transition: 'all 150ms', textAlign: 'left' }}
+              onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(229,62,62,0.08)'; el.style.color = '#ff7070'; }}
+              onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = 'rgba(255,100,100,0.7)'; }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <div className="container flex h-16 items-center gap-3">
+
+        {/* Logo */}
+        <Link href="/home" className="flex min-w-0 items-center gap-2 flex-shrink-0">
+          <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }} />
+          <span className="truncate font-bold text-lg sm:text-xl">CyberSec Lab</span>
+          <span style={{ fontSize: 14 }} title="Laboratório conceitual">🧪</span>
         </Link>
 
         {/* Desktop nav */}
@@ -70,7 +154,7 @@ export function MainNav() {
           ))}
         </nav>
 
-        {/* Desktop right: Search + Toggle + Portal */}
+        {/* Desktop right: Search + Toggle + Threat Universe + User */}
         <div className="hidden md:flex items-center gap-2 ml-auto">
           <GlobalSearch />
           <ThemeToggle />
@@ -80,9 +164,10 @@ export function MainNav() {
               Threat Universe
             </Button>
           </Link>
+          <UserAvatar />
         </div>
 
-        {/* Mobile: Search fills gap, Hamburger right-aligned next to it */}
+        {/* Mobile: Search + Hamburger + User avatar */}
         <div className="md:hidden flex items-center gap-2 ml-auto">
           <GlobalSearch fullWidth />
           <DropdownMenu>
@@ -100,8 +185,14 @@ export function MainNav() {
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}
-                className="flex items-center justify-between cursor-default">
+              <DropdownMenuItem asChild>
+                <Link href="/profile" className="w-full">◉ Perfil</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleLogout} className="text-red-400 cursor-pointer">
+                Sign out
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center justify-between cursor-default">
                 <span className="text-sm text-muted-foreground">Tema</span>
                 <ThemeToggle />
               </DropdownMenuItem>
