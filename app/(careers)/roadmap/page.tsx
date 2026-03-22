@@ -249,7 +249,7 @@ export default function RoadmapPage() {
   const filteredAll = ALL_CERTS.filter(c => c.level === allLevel);
 
   const S = {
-    card: { background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12 },
+    card: { background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)', borderRadius: 12 },
     mono: { fontFamily: '"JetBrains Mono", monospace' },
     grotesk: { fontFamily: '"Space Grotesk", sans-serif' },
   };

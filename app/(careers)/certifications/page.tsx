@@ -83,21 +83,21 @@ function CertCard({ cert }: { cert: Cert }) {
     <Link href={`/certifications/${cert.slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
       <div style={{
         height: '100%', display: 'flex', flexDirection: 'column',
-        background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)',
+        background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)',
         borderRadius: 14, padding: '20px', cursor: 'pointer',
         transition: 'all 200ms ease', position: 'relative', overflow: 'hidden',
       }}
       onMouseEnter={e => {
         const el = e.currentTarget as HTMLElement;
         el.style.borderColor = `${meta.color}40`;
-        el.style.background = `rgba(12,8,28,0.95)`;
+        el.style.background = 'var(--ds-card)';
         el.style.transform = 'translateY(-2px)';
         el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px ${meta.color}20`;
       }}
       onMouseLeave={e => {
         const el = e.currentTarget as HTMLElement;
         el.style.borderColor = 'rgba(255,255,255,0.07)';
-        el.style.background = 'rgba(12,8,28,0.8)';
+        el.style.background = 'var(--ds-card)';
         el.style.transform = 'translateY(0)';
         el.style.boxShadow = 'none';
       }}

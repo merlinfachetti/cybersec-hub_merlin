@@ -114,7 +114,7 @@ export default function TeamsPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
           {TEAMS.map(team => (
             <div key={team.id} id={team.id} style={{
-              background: 'rgba(12,8,28,0.8)',
+              background: 'var(--ds-card)',
               border: `1px solid rgba(${team.rgb},0.2)`,
               borderRadius: 16, overflow: 'hidden',
             }}>
@@ -204,9 +204,9 @@ export default function TeamsPage() {
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {team.certs.map(cert => (
                         <Link key={cert} href={`/certifications?search=${cert}`} style={{ textDecoration: 'none' }}>
-                          <span style={{ ...S.mono, fontSize: 10, padding: '3px 9px', borderRadius: 5, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(155,176,198,0.6)', cursor: 'pointer', transition: 'all 150ms' }}
-                            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = `rgba(${team.rgb},0.1)`; el.style.color = team.color; el.style.borderColor = `rgba(${team.rgb},0.3)`; }}
-                            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(255,255,255,0.04)'; el.style.color = 'rgba(155,176,198,0.6)'; el.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                          <span style={{ ...S.mono, fontSize: 10, padding: '3px 9px', borderRadius: 5, background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.25)', color: '#22c55e', cursor: 'pointer', transition: 'all 150ms' }}
+                            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(34,197,94,0.16)'; el.style.borderColor = 'rgba(34,197,94,0.5)'; el.style.boxShadow = '0 0 8px rgba(34,197,94,0.15)'; }}
+                            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(34,197,94,0.07)'; el.style.borderColor = 'rgba(34,197,94,0.25)'; el.style.boxShadow = 'none'; }}
                           >
                             {cert}
                           </span>

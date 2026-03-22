@@ -250,7 +250,7 @@ function ResourcesPageInner() {
               <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
                 <div style={{
                   height: '100%', display: 'flex', flexDirection: 'column',
-                  background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)',
+                  background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)',
                   borderRadius: 12, padding: '18px', cursor: 'pointer',
                   transition: 'all 200ms', position: 'relative', overflow: 'hidden',
                 }}

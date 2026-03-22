@@ -56,7 +56,7 @@ export default function ProfilePage() {
   const totalHours = tasks.reduce((s, t) => s + (t.done ? t.hours : 0), 0);
 
   const S = {
-    card: { background: 'rgba(12,8,28,0.8)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12 },
+    card: { background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)', borderRadius: 12 },
     mono: { fontFamily: '"JetBrains Mono", monospace' as const },
     grotesk: { fontFamily: '"Space Grotesk", sans-serif' as const },
   };
@@ -215,7 +215,7 @@ export default function ProfilePage() {
               {tasks.map(t => (
                 <div key={t.id} onClick={() => toggleTask(t.id)} style={{
                   ...S.card, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-                  background: t.done ? 'rgba(34,197,94,0.05)' : 'rgba(12,8,28,0.8)',
+                  background: t.done ? 'rgba(34,197,94,0.05)' : 'var(--ds-card)',
                   borderColor: t.done ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.07)',
                   transition: 'all 150ms',
                 }}>

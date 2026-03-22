@@ -221,7 +221,7 @@ function CertDetailContent({ slug }: { slug: string }) {
   const S = {
     mono: { fontFamily: '"JetBrains Mono", monospace' as const },
     grotesk: { fontFamily: '"Space Grotesk", sans-serif' as const },
-    card: { background: 'rgba(12,8,28,0.85)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '20px' },
+    card: { background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)', borderRadius: 12, padding: '20px' },
   };
 
   if (!cert) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MerlinModal } from '@/components/merlin-modal';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
@@ -95,6 +95,16 @@ function FooterGroup({ title, links }: { title: string; links: { label: string; 
 export function SiteFooter() {
   const [expanded, setExpanded] = useState(false);
   const [showMerlin, setShowMerlin] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.user?.role && setUserRole(d.user.role))
+      .catch(() => null);
+  }, []);
+
+  const canSeeDocs = userRole === 'ADMIN' || userRole === 'DEV';
 
   return (
     <footer style={{ background: '#0a0814', borderTop: '1px solid rgba(139,92,246,0.12)', marginTop: 'auto' }}>
