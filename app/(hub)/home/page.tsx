@@ -46,7 +46,7 @@ const NAV_SECTIONS = [
     description: 'Plano de carreira personalizado do seu perfil atual para Security Engineer.',
     href: '/roadmap',
     icon: <Map size={20} />,
-    color: '#22c55e',
+    color: 'var(--ds-ok)',
     rgb: '34,197,94',
     badge: 'CAREERS',
   },
@@ -57,7 +57,7 @@ const NAV_SECTIONS = [
     description: 'Cursos, labs, livros e materiais de estudo para cada certificação.',
     href: '/resources',
     icon: <BookOpen size={20} />,
-    color: '#f59e0b',
+    color: 'var(--ds-warn)',
     rgb: '245,158,11',
     badge: 'CAREERS',
   },
@@ -102,7 +102,7 @@ export default function HomePage() {
   const rest = NAV_SECTIONS.filter(s => !s.featured);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px, 5vw, 48px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
@@ -114,7 +114,7 @@ export default function HomePage() {
           <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 32, marginBottom: 6 }}>
             {greeting}{user?.name ? `, ${user.name}` : ''}.
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(155,176,198,0.6)', maxWidth: 480 }}>
+          <p style={{ fontSize: 14, color: 'var(--ds-body-muted)', maxWidth: 480 }}>
             Escolha onde quer ir. O universo está aguardando.
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                    <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 20, color: '#f0eeff' }}>{featured.label}</span>
+                    <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 20, color: 'var(--ds-title-card, #f0eeff)' }}>{featured.label}</span>
                     <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: `rgba(${featured.rgb},0.7)`, background: `rgba(${featured.rgb},0.1)`, border: `1px solid rgba(${featured.rgb},0.2)`, borderRadius: 4, padding: '2px 8px', letterSpacing: '0.1em' }}>{featured.badge}</span>
                   </div>
                   <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.7)', maxWidth: 480, lineHeight: 1.6 }}>{featured.description}</p>
@@ -199,13 +199,13 @@ export default function HomePage() {
                       {section.icon}
                     </div>
                     <div>
-                      <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 15, color: '#e6eef8' }}>{section.label}</div>
+                      <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 15, color: 'var(--ds-title-section, #e6eef8)' }}>{section.label}</div>
                       <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: `rgba(${section.rgb},0.6)`, letterSpacing: '0.1em', marginTop: 2 }}>{section.badge}</div>
                     </div>
                   </div>
-                  <ChevronRight size={14} style={{ color: 'rgba(155,176,198,0.3)', marginTop: 4 }} />
+                  <ChevronRight size={14} style={{ color: 'var(--ds-mono-dim)', marginTop: 4 }} />
                 </div>
-                <p style={{ fontSize: 12, color: 'rgba(155,176,198,0.55)', lineHeight: 1.65 }}>{section.description}</p>
+                <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.65 }}>{section.description}</p>
               </div>
             </Link>
           ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
+import { ErrorModal } from '@/components/error-modal';
 
 // Light mode is handled entirely in app/globals.css via html.light selectors.
 // next-themes adds class="light" to <html> instantly on theme change,
@@ -14,6 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       storageKey="cp-theme"
     >
       {children}
+      <ErrorModal />
     </ThemeProvider>
   );
 }

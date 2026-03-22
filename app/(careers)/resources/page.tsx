@@ -147,9 +147,9 @@ const TYPES = [
 
 const LEVELS_F = [
   { id: 'all',         label: 'Todos os Níveis' },
-  { id: 'ENTRY',       label: 'Entry',          color: '#22c55e' },
+  { id: 'ENTRY',       label: 'Entry',          color: 'var(--ds-ok)' },
   { id: 'INTERMEDIATE',label: 'Intermediate',   color: '#3b82f6' },
-  { id: 'ADVANCED',    label: 'Advanced',       color: '#f59e0b' },
+  { id: 'ADVANCED',    label: 'Advanced',       color: 'var(--ds-warn)' },
 ];
 
 function ResourcesPageInner() {
@@ -180,14 +180,14 @@ function ResourcesPageInner() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
           <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / STUDY RESOURCES</div>
-          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: '#f0eeff', marginBottom: 6 }}>Study Resources</h1>
-          <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)', maxWidth: 520 }}>
+          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 6 }}>Study Resources</h1>
+          <p style={{ fontSize: 13, color: 'var(--ds-body-dim)', maxWidth: 520 }}>
             Recursos curados — cursos, labs e guias para cada certificação. Dados baseados em avaliações reais da comunidade.
           </p>
         </div>
@@ -198,7 +198,7 @@ function ResourcesPageInner() {
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Buscar por cert, provider, tipo..."
-              style={{ width: '100%', padding: '9px 12px', borderRadius: 9, background: 'rgba(15,10,35,0.8)', border: '1px solid rgba(139,92,246,0.2)', color: '#e6eef8', fontSize: 13, fontFamily: '"Inter", sans-serif', outline: 'none' }}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: 9, background: 'rgba(15,10,35,0.8)', border: '1px solid rgba(139,92,246,0.2)', color: 'var(--ds-title-section, #e6eef8)', fontSize: 13, fontFamily: '"Inter", sans-serif', outline: 'none' }}
             />
           </div>
           {/* Type */}
@@ -238,7 +238,7 @@ function ResourcesPageInner() {
         </div>
 
         {/* Count */}
-        <div style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.35)', marginBottom: 20 }}>
+        <div style={{ ...S.mono, fontSize: 11, color: 'var(--ds-mono-dim)', marginBottom: 20 }}>
           {filtered.length} recurso{filtered.length !== 1 ? 's' : ''} · {filtered.filter(r => r.cost === 0).length} gratuitos
         </div>
 
@@ -265,22 +265,22 @@ function ResourcesPageInner() {
                       <span style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: r.cost === 0 ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.1)', color: r.cost === 0 ? '#22c55e' : '#f59e0b', border: `1px solid ${r.cost === 0 ? 'rgba(34,197,94,0.25)' : 'rgba(245,158,11,0.25)'}` }}>
                         {r.cost === 0 ? 'FREE' : `$${r.cost}`}
                       </span>
-                      <span style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: 'rgba(255,255,255,0.05)', color: 'rgba(155,176,198,0.5)' }}>
+                      <span style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: 'rgba(255,255,255,0.05)', color: 'var(--ds-body-dim)' }}>
                         {r.type}
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                      <Star size={11} style={{ color: '#f59e0b' }} />
-                      <span style={{ ...S.mono, fontSize: 10, color: '#f59e0b' }}>{r.rating}</span>
+                      <Star size={11} style={{ color: 'var(--ds-warn)' }} />
+                      <span style={{ ...S.mono, fontSize: 10, color: 'var(--ds-warn)' }}>{r.rating}</span>
                     </div>
                   </div>
 
                   {/* Title */}
-                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 14, color: '#f0eeff', marginBottom: 3, lineHeight: 1.3 }}>{r.title}</div>
-                  <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)', marginBottom: 8 }}>{r.provider} · {r.cert}</div>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 14, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 3, lineHeight: 1.3 }}>{r.title}</div>
+                  <div style={{ fontSize: 11, color: 'var(--ds-body-dim)', marginBottom: 8 }}>{r.provider} · {r.cert}</div>
 
                   {/* Description */}
-                  <p style={{ fontSize: 12, color: 'rgba(155,176,198,0.6)', lineHeight: 1.6, flex: 1, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.6, flex: 1, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {r.desc}
                   </p>
 
@@ -289,8 +289,8 @@ function ResourcesPageInner() {
                     <div style={{ display: 'flex', gap: 12 }}>
                       {r.hours > 0 && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <Clock size={11} style={{ color: 'rgba(155,176,198,0.35)' }} />
-                          <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>{r.hours}h</span>
+                          <Clock size={11} style={{ color: 'var(--ds-mono-dim)' }} />
+                          <span style={{ ...S.mono, fontSize: 10, color: 'var(--ds-body-dim)' }}>{r.hours}h</span>
                         </div>
                       )}
                     </div>
@@ -308,7 +308,7 @@ function ResourcesPageInner() {
 
 export default function ResourcesPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0b0f14' }} />}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)' }} />}>
       <ResourcesPageInner />
     </Suspense>
   );

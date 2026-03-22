@@ -31,9 +31,9 @@ const STUDY_PLAN = [
 
 const QUICK_STATS = [
   { label: 'Estudo hoje', value: '2h 15m', icon: <Clock size={16} />, color: '#3b82f6' },
-  { label: 'Streak', value: '12 dias', icon: <Zap size={16} />, color: '#f59e0b' },
+  { label: 'Streak', value: '12 dias', icon: <Zap size={16} />, color: 'var(--ds-warn)' },
   { label: 'Labs feitos', value: '8', icon: <BarChart2 size={16} />, color: '#8b5cf6' },
-  { label: 'Próxima meta', value: 'SEC+', icon: <Target size={16} />, color: '#22c55e' },
+  { label: 'Próxima meta', value: 'SEC+', icon: <Target size={16} />, color: 'var(--ds-ok)' },
 ];
 
 export default function ProfilePage() {
@@ -69,7 +69,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
@@ -79,10 +79,10 @@ export default function ProfilePage() {
             <div style={{ position: 'absolute', bottom: 2, right: 2, width: 14, height: 14, borderRadius: '50%', background: '#22c55e', border: '2px solid #0b0f14', boxShadow: '0 0 6px #22c55e' }} />
           </div>
           <div>
-            <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 24, color: '#f0eeff', margin: 0 }}>
+            <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 24, color: 'var(--ds-title-card, #f0eeff)', margin: 0 }}>
               {user?.name ?? 'Merlin'}
             </h1>
-            <div style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--ds-body-dim)', marginTop: 2 }}>
               {user?.email} · <span style={{ color: '#8b5cf6', fontWeight: 600 }}>{user?.role?.toUpperCase() ?? 'ADMIN'}</span>
             </div>
             <div style={{ ...S.mono, fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '0.1em', marginTop: 4 }}>
@@ -97,8 +97,8 @@ export default function ProfilePage() {
             <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ color: s.color, flexShrink: 0 }}>{s.icon}</div>
               <div>
-                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 18, color: '#f0eeff' }}>{s.value}</div>
-                <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.06em' }}>{s.label}</div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 18, color: 'var(--ds-title-card, #f0eeff)' }}>{s.value}</div>
+                <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-body-dim)', letterSpacing: '0.06em' }}>{s.label}</div>
               </div>
             </div>
           ))}
@@ -124,19 +124,19 @@ export default function ProfilePage() {
               {/* Progress towards SEC+ */}
               <div style={{ ...S.card, padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>CompTIA Security+ SY0-701</div>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>CompTIA Security+ SY0-701</div>
                   <span style={{ ...S.mono, fontSize: 10, color: '#3b82f6', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', padding: '2px 8px', borderRadius: 4 }}>STUDYING</span>
                 </div>
                 <div style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)' }}>Progresso</span>
+                    <span style={{ fontSize: 12, color: 'var(--ds-body-dim)' }}>Progresso</span>
                     <span style={{ ...S.mono, fontSize: 11, color: '#3b82f6', fontWeight: 600 }}>45%</span>
                   </div>
                   <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3 }}>
                     <div style={{ height: '100%', width: '45%', background: 'linear-gradient(90deg,#3b82f6,#8b5cf6)', borderRadius: 3 }} />
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'rgba(155,176,198,0.45)' }}>
+                <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'var(--ds-body-dim)' }}>
                   <span>80h estudadas</span>
                   <span>~40h restantes</span>
                   <span>Meta: 90 dias</span>
@@ -146,8 +146,8 @@ export default function ProfilePage() {
               {/* Study plan preview */}
               <div style={{ ...S.card, padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>Tarefas de Hoje</div>
-                  <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>{completedTasks}/{tasks.length} · {totalHours}h</span>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>Tarefas de Hoje</div>
+                  <span style={{ ...S.mono, fontSize: 10, color: 'var(--ds-body-dim)' }}>{completedTasks}/{tasks.length} · {totalHours}h</span>
                 </div>
                 {tasks.slice(0,4).map(t => (
                   <div key={t.id} onClick={() => toggleTask(t.id)} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}>
@@ -156,7 +156,7 @@ export default function ProfilePage() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, color: t.done ? 'rgba(155,176,198,0.4)' : '#e6eef8', textDecoration: t.done ? 'line-through' : 'none' }}>{t.task}</div>
-                      <div style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.35)', marginTop: 2 }}>{t.cert} · {t.hours}h</div>
+                      <div style={{ ...S.mono, fontSize: 10, color: 'var(--ds-mono-dim)', marginTop: 2 }}>{t.cert} · {t.hours}h</div>
                     </div>
                   </div>
                 ))}
@@ -172,12 +172,12 @@ export default function ProfilePage() {
                 <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>PRÓXIMOS PASSOS</div>
                 {[
                   { n: 1, text: 'Completar Security+ (45% feito, ~40h)', color: '#3b82f6' },
-                  { n: 2, text: 'Agendar exame (2-3 sem após conclusão)', color: '#f59e0b' },
-                  { n: 3, text: 'Iniciar prep eJPT para red team básico', color: '#22c55e' },
+                  { n: 2, text: 'Agendar exame (2-3 sem após conclusão)', color: 'var(--ds-warn)' },
+                  { n: 3, text: 'Iniciar prep eJPT para red team básico', color: 'var(--ds-ok)' },
                 ].map(r => (
                   <div key={r.n} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                     <span style={{ ...S.mono, fontSize: 11, color: r.color, fontWeight: 700, minWidth: 16 }}>{r.n}.</span>
-                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.65)', lineHeight: 1.5 }}>{r.text}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.5 }}>{r.text}</span>
                   </div>
                 ))}
               </div>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
                   { href: '/resources', label: 'Study Resources', icon: <BookOpen size={12} /> },
                   { href: '/threat-universe', label: '← Threat Universe', icon: <Shield size={12} /> },
                 ].map(l => (
-                  <Link key={l.href} href={l.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', textDecoration: 'none', color: 'rgba(155,176,198,0.6)', fontSize: 13, transition: 'color 150ms' }}
+                  <Link key={l.href} href={l.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', textDecoration: 'none', color: 'var(--ds-body-muted)', fontSize: 13, transition: 'color 150ms' }}
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#e6eef8'}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.6)'}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{l.icon}{l.label}</div>
@@ -206,10 +206,10 @@ export default function ProfilePage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <div>
-                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: '#f0eeff' }}>Plano de Estudo Interativo</div>
-                <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)', marginTop: 2 }}>Clique em cada tarefa para marcar como concluída</div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: 'var(--ds-title-card, #f0eeff)' }}>Plano de Estudo Interativo</div>
+                <div style={{ fontSize: 12, color: 'var(--ds-body-dim)', marginTop: 2 }}>Clique em cada tarefa para marcar como concluída</div>
               </div>
-              <div style={{ ...S.mono, fontSize: 11, color: '#22c55e' }}>{completedTasks}/{tasks.length} concluídas · {totalHours}h</div>
+              <div style={{ ...S.mono, fontSize: 11, color: 'var(--ds-ok)' }}>{completedTasks}/{tasks.length} concluídas · {totalHours}h</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {tasks.map(t => (
@@ -227,7 +227,7 @@ export default function ProfilePage() {
                   </div>
                   <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
                     <span style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', background: 'rgba(139,92,246,0.08)', padding: '2px 8px', borderRadius: 4 }}>{t.cert}</span>
-                    <span style={{ ...S.mono, fontSize: 10, color: 'rgba(155,176,198,0.35)' }}>{t.hours}h</span>
+                    <span style={{ ...S.mono, fontSize: 10, color: 'var(--ds-mono-dim)' }}>{t.hours}h</span>
                   </div>
                 </div>
               ))}
@@ -238,7 +238,7 @@ export default function ProfilePage() {
         {/* ── CERTS ── */}
         {activeSection === 'certs' && (
           <div>
-            <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: '#f0eeff', marginBottom: 16 }}>Minhas Certificações</div>
+            <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 16 }}>Minhas Certificações</div>
             {[
               { name: 'CompTIA Security+', provider: 'CompTIA', status: 'STUDYING', progress: 45, hours: 80 },
               { name: 'CEH', provider: 'EC-Council', status: 'INTERESTED', progress: 0, hours: 0 },
@@ -246,8 +246,8 @@ export default function ProfilePage() {
               <div key={c.name} style={{ ...S.card, padding: '18px 20px', marginBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: c.progress > 0 ? 12 : 0 }}>
                   <div>
-                    <div style={{ ...S.grotesk, fontWeight: 600, fontSize: 15, color: '#f0eeff' }}>{c.name}</div>
-                    <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)', marginTop: 2 }}>{c.provider}</div>
+                    <div style={{ ...S.grotesk, fontWeight: 600, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ds-body-dim)', marginTop: 2 }}>{c.provider}</div>
                   </div>
                   <span style={{ ...S.mono, fontSize: 10, color: STATUS_COLOR[c.status], background: `${STATUS_COLOR[c.status]}18`, border: `1px solid ${STATUS_COLOR[c.status]}40`, padding: '3px 10px', borderRadius: 5 }}>
                     {STATUS_LABEL[c.status]}
@@ -256,13 +256,13 @@ export default function ProfilePage() {
                 {c.progress > 0 && (
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>Progresso</span>
+                      <span style={{ fontSize: 11, color: 'var(--ds-body-dim)' }}>Progresso</span>
                       <span style={{ ...S.mono, fontSize: 11, color: STATUS_COLOR[c.status] }}>{c.progress}%</span>
                     </div>
                     <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
                       <div style={{ height: '100%', width: `${c.progress}%`, background: STATUS_COLOR[c.status], borderRadius: 2, transition: 'width 0.6s ease' }} />
                     </div>
-                    <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.35)', marginTop: 6 }}>{c.hours}h estudadas</div>
+                    <div style={{ fontSize: 11, color: 'var(--ds-mono-dim)', marginTop: 6 }}>{c.hours}h estudadas</div>
                   </div>
                 )}
               </div>
@@ -286,7 +286,7 @@ export default function ProfilePage() {
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: t.color, boxShadow: `0 0 8px ${t.color}` }} />
                   <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 13, color: t.color }}>{t.team}</span>
                 </div>
-                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: '#f0eeff', marginBottom: 2 }}>{t.level}</div>
+                <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 2 }}>{t.level}</div>
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ height: 5, background: 'rgba(255,255,255,0.06)', borderRadius: 3, marginBottom: 4 }}>
                     <div style={{ height: '100%', width: `${t.score}%`, background: t.color, borderRadius: 3 }} />
@@ -297,7 +297,7 @@ export default function ProfilePage() {
                   {t.skills.map(s => (
                     <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 0' }}>
                       <div style={{ width: 4, height: 4, borderRadius: '50%', background: t.color, flexShrink: 0 }} />
-                      <span style={{ fontSize: 11, color: 'rgba(155,176,198,0.6)' }}>{s}</span>
+                      <span style={{ fontSize: 11, color: 'var(--ds-body-muted)' }}>{s}</span>
                     </div>
                   ))}
                 </div>

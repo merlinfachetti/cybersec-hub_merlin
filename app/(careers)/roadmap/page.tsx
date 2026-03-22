@@ -75,7 +75,7 @@ const CAREER_PATHS = {
   beginner: {
     id: 'beginner',
     label: 'Beginner',
-    color: '#22c55e',
+    color: 'var(--ds-ok)',
     rgb: '34,197,94',
     desc: 'Sem experiência em security · 0–12 meses',
     icon: '🌱',
@@ -85,7 +85,7 @@ const CAREER_PATHS = {
     steps: [
       {
         order: 1, name: 'CompTIA Security+', acronym: 'SEC+', slug: 'comptia-security-plus',
-        provider: 'CompTIA', level: 'ENTRY', color: '#22c55e',
+        provider: 'CompTIA', level: 'ENTRY', color: 'var(--ds-ok)',
         hours: '80–120h', cost: '$392', duration: '2–3 meses',
         why: 'Certificação baseline mais reconhecida mundialmente. Exigida pelo DoD dos EUA. Abre portas para qualquer role entry-level em security.',
         topics: ['Threats & Attacks', 'Network Security', 'Cryptography', 'Identity Management', 'Risk Management'],
@@ -98,7 +98,7 @@ const CAREER_PATHS = {
       },
       {
         order: 2, name: 'eJPT', acronym: 'eJPT', slug: 'ejpt',
-        provider: 'INE Security', level: 'ENTRY', color: '#22c55e',
+        provider: 'INE Security', level: 'ENTRY', color: 'var(--ds-ok)',
         hours: '60–80h', cost: '$200', duration: '1–2 meses',
         why: 'Certificação prática de pentest para quem quer explorar o lado ofensivo. Exame 100% labs — sem questões de múltipla escolha.',
         topics: ['Networking Fundamentals', 'Web App Testing', 'Host Discovery', 'Exploitation Basics', 'Reporting'],
@@ -168,7 +168,7 @@ const CAREER_PATHS = {
   advanced: {
     id: 'advanced',
     label: 'Advanced',
-    color: '#f59e0b',
+    color: 'var(--ds-warn)',
     rgb: '245,158,11',
     desc: '3–6 anos de experiência · múltiplas certs',
     icon: '🔥',
@@ -178,7 +178,7 @@ const CAREER_PATHS = {
     steps: [
       {
         order: 1, name: 'OSCP', acronym: 'OSCP', slug: 'oscp',
-        provider: 'Offensive Security', level: 'ADVANCED', color: '#f59e0b',
+        provider: 'Offensive Security', level: 'ADVANCED', color: 'var(--ds-warn)',
         hours: '300–500h', cost: '$1.499', duration: '3–6 meses',
         why: 'A certificação ofensiva mais respeitada do mercado. Exame prático de 24h em rede isolada. "Try Harder" é o mantra. Diferencia candidatos seriamente.',
         topics: ['Buffer Overflows', 'Active Directory Attacks', 'Web App Exploitation', 'Post-Exploitation', 'Pivoting & Tunneling', 'Privilege Escalation'],
@@ -191,7 +191,7 @@ const CAREER_PATHS = {
       },
       {
         order: 2, name: 'CISSP', acronym: 'CISSP', slug: 'cissp',
-        provider: '(ISC)²', level: 'ADVANCED', color: '#f59e0b',
+        provider: '(ISC)²', level: 'ADVANCED', color: 'var(--ds-warn)',
         hours: '200–300h', cost: '$749', duration: '4–6 meses',
         why: 'O padrão ouro para liderança em security. Cobre 8 domínios completos. Exigido para roles de CISO, Security Architect e posições sênior em grandes empresas.',
         topics: ['Security & Risk Management', 'Asset Security', 'Security Architecture', 'Network Security', 'IAM', 'Security Assessment', 'Security Operations', 'Software Security'],
@@ -204,7 +204,7 @@ const CAREER_PATHS = {
       },
       {
         order: 3, name: 'CISM', acronym: 'CISM', slug: 'cism',
-        provider: 'ISACA', level: 'ADVANCED', color: '#f59e0b',
+        provider: 'ISACA', level: 'ADVANCED', color: 'var(--ds-warn)',
         hours: '150–200h', cost: '$575', duration: '3–4 meses',
         why: 'Complemento ao CISSP com foco em gestão. Muito valorizado em empresas europeias e em roles que combinam técnica com negócio.',
         topics: ['IS Governance', 'Risk Management', 'Security Program Development & Management', 'Incident Management'],
@@ -220,10 +220,10 @@ const CAREER_PATHS = {
 };
 
 const CERT_LEVELS = [
-  { id: 'ENTRY',        label: 'Entry',        color: '#22c55e' },
+  { id: 'ENTRY',        label: 'Entry',        color: 'var(--ds-ok)' },
   { id: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
-  { id: 'ADVANCED',     label: 'Advanced',     color: '#f59e0b' },
-  { id: 'EXPERT',       label: 'Expert',       color: '#ef4444' },
+  { id: 'ADVANCED',     label: 'Advanced',     color: 'var(--ds-warn)' },
+  { id: 'EXPERT',       label: 'Expert',       color: 'var(--ds-danger)' },
 ];
 
 const ALL_CERTS = [
@@ -255,7 +255,7 @@ export default function RoadmapPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
@@ -263,10 +263,10 @@ export default function RoadmapPage() {
           <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>
             CAREERS / ROADMAP
           </div>
-          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: '#f0eeff', marginBottom: 6 }}>
+          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 6 }}>
             Certification Roadmap
           </h1>
-          <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.55)', maxWidth: 540 }}>
+          <p style={{ fontSize: 13, color: 'var(--ds-body-muted)', maxWidth: 540 }}>
             Planos de carreira baseados no mercado real — do iniciante ao especialista. Cada passo tem recursos, custos e horas estimadas.
           </p>
         </div>
@@ -304,7 +304,7 @@ export default function RoadmapPage() {
                     <span style={{ fontSize: 16 }}>{p.icon}</span>
                     <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 14, color: activePath === p.id ? p.color : '#e6eef8' }}>{p.label}</span>
                   </div>
-                  <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.45)', letterSpacing: '0.04em', lineHeight: 1.5 }}>{p.desc}</div>
+                  <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-body-dim)', letterSpacing: '0.04em', lineHeight: 1.5 }}>{p.desc}</div>
                   <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
                     <span style={{ ...S.mono, fontSize: 9, color: `${p.color}80` }}>{p.totalHours}</span>
                     <span style={{ ...S.mono, fontSize: 9, color: `${p.color}80` }}>{p.totalCost}</span>
@@ -320,16 +320,16 @@ export default function RoadmapPage() {
                   <span style={{ fontSize: 24 }}>{path.icon}</span>
                   <div>
                     <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 16, color: path.color }}>{path.label} Path</div>
-                    <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.55)', marginTop: 2 }}>{path.goal}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ds-body-muted)', marginTop: 2 }}>{path.goal}</div>
                   </div>
                   <div style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ ...S.mono, fontSize: 11, color: path.color }}>{path.totalHours}</div>
-                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>total horas</div>
+                      <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)' }}>total horas</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ ...S.mono, fontSize: 11, color: path.color }}>{path.totalCost}</div>
-                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>total custo</div>
+                      <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)' }}>total custo</div>
                     </div>
                   </div>
                 </div>
@@ -350,23 +350,23 @@ export default function RoadmapPage() {
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: '#f0eeff' }}>{step.acronym}</span>
-                            <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)' }}>{step.name}</span>
-                            <span style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.35)' }}>by {step.provider}</span>
+                            <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>{step.acronym}</span>
+                            <span style={{ fontSize: 12, color: 'var(--ds-body-dim)' }}>{step.name}</span>
+                            <span style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)' }}>by {step.provider}</span>
                           </div>
                         </div>
                         <div className="step-header-meta" style={{ display: 'flex', gap: 16, alignItems: 'center', flexShrink: 0 }}>
                           <span style={{ ...S.mono, fontSize: 11, color: step.color }}>{step.cost}</span>
-                          <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.hours}</span>
-                          <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{step.duration}</span>
-                          <ChevronRight size={14} style={{ color: 'rgba(155,176,198,0.3)', transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 200ms' }} />
+                          <span style={{ ...S.mono, fontSize: 11, color: 'var(--ds-body-dim)' }}>{step.hours}</span>
+                          <span style={{ ...S.mono, fontSize: 11, color: 'var(--ds-body-dim)' }}>{step.duration}</span>
+                          <ChevronRight size={14} style={{ color: 'var(--ds-mono-dim)', transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 200ms' }} />
                         </div>
                       </button>
 
                       {/* Expanded content */}
                       <div style={{ maxHeight: isOpen ? '800px' : '0', overflow: 'hidden', transition: 'max-height 350ms cubic-bezier(0.4,0,0.2,1)' }}>
                         <div style={{ padding: '0 20px 20px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                          <p style={{ fontSize: 13, color: 'rgba(220,215,240,0.7)', lineHeight: 1.65, margin: '14px 0 16px' }}>{step.why}</p>
+                          <p style={{ fontSize: 13, color: 'var(--ds-body)', lineHeight: 1.65, margin: '14px 0 16px' }}>{step.why}</p>
 
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                             {/* Topics */}
@@ -376,7 +376,7 @@ export default function RoadmapPage() {
                                 {step.topics.map(t => (
                                   <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: step.color, flexShrink: 0 }} />
-                                    <span style={{ fontSize: 12, color: 'rgba(155,176,198,0.65)' }}>{t}</span>
+                                    <span style={{ fontSize: 12, color: 'var(--ds-body-muted)' }}>{t}</span>
                                   </div>
                                 ))}
                               </div>
@@ -391,8 +391,8 @@ export default function RoadmapPage() {
                                       {r.free ? 'FREE' : 'PAGO'}
                                     </span>
                                     <div>
-                                      <div style={{ fontSize: 12, color: '#e6eef8' }}>{r.name}</div>
-                                      <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)' }}>{r.type}</div>
+                                      <div style={{ fontSize: 12, color: 'var(--ds-title-section, #e6eef8)' }}>{r.name}</div>
+                                      <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-body-dim)' }}>{r.type}</div>
                                     </div>
                                   </a>
                                 ))}
@@ -452,11 +452,11 @@ export default function RoadmapPage() {
                     onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.07)'; el.style.transform = 'none'; }}
                     >
                       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,${lvlColor}60,transparent)` }} />
-                      <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: '#f0eeff', marginBottom: 2 }}>{cert.acronym}</div>
-                      <div style={{ fontSize: 12, color: 'rgba(155,176,198,0.5)', marginBottom: 10 }}>{cert.provider}</div>
+                      <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 22, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 2 }}>{cert.acronym}</div>
+                      <div style={{ fontSize: 12, color: 'var(--ds-body-dim)', marginBottom: 10 }}>{cert.provider}</div>
                       <div style={{ display: 'flex', gap: 12 }}>
                         <span style={{ ...S.mono, fontSize: 11, color: lvlColor }}>{cert.cost}</span>
-                        <span style={{ ...S.mono, fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>{cert.hours}</span>
+                        <span style={{ ...S.mono, fontSize: 11, color: 'var(--ds-body-dim)' }}>{cert.hours}</span>
                       </div>
                     </div>
                   </Link>

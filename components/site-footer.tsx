@@ -69,9 +69,9 @@ export function SiteFooter() {
           <div style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
               <img src="/logo.png" alt="CYBERSEC LAB" style={{ width: 28, height: 28, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.5))' }} />
-              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', color: '#e6eef8' }}>CYBERSEC LAB</span>
+              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.12em', color: 'var(--ds-title-section, #e6eef8)' }}>CYBERSEC LAB</span>
             </div>
-            <p style={{ fontSize: 12, color: 'rgba(155,176,198,0.45)', lineHeight: 1.6, marginBottom: 12, maxWidth: 320 }}>
+            <p style={{ fontSize: 12, color: 'var(--ds-body-dim)', lineHeight: 1.6, marginBottom: 12, maxWidth: 320 }}>
               Plataforma de aprendizado em cybersecurity — Red, Blue e Purple Team.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -94,7 +94,7 @@ export function SiteFooter() {
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {links.map(link => (
                     <li key={link.href}>
-                      <Link href={link.href} style={{ fontSize: 13, color: 'rgba(155,176,198,0.5)', textDecoration: 'none', transition: 'color 150ms' }}
+                      <Link href={link.href} style={{ fontSize: 13, color: 'var(--ds-body-dim)', textDecoration: 'none', transition: 'color 150ms' }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#e6eef8'}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(155,176,198,0.5)'}
                       >
@@ -113,8 +113,8 @@ export function SiteFooter() {
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <img src="/merlin.jpg" alt="Alden Merlin" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(139,92,246,0.3)', flexShrink: 0 }} />
-          <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(155,176,198,0.35)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Desenvolvido por <span style={{ color: 'rgba(155,176,198,0.6)', fontWeight: 500 }}>Alden Merlin</span> © 2026
+          <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'var(--ds-mono-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            Desenvolvido por <span style={{ color: 'var(--ds-body-muted)', fontWeight: 500 }}>Alden Merlin</span> © 2026
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>

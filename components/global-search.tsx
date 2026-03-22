@@ -184,9 +184,9 @@ const INDEX: SearchItem[] = [
 
 const TYPE_META: Record<ItemType, { label: string; color: string; bg: string }> = {
   cert:     { label: 'Certificação', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
-  resource: { label: 'Recurso',      color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
+  resource: { label: 'Recurso',      color: 'var(--ds-ok)', bg: 'rgba(34,197,94,0.12)'  },
   path:     { label: 'Roadmap',      color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
-  market:   { label: 'Mercado',      color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  market:   { label: 'Mercado',      color: 'var(--ds-warn)', bg: 'rgba(245,158,11,0.12)' },
 };
 
 function scoreItem(item: SearchItem, q: string): number {
@@ -256,7 +256,7 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
           display: 'flex', alignItems: 'center', gap: 6,
           padding: '6px 12px', borderRadius: 8, cursor: 'pointer',
           background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',
-          color: 'rgba(155,176,198,0.6)', fontSize: 12,
+          color: 'var(--ds-body-muted)', fontSize: 12,
           fontFamily: '"JetBrains Mono", monospace', transition: 'all 150ms',
         }}
         onMouseEnter={e => { const el = e.currentTarget; el.style.background='rgba(255,255,255,0.08)'; el.style.color='#e6eef8'; el.style.borderColor='rgba(255,255,255,0.15)'; }}
@@ -294,12 +294,12 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
                 <Search size={15} style={{ color: 'rgba(139,92,246,0.5)', flexShrink: 0 }} />
                 <input ref={inputRef} value={query} onChange={e => setQuery(e.target.value)}
                   placeholder="Certificações, recursos, cargos..."
-                  style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: 14, color: '#e6eef8', fontFamily: '"Inter", sans-serif', caretColor: '#8b5cf6' }}
+                  style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: 14, color: 'var(--ds-title-section, #e6eef8)', fontFamily: '"Inter", sans-serif', caretColor: '#8b5cf6' }}
                 />
                 {query ? (
-                  <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(155,176,198,0.35)', padding: 2 }}><X size={13} /></button>
+                  <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ds-mono-dim)', padding: 2 }}><X size={13} /></button>
                 ) : (
-                  <kbd style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(155,176,198,0.25)', padding: '2px 5px', background: 'rgba(255,255,255,0.03)', borderRadius: 4, border: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>ESC</kbd>
+                  <kbd style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'var(--ds-body-faint)', padding: '2px 5px', background: 'rgba(255,255,255,0.03)', borderRadius: 4, border: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>ESC</kbd>
                 )}
               </div>
 
@@ -324,7 +324,7 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
                           <span style={{ fontSize: 16, flexShrink: 0 }}>{item.icon}</span>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 600, fontSize: 13, color: isSel ? '#fff' : '#e6eef8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</div>
-                            <div style={{ fontSize: 11, color: 'rgba(155,176,198,0.45)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.sub}</div>
+                            <div style={{ fontSize: 11, color: 'var(--ds-body-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.sub}</div>
                           </div>
                           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: meta.color, background: meta.bg, padding: '2px 6px', borderRadius: 3, flexShrink: 0 }}>{meta.label.toUpperCase()}</span>
                         </button>
@@ -333,15 +333,15 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
                   })}
                 </ul>
               ) : query.trim().length > 0 ? (
-                <div style={{ padding: '28px 16px', textAlign: 'center', color: 'rgba(155,176,198,0.4)', fontSize: 13 }}>
-                  Nenhum resultado para <strong style={{ color: 'rgba(155,176,198,0.6)' }}>"{query}"</strong>
+                <div style={{ padding: '28px 16px', textAlign: 'center', color: 'var(--ds-body-dim)', fontSize: 13 }}>
+                  Nenhum resultado para <strong style={{ color: 'var(--ds-body-muted)' }}>"{query}"</strong>
                 </div>
               ) : (
                 <div style={{ padding: '14px 16px' }}>
-                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(155,176,198,0.3)', letterSpacing: '0.1em', marginBottom: 10 }}>SUGESTÕES</div>
+                  <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'var(--ds-mono-dim)', letterSpacing: '0.1em', marginBottom: 10 }}>SUGESTÕES</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {SUGGESTIONS.map(s => (
-                      <button key={s} onClick={() => setQuery(s)} style={{ padding: '4px 10px', borderRadius: 5, cursor: 'pointer', fontSize: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(155,176,198,0.55)', fontFamily: '"Inter", sans-serif', transition: 'all 120ms' }}
+                      <button key={s} onClick={() => setQuery(s)} style={{ padding: '4px 10px', borderRadius: 5, cursor: 'pointer', fontSize: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--ds-body-muted)', fontFamily: '"Inter", sans-serif', transition: 'all 120ms' }}
                         onMouseEnter={e => { const el = e.currentTarget; el.style.background='rgba(139,92,246,0.1)'; el.style.color='#a78bfa'; }}
                         onMouseLeave={e => { const el = e.currentTarget; el.style.background='rgba(255,255,255,0.04)'; el.style.color='rgba(155,176,198,0.55)'; }}
                       >{s}</button>
@@ -354,8 +354,8 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
               <div style={{ padding: '8px 16px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: 14 }}>
                 {[['↑↓','navegar'],['↵','detalhes'],['ESC','fechar']].map(([k,l]) => (
                   <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <kbd style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(155,176,198,0.3)', padding: '1px 4px', background: 'rgba(255,255,255,0.04)', borderRadius: 3, border: '1px solid rgba(255,255,255,0.07)' }}>{k}</kbd>
-                    <span style={{ fontSize: 10, color: 'rgba(155,176,198,0.25)' }}>{l}</span>
+                    <kbd style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'var(--ds-mono-dim)', padding: '1px 4px', background: 'rgba(255,255,255,0.04)', borderRadius: 3, border: '1px solid rgba(255,255,255,0.07)' }}>{k}</kbd>
+                    <span style={{ fontSize: 10, color: 'var(--ds-body-faint)' }}>{l}</span>
                   </div>
                 ))}
               </div>
@@ -382,32 +382,32 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <span style={{ fontSize: 28 }}>{selected.icon}</span>
                         <div>
-                          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 18, color: '#f0eeff' }}>{selected.title}</div>
+                          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 18, color: 'var(--ds-title-card, #f0eeff)' }}>{selected.title}</div>
                           {selected.level && (
                             <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: selected.levelColor, background: `${selected.levelColor}18`, border: `1px solid ${selected.levelColor}30`, padding: '2px 7px', borderRadius: 4 }}>{selected.level}</span>
                           )}
                         </div>
                       </div>
-                      <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(155,176,198,0.3)', padding: 4 }}><X size={14} /></button>
+                      <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ds-mono-dim)', padding: 4 }}><X size={14} /></button>
                     </div>
 
                     {/* Provider + cost + hours */}
                     <div style={{ display: 'flex', gap: 16, marginBottom: 14, flexWrap: 'wrap' }}>
-                      {selected.provider && <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.5)' }}>{selected.provider}</span>}
+                      {selected.provider && <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>{selected.provider}</span>}
                       {selected.cost && <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: meta.color }}>{selected.cost}</span>}
-                      {selected.hours && <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>{selected.hours}</span>}
+                      {selected.hours && <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>{selected.hours}</span>}
                     </div>
 
                     {/* Description */}
-                    <p style={{ fontSize: 13, color: 'rgba(200,195,225,0.75)', lineHeight: 1.65, marginBottom: 16 }}>{selected.desc}</p>
+                    <p style={{ fontSize: 13, color: 'var(--ds-body)', lineHeight: 1.65, marginBottom: 16 }}>{selected.desc}</p>
 
                     {/* Meta */}
                     {selected.meta && selected.meta.length > 0 && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 18, padding: '12px 14px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
                         {selected.meta.map(m => (
                           <div key={m.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>{m.label}</span>
-                            <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'rgba(220,215,240,0.7)', textAlign: 'right' }}>{m.value}</span>
+                            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>{m.label}</span>
+                            <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'var(--ds-body)', textAlign: 'right' }}>{m.value}</span>
                           </div>
                         ))}
                       </div>
@@ -428,7 +428,7 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
                               border: `1px solid ${meta.color}40`, color: meta.color,
                             } : {
                               background: 'rgba(255,255,255,0.03)',
-                              border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(155,176,198,0.65)',
+                              border: '1px solid rgba(255,255,255,0.08)', color: 'var(--ds-body-muted)',
                             }),
                           };
                           return isExt ? (

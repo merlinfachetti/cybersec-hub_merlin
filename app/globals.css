@@ -1,4 +1,119 @@
 /* ============================================================
+   DESIGN SYSTEM — Typography + Color Semantic Scale
+   Aplicado via CSS vars, compatível dark/light
+   ============================================================
+
+   HIERARQUIA TIPOGRÁFICA:
+   --ds-title-hero   : h1, nome da página, greeting
+   --ds-title-section: h2, seções principais
+   --ds-title-card   : nome do card, cert acronym
+   --ds-body         : texto principal, descrição
+   --ds-body-muted   : texto secundário, subtítulo
+   --ds-body-dim     : texto terciário, labels, datas
+   --ds-body-faint   : texto quase invisível, hints
+   --ds-mono         : labels mono, badges, status, code
+   --ds-mono-dim     : mono secundário
+
+   SEMÂNTICA DE CORES:
+   --ds-ok      : verde → funcionou, sessão ativa, gratuito, lifetime
+   --ds-warn    : âmbar → atenção, custo, intermediário, pendente
+   --ds-danger  : vermelho → erro, falha, crítico
+   --ds-info    : azul → blue team, informação, neutro
+   --ds-signal  : laranja → hub, navegação primária, CTA principal
+   --ds-purple  : roxo → purple team, roadmap, paths
+
+============================================================ */
+
+:root, .dark {
+  /* Typography scale */
+  --ds-title-hero:    #f0eeff;
+  --ds-title-section: #e6eef8;
+  --ds-title-card:    #e6eef8;
+  --ds-body:          rgba(220, 215, 240, 0.85);
+  --ds-body-muted:    rgba(155, 176, 198, 0.65);
+  --ds-body-dim:      rgba(155, 176, 198, 0.45);
+  --ds-body-faint:    rgba(155, 176, 198, 0.28);
+  --ds-mono:          rgba(155, 176, 198, 0.55);
+  --ds-mono-dim:      rgba(155, 176, 198, 0.35);
+
+  /* Semantic status colors */
+  --ds-ok:      #22c55e;
+  --ds-ok-dim:  rgba(34, 197, 94, 0.15);
+  --ds-warn:    #f59e0b;
+  --ds-warn-dim:rgba(245, 158, 11, 0.15);
+  --ds-danger:  #ef4444;
+  --ds-danger-dim: rgba(239, 68, 68, 0.15);
+  --ds-info:    #3b82f6;
+  --ds-info-dim:rgba(59, 130, 246, 0.15);
+  --ds-signal:  rgba(255, 140, 40, 0.9);
+  --ds-signal-dim: rgba(255, 140, 40, 0.12);
+  --ds-purple:  #8b5cf6;
+  --ds-purple-dim: rgba(139, 92, 246, 0.12);
+  --ds-cyan:    #06b6d4;
+
+  /* Surfaces */
+  --ds-card:    rgba(12, 8, 28, 0.85);
+  --ds-card-border: rgba(255, 255, 255, 0.07);
+  --ds-input:   rgba(15, 10, 35, 0.80);
+}
+
+.light {
+  /* Typography scale */
+  --ds-title-hero:    #0d0f1a;
+  --ds-title-section: #1a1d2e;
+  --ds-title-card:    #1a1d2e;
+  --ds-body:          rgba(30, 35, 60, 0.90);
+  --ds-body-muted:    rgba(60, 70, 100, 0.75);
+  --ds-body-dim:      rgba(60, 70, 100, 0.55);
+  --ds-body-faint:    rgba(60, 70, 100, 0.35);
+  --ds-mono:          rgba(60, 70, 100, 0.65);
+  --ds-mono-dim:      rgba(60, 70, 100, 0.42);
+
+  /* Semantic (maintained, only slightly adjusted for light bg) */
+  --ds-ok:      #16a34a;
+  --ds-ok-dim:  rgba(22, 163, 74, 0.12);
+  --ds-warn:    #d97706;
+  --ds-warn-dim:rgba(217, 119, 6, 0.12);
+  --ds-danger:  #dc2626;
+  --ds-danger-dim: rgba(220, 38, 38, 0.10);
+  --ds-info:    #2563eb;
+  --ds-info-dim:rgba(37, 99, 235, 0.12);
+  --ds-signal:  rgba(234, 88, 12, 0.9);
+  --ds-signal-dim: rgba(234, 88, 12, 0.10);
+  --ds-purple:  #7c3aed;
+  --ds-purple-dim: rgba(124, 58, 237, 0.10);
+  --ds-cyan:    #0891b2;
+
+  /* Surfaces */
+  --ds-card:        rgba(255, 255, 255, 0.92);
+  --ds-card-border: rgba(0, 0, 0, 0.09);
+  --ds-input:       rgba(255, 255, 255, 0.95);
+}
+
+/* ── Apply design system via CSS (overrides inline styles in light mode) ── */
+.light {
+  color: var(--ds-body);
+}
+.light h1, .light h2 { color: var(--ds-title-hero) !important; }
+.light h3, .light h4 { color: var(--ds-title-section) !important; }
+
+/* MonoLabel pattern: small uppercase tracking mono text */
+.ds-mono-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-purple);
+}
+.light .ds-mono-label { color: var(--ds-purple); }
+
+/* Status badge patterns */
+.ds-badge-ok     { color: var(--ds-ok);     background: var(--ds-ok-dim);     border: 1px solid color-mix(in srgb, var(--ds-ok) 30%, transparent); }
+.ds-badge-warn   { color: var(--ds-warn);   background: var(--ds-warn-dim);   border: 1px solid color-mix(in srgb, var(--ds-warn) 30%, transparent); }
+.ds-badge-danger { color: var(--ds-danger); background: var(--ds-danger-dim); border: 1px solid color-mix(in srgb, var(--ds-danger) 30%, transparent); }
+.ds-badge-info   { color: var(--ds-info);   background: var(--ds-info-dim);   border: 1px solid color-mix(in srgb, var(--ds-info) 30%, transparent); }
+
+/* ============================================================
    CYBERSEC LAB — Semantic theme vars (dark/light)
    Todas as páginas do portal usam estas vars via CSS overrides
    ============================================================ */

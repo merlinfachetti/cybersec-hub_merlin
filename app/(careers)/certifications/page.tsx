@@ -19,10 +19,10 @@ interface Cert {
 // ── Constants ──────────────────────────────────────────────────────────────
 const LEVELS = [
   { value: 'all',         label: 'Todos os Níveis' },
-  { value: 'ENTRY',       label: 'Entry Level',        color: '#22c55e' },
+  { value: 'ENTRY',       label: 'Entry Level',        color: 'var(--ds-ok)' },
   { value: 'INTERMEDIATE',label: 'Intermediate',        color: '#3b82f6' },
-  { value: 'ADVANCED',    label: 'Advanced',            color: '#f59e0b' },
-  { value: 'EXPERT',      label: 'Expert',              color: '#ef4444' },
+  { value: 'ADVANCED',    label: 'Advanced',            color: 'var(--ds-warn)' },
+  { value: 'EXPERT',      label: 'Expert',              color: 'var(--ds-danger)' },
 ];
 
 const LEVEL_ORDER = ['ENTRY', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'];
@@ -34,17 +34,17 @@ const CATEGORIES = [
   { value: 'GOVERNANCE_RISK',       label: '🟣 Governance & Risk',    color: '#8b5cf6' },
   { value: 'CLOUD_SECURITY',        label: '☁️ Cloud Security',       color: '#06b6d4' },
   { value: 'NETWORK_SECURITY',      label: '🌐 Network Security',     color: '#10b981' },
-  { value: 'INCIDENT_RESPONSE',     label: '🚨 Incident Response',    color: '#f59e0b' },
+  { value: 'INCIDENT_RESPONSE',     label: '🚨 Incident Response',    color: 'var(--ds-warn)' },
   { value: 'APPLICATION_SECURITY',  label: '🔒 App Security',         color: '#8b5cf6' },
   { value: 'FORENSICS',             label: '🔍 Forensics',            color: '#6b7280' },
   { value: 'THREAT_INTELLIGENCE',   label: '📡 Threat Intelligence',  color: '#e53e3e' },
 ];
 
 const LEVEL_META: Record<string, { color: string; bg: string; label: string; desc: string }> = {
-  ENTRY:        { color: '#22c55e', bg: 'rgba(34,197,94,0.1)',    label: 'Entry',        desc: '0–2 anos · Primeira certificação' },
+  ENTRY:        { color: 'var(--ds-ok)', bg: 'rgba(34,197,94,0.1)',    label: 'Entry',        desc: '0–2 anos · Primeira certificação' },
   INTERMEDIATE: { color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',   label: 'Intermediate', desc: '2–5 anos · Crescimento técnico' },
-  ADVANCED:     { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',   label: 'Advanced',     desc: '5+ anos · Especialista' },
-  EXPERT:       { color: '#ef4444', bg: 'rgba(239,68,68,0.1)',    label: 'Expert',       desc: '8+ anos · Referência da área' },
+  ADVANCED:     { color: 'var(--ds-warn)', bg: 'rgba(245,158,11,0.1)',   label: 'Advanced',     desc: '5+ anos · Especialista' },
+  EXPERT:       { color: 'var(--ds-danger)', bg: 'rgba(239,68,68,0.1)',    label: 'Expert',       desc: '8+ anos · Referência da área' },
 };
 
 function formatCost(costs: Cost[]): string {
@@ -119,11 +119,11 @@ function CertCard({ cert }: { cert: Cert }) {
             </span>
             {/* Name */}
             <div>
-              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 20, color: '#f0eeff' }}>
+              <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 20, color: 'var(--ds-title-card, #f0eeff)' }}>
                 {cert.acronym ?? cert.name}
               </span>
               {cert.acronym && (
-                <div style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'rgba(155,176,198,0.5)', marginTop: 1 }}>
+                <div style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'var(--ds-body-dim)', marginTop: 1 }}>
                   {cert.provider.name}
                 </div>
               )}
@@ -134,14 +134,14 @@ function CertCard({ cert }: { cert: Cert }) {
             <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16, color: meta.color }}>
               {costStr}
             </div>
-            <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(155,176,198,0.35)', letterSpacing: '0.06em' }}>
+            <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'var(--ds-mono-dim)', letterSpacing: '0.06em' }}>
               exam
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <p style={{ fontSize: 12, color: 'rgba(155,176,198,0.6)', lineHeight: 1.65, flex: 1, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <p style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.65, flex: 1, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {cert.description}
         </p>
 
@@ -149,22 +149,22 @@ function CertCard({ cert }: { cert: Cert }) {
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 12 }}>
           {cert.examDuration && cert.examDuration > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Clock size={11} style={{ color: 'rgba(155,176,198,0.35)' }} />
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>
+              <Clock size={11} style={{ color: 'var(--ds-mono-dim)' }} />
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>
                 {cert.examDuration >= 1440 ? '24h prático' : `${cert.examDuration}min`}
               </span>
             </div>
           )}
           {cert.numberOfQuestions && cert.numberOfQuestions > 0 ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Award size={11} style={{ color: 'rgba(155,176,198,0.35)' }} />
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>
+              <Award size={11} style={{ color: 'var(--ds-mono-dim)' }} />
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>
                 {cert.numberOfQuestions}q · {cert.passingScore}pts
               </span>
             </div>
           ) : null}
           {cert.validityYears && cert.validityYears > 0 ? (
-            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>
+            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'var(--ds-body-dim)' }}>
               válido {cert.validityYears}a
             </span>
           ) : (
@@ -227,7 +227,7 @@ function CertificationsPageInner() {
   }, {} as Record<string, number>);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)', color: 'var(--ds-title-section, #e6eef8)' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: 'clamp(20px, 4vw, 40px) clamp(16px, 4vw, 24px)' }}>
 
         {/* Header */}
@@ -235,10 +235,10 @@ function CertificationsPageInner() {
           <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>
             CAREERS / CERTIFICAÇÕES
           </div>
-          <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 32, marginBottom: 8, color: '#f0eeff' }}>
+          <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 32, marginBottom: 8, color: 'var(--ds-title-card, #f0eeff)' }}>
             Certificações de Cybersecurity
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(155,176,198,0.55)', maxWidth: 560 }}>
+          <p style={{ fontSize: 14, color: 'var(--ds-body-muted)', maxWidth: 560 }}>
             Guia completo de certificações — do iniciante ao expert. Dados de exames, custos e reconhecimento de mercado.
           </p>
         </div>
@@ -276,11 +276,11 @@ function CertificationsPageInner() {
               style={{
                 width: '100%', padding: '10px 36px 10px 36px', borderRadius: 10,
                 background: 'rgba(15,10,35,0.8)', border: '1px solid rgba(139,92,246,0.2)',
-                color: '#e6eef8', fontSize: 13, fontFamily: '"Inter", sans-serif', outline: 'none',
+                color: 'var(--ds-title-section, #e6eef8)', fontSize: 13, fontFamily: '"Inter", sans-serif', outline: 'none',
               }}
             />
             {search && (
-              <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(155,176,198,0.4)', fontSize: 16, padding: 2 }}>×</button>
+              <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ds-body-dim)', fontSize: 16, padding: 2 }}>×</button>
             )}
           </div>
           <select
@@ -300,7 +300,7 @@ function CertificationsPageInner() {
             <button onClick={() => { setSearch(''); setLevel('all'); setCategory('all'); }} style={{
               display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px', borderRadius: 10,
               background: 'rgba(229,62,62,0.1)', border: '1px solid rgba(229,62,62,0.2)',
-              color: '#ef4444', cursor: 'pointer', fontSize: 12,
+              color: 'var(--ds-danger)', cursor: 'pointer', fontSize: 12,
             }}>
               <X size={12} /> Limpar
             </button>
@@ -309,7 +309,7 @@ function CertificationsPageInner() {
 
         {/* Results count */}
         {!loading && (
-          <div style={{ marginBottom: 20, fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: 'rgba(155,176,198,0.4)' }}>
+          <div style={{ marginBottom: 20, fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: 'var(--ds-body-dim)' }}>
             {filtered.length} certificaç{filtered.length === 1 ? 'ão' : 'ões'}
             {(search || level !== 'all' || category !== 'all') ? ' encontradas' : ' no catálogo'}
           </div>
@@ -325,7 +325,7 @@ function CertificationsPageInner() {
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '64px 24px' }}>
             <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
-            <p style={{ color: 'rgba(155,176,198,0.5)', fontSize: 14 }}>Nenhuma certificação encontrada</p>
+            <p style={{ color: 'var(--ds-body-dim)', fontSize: 14 }}>Nenhuma certificação encontrada</p>
           </div>
         ) : (
           /* Group by level */
@@ -341,7 +341,7 @@ function CertificationsPageInner() {
                   <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, color: meta.color }}>
                     {meta.label}
                   </span>
-                  <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'rgba(155,176,198,0.4)' }}>
+                  <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 12, color: 'var(--ds-body-dim)' }}>
                     — {meta.desc}
                   </span>
                   <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${meta.color}30, transparent)` }} />
@@ -364,7 +364,7 @@ function CertificationsPageInner() {
 
 export default function CertificationsPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#0b0f14' }} />}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: 'var(--p-bg, #0b0f14)' }} />}>
       <CertificationsPageInner />
     </Suspense>
   );
