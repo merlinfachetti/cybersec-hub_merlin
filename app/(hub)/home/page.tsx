@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInactivity } from '@/lib/use-inactivity';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -91,18 +91,45 @@ function NavCard({ section }: { section: {
   id: string; label: string; description: string; href: string;
   icon: React.ReactNode; color: string; rgb: string; badge: string;
 }}) {
-  const [hovered, setHovered] = useState(false);
-  // perímetro do rect 396×196 = 1184px
-  // idle:  dois cantos de 80px — dasharray "80 512 80 512"
-  // hover: cada canto cresce até 592 (metade) → fecha o retângulo
-  const dash = hovered ? '592 0 592 0' : '80 512 80 512';
+  const rectRef = useRef<SVGRectElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const onEnter = () => {
+    const rect = rectRef.current;
+    const card = cardRef.current;
+    if (!rect || !card) return;
+    // Web Animations API — bypassa CSS completamente, nenhum !important interfere
+    rect.animate(
+      [
+        { strokeDasharray: '80 512 80 512', strokeWidth: '1.5' },
+        { strokeDasharray: '592 0 592 0',   strokeWidth: '2' },
+      ],
+      { duration: 650, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    card.style.transform = 'translateY(-2px)';
+  };
+
+  const onLeave = () => {
+    const rect = rectRef.current;
+    const card = cardRef.current;
+    if (!rect || !card) return;
+    rect.animate(
+      [
+        { strokeDasharray: '592 0 592 0',   strokeWidth: '2' },
+        { strokeDasharray: '80 512 80 512', strokeWidth: '1.5' },
+      ],
+      { duration: 650, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    card.style.transform = 'none';
+  };
 
   return (
     <Link href={section.href} style={{ textDecoration: 'none', display: 'block' }}>
       <div
+        ref={cardRef}
         className={`hub-nav-card hub-nav-card--${section.id}`}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
         style={{
           background: 'var(--ds-card)',
           borderRadius: 12,
@@ -110,13 +137,10 @@ function NavCard({ section }: { section: {
           cursor: 'pointer',
           height: '100%',
           position: 'relative',
-          /* sem overflow:hidden — permitir SVG absolutamente posicionado */
-          transform: hovered ? 'translateY(-2px)' : 'none',
           transition: 'transform 200ms ease',
         }}
       >
-        {/* SVG border: atributos nativos SVG + transition via style inline */}
-        {/* strokeDasharray como atributo nativo garante animabilidade CSS */}
+        {/* SVG border — animado via Web Animations API, imune a qualquer CSS */}
         <svg
           viewBox="0 0 400 200"
           preserveAspectRatio="none"
@@ -124,12 +148,12 @@ function NavCard({ section }: { section: {
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect
+            ref={rectRef}
             x="2" y="2" width="396" height="196" rx="11"
             fill="none"
             stroke={`rgba(${section.rgb},0.9)`}
-            strokeDasharray={dash}
-            strokeWidth={hovered ? 2 : 1.5}
-            style={{ transition: 'stroke-dasharray 650ms ease-in-out, stroke-width 500ms ease-in-out' }}
+            strokeDasharray="80 512 80 512"
+            strokeWidth="1.5"
           />
         </svg>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
