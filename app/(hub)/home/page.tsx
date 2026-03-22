@@ -181,17 +181,22 @@ export default function HomePage() {
                 position: 'relative',
                 overflow: 'hidden',
               }}>
-                {/* SVG stroke border — efeito dasharray no hover */}
-                <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', borderRadius: 12, overflow: 'hidden' }} xmlns="http://www.w3.org/2000/svg">
+                {/* SVG stroke border — efeito dasharray idêntico ao codepen */}
+                {/* viewBox fixo: perímetro calculável = 2*(396+196) = 1184 */}
+                <svg
+                  viewBox="0 0 400 200"
+                  preserveAspectRatio="none"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <rect
                     className={`hub-card-rect hub-card-rect--${section.id}`}
-                    x="1" y="1"
-                    width="calc(100% - 2px)" height="calc(100% - 2px)"
+                    x="2" y="2"
+                    width="396" height="196"
                     rx="11"
                     fill="none"
-                    stroke={`rgba(${section.rgb},0.7)`}
-                    strokeWidth="1.5"
-                    style={{ strokeDasharray: 1000, strokeDashoffset: 1000 } as React.CSSProperties}
+                    stroke={`rgba(${section.rgb},0.9)`}
+                    strokeWidth="3"
                   />
                 </svg>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
