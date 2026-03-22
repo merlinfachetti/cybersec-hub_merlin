@@ -58,6 +58,7 @@ export function MainNav() {
     { href: '/roadmap',        label: 'Roadmap',       active: pathname === '/roadmap' },
     { href: '/resources',      label: 'Recursos',      active: pathname === '/resources' },
     { href: '/market',         label: 'Mercado',       active: pathname === '/market' },
+    { href: '/teams',          label: 'Cyber Times',   active: pathname.startsWith('/teams') },
   ];
 
   const UserAvatar = () => (

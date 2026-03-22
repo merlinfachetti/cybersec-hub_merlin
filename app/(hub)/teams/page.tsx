@@ -172,15 +172,15 @@ export default function TeamsPage() {
                 </div>
 
                 {/* Does not */}
-                <div style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.12)', borderRadius: 10, padding: '16px 18px' }}>
+                <div style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.12)', borderRadius: 10, padding: '16px 18px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                    <Eye size={13} style={{ color: '#ef4444' }} />
-                    <span style={{ ...S.mono, fontSize: 9, color: '#ef4444', letterSpacing: '0.1em' }}>NÃO FAZ</span>
+                    <Eye size={13} style={{ color: '#f59e0b' }} />
+                    <span style={{ ...S.mono, fontSize: 9, color: '#f59e0b', letterSpacing: '0.1em' }}>NÃO FAZ</span>
                   </div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 7 }}>
                     {team.doesNot.map(d => (
                       <li key={d} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                        <span style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }}>✗</span>
+                        <span style={{ color: '#f59e0b', flexShrink: 0, marginTop: 1 }}>✗</span>
                         <span style={{ fontSize: 13, color: 'rgba(200,195,225,0.65)', lineHeight: 1.45 }}>{d}</span>
                       </li>
                     ))}

@@ -45,16 +45,24 @@ function TeamBadge({ t }: { t: typeof TEAM_BADGES[0] }) {
         boxShadow: hovered ? `0 4px 12px ${t.color}30` : 'none',
         transition: 'all 180ms ease',
         cursor: 'pointer',
+        /* fixed width — never shifts siblings */
+        minWidth: 120,
       }}>
-        <div style={{ width: 5, height: 5, borderRadius: '50%', background: t.color, boxShadow: hovered ? `0 0 8px ${t.color}` : `0 0 4px ${t.color}` }} />
-        <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: t.color, letterSpacing: '0.08em' }}>
+        <div style={{ width: 5, height: 5, borderRadius: '50%', flexShrink: 0, background: t.color, boxShadow: hovered ? `0 0 8px ${t.color}` : `0 0 4px ${t.color}` }} />
+        <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: t.color, letterSpacing: '0.08em', flex: 1 }}>
           {t.label}
         </span>
-        {hovered && (
-          <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: `${t.color}90`, borderLeft: `1px solid ${t.color}30`, paddingLeft: 5 }}>
-            {t.desc} →
-          </span>
-        )}
+        {/* desc sempre renderizado, só muda opacity — não muda layout */}
+        <span style={{
+          fontFamily: '"JetBrains Mono", monospace', fontSize: 8,
+          color: `${t.color}90`,
+          borderLeft: `1px solid ${t.color}30`, paddingLeft: 5,
+          opacity: hovered ? 1 : 0,
+          transition: 'opacity 180ms ease',
+          whiteSpace: 'nowrap',
+        }}>
+          →
+        </span>
       </div>
     </Link>
   );
@@ -105,7 +113,7 @@ export function SiteFooter() {
 
       {/* Expandable content */}
       <div style={{ overflow: 'hidden', maxHeight: expanded ? '600px' : '0px', transition: 'max-height 400ms cubic-bezier(0.4,0,0.2,1)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px 20px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px clamp(16px,4vw,48px) 20px', width: '100%' }}>
 
           {/* Desktop: brand + links inline | Mobile: stack */}
           <div className="footer-expanded-row" style={{ display: 'flex', gap: 32, alignItems: 'flex-start', flexWrap: 'wrap' }}>
