@@ -528,7 +528,9 @@ export default function RoadmapPage() {
                           borderRadius: 999,
                         }}
                       >
-                        {path.fromRole} -> {path.toRole}
+                        {path.fromRole}
+                        {' -> '}
+                        {path.toRole}
                       </span>
                     </div>
                     <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>

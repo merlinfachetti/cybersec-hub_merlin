@@ -91,29 +91,37 @@ export async function POST() {
       if (!saved) continue;
 
       for (const cost of certification.costs) {
-        await prisma.certificationCost.upsert({
+        const existingCost = await prisma.certificationCost.findFirst({
           where: {
-            certificationId_region_country: {
-              certificationId: saved.id,
-              region: cost.region as any,
-              country: null,
-            },
-          },
-          update: {
-            currency: cost.currency,
-            examCost: cost.examCost,
-            lastVerified: new Date(),
-          },
-          create: {
             certificationId: saved.id,
             region: cost.region as any,
             country: null,
-            currency: cost.currency,
-            examCost: cost.examCost,
-            voucherAvailable: false,
-            lastVerified: new Date(),
           },
+          select: { id: true },
         });
+
+        if (existingCost) {
+          await prisma.certificationCost.update({
+            where: { id: existingCost.id },
+            data: {
+              currency: cost.currency,
+              examCost: cost.examCost,
+              lastVerified: new Date(),
+            },
+          });
+        } else {
+          await prisma.certificationCost.create({
+            data: {
+              certificationId: saved.id,
+              region: cost.region as any,
+              country: null,
+              currency: cost.currency,
+              examCost: cost.examCost,
+              voucherAvailable: false,
+              lastVerified: new Date(),
+            },
+          });
+        }
       }
 
       seeded += 1;
