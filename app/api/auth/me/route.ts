@@ -5,14 +5,16 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getActiveSession, SESSION_COOKIE_NAME } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(): Promise<NextResponse> {
-  const session = await getSession();
+  const session = await getActiveSession();
 
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const response = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    response.cookies.delete(SESSION_COOKIE_NAME);
+    return response;
   }
 
   const user = await prisma.user.findUnique({
@@ -31,7 +33,9 @@ export async function GET(): Promise<NextResponse> {
   });
 
   if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const response = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    response.cookies.delete(SESSION_COOKIE_NAME);
+    return response;
   }
 
   return NextResponse.json({ user }, { status: 200 });

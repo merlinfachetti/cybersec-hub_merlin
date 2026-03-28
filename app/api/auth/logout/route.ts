@@ -5,11 +5,11 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getSession, clearSessionCookie } from '@/lib/auth';
+import { getActiveSession, clearSessionCookie } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(): Promise<NextResponse> {
-  const session = await getSession();
+  const session = await getActiveSession();
 
   if (session?.sessionId) {
     // Remove sessão do DB

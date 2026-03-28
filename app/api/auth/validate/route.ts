@@ -1,19 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getActiveSession, SESSION_COOKIE_NAME } from '@/lib/auth';
 
 export async function GET(): Promise<NextResponse> {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ valid: false }, { status: 401 });
-
-  const dbSession = await (prisma as any).session.findUnique({
-    where: { id: session.sessionId },
-    select: { id: true, expiresAt: true },
-  });
-
-  if (!dbSession || dbSession.expiresAt < new Date()) {
-    return NextResponse.json({ valid: false }, { status: 401 });
+  const session = await getActiveSession();
+  if (!session) {
+    const response = NextResponse.json({ valid: false }, { status: 401 });
+    response.cookies.delete(SESSION_COOKIE_NAME);
+    return response;
   }
 
-  return NextResponse.json({ valid: true });
+  return NextResponse.json({
+    valid: true,
+    sessionId: session.sessionId,
+  });
 }

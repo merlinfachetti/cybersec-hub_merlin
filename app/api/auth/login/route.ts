@@ -14,7 +14,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
-import { createToken, setSessionCookie, hashToken } from '@/lib/auth';
+import {
+  createToken,
+  setSessionCookie,
+  hashToken,
+  DEFAULT_SESSION_TTL_SECONDS,
+  REMEMBER_DEVICE_TTL_SECONDS,
+} from '@/lib/auth';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { randomUUID } from 'crypto';
 
@@ -42,10 +48,18 @@ const NEUTRAL_ERROR = {
 
 // ── Constant-time comparison helper ──────────────────────────────────────
 
+let dummyHashPromise: Promise<string> | null = null;
+
+async function getDummyHash(): Promise<string> {
+  if (!dummyHashPromise) {
+    dummyHashPromise = bcrypt.hash('invalid-login-placeholder', 12);
+  }
+  return dummyHashPromise;
+}
+
 async function verifyPasswordSafe(input: string, hash: string): Promise<boolean> {
-  // Sempre executa bcrypt mesmo se user não existe (timing attack mitigation)
-  const DUMMY_HASH = '$2b$12$placeholder.for.timing.attack.prevention.only.dummy';
-  return await bcrypt.compare(input, hash || DUMMY_HASH);
+  const safeHash = hash || (await getDummyHash());
+  return bcrypt.compare(input, safeHash);
 }
 
 // ── Handler ───────────────────────────────────────────────────────────────
@@ -108,17 +122,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 5. Create session
   const sessionId = randomUUID();
-  const token = await createToken({
-    sub: user.id,
-    email: user.email,
-    role: user.role,
-    sessionId,
-  });
+  const sessionTtlSeconds = rememberDevice
+    ? REMEMBER_DEVICE_TTL_SECONDS
+    : DEFAULT_SESSION_TTL_SECONDS;
+
+  const token = await createToken(
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      sessionId,
+    },
+    sessionTtlSeconds
+  );
 
   const tokenHash = hashToken(token);
-  // 7 dias se rememberDevice, 8h caso contrário
-  const sessionTTL = rememberDevice ? 7 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
-  const expiresAt = new Date(Date.now() + sessionTTL);
+  const expiresAt = new Date(Date.now() + sessionTtlSeconds * 1000);
 
   await prisma.session.create({
     data: {
@@ -138,7 +157,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   // 7. Set httpOnly cookie
-  await setSessionCookie(token, rememberDevice ? 7 * 24 * 60 * 60 : undefined);
+  await setSessionCookie(token, sessionTtlSeconds);
 
   return NextResponse.json(
     {

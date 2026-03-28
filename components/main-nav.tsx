@@ -115,7 +115,10 @@ export function MainNav() {
   const [user, setUser] = useState<NavUser | null>(null);
 
   useEffect(() => {
-    fetch('/api/auth/me').then(r => r.ok ? r.json() : null).then(d => d?.user && setUser(d.user)).catch(() => null);
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d?.user && setUser(d.user))
+      .catch(() => null);
   }, []);
 
   const handleLogout = () => { try { localStorage.removeItem('cp_last_active'); } catch {}

@@ -124,7 +124,7 @@ Route Groups isolam layouts radicalmente diferentes:
 | Controle | Implementação |
 |----------|--------------|
 | Senhas | bcrypt rounds=12 |
-| Sessões | JWT httpOnly + SameSite=Strict, TTL 2h (7d com "remember device") |
+| Sessões | JWT httpOnly + SameSite=Strict, TTL 8h (7d com "remember device") |
 | Erros neutros | Sem user enumeration — mensagem genérica para credenciais inválidas |
 | Validação | Zod em todos os endpoints de entrada |
 | Middleware | Edge middleware valida JWT em cada request protegido |

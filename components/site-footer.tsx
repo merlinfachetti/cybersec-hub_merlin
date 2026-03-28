@@ -100,7 +100,7 @@ export function SiteFooter() {
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => d?.user?.role && setUserRole(d.user.role))
       .catch(() => null);

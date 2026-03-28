@@ -7,6 +7,7 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { cookies } from 'next/headers';
 import { createHash } from 'crypto';
+import { prisma } from '@/lib/prisma';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -17,9 +18,9 @@ function getJwtSecret(): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
-const COOKIE_NAME = 'cp_session';
-const TOKEN_TTL_SECONDS = 60 * 60 * 2; // 2h (short-lived; remember device = 7d)
-const COOKIE_MAX_AGE = TOKEN_TTL_SECONDS;
+export const SESSION_COOKIE_NAME = 'cp_session';
+export const DEFAULT_SESSION_TTL_SECONDS = 8 * 60 * 60; // 8h
+export const REMEMBER_DEVICE_TTL_SECONDS = 7 * 24 * 60 * 60; // 7d
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -39,11 +40,14 @@ export interface AuthResult {
 
 // ── Token creation ─────────────────────────────────────────────────────────
 
-export async function createToken(payload: Omit<SessionPayload, 'iat' | 'exp'>): Promise<string> {
+export async function createToken(
+  payload: Omit<SessionPayload, 'iat' | 'exp'>,
+  ttlSeconds: number = DEFAULT_SESSION_TTL_SECONDS
+): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime(`${TOKEN_TTL_SECONDS}s`)
+    .setExpirationTime(`${ttlSeconds}s`)
     .sign(getJwtSecret());
 }
 
@@ -58,25 +62,28 @@ export async function verifyToken(token: string): Promise<SessionPayload | null>
 
 // ── Cookie management ──────────────────────────────────────────────────────
 
-export async function setSessionCookie(token: string, customMaxAge?: number): Promise<void> {
+export async function setSessionCookie(
+  token: string,
+  customMaxAge: number = DEFAULT_SESSION_TTL_SECONDS
+): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: customMaxAge ?? COOKIE_MAX_AGE,
+    maxAge: customMaxAge,
     path: '/',
   });
 }
 
 export async function getSessionCookie(): Promise<string | undefined> {
   const cookieStore = await cookies();
-  return cookieStore.get(COOKIE_NAME)?.value;
+  return cookieStore.get(SESSION_COOKIE_NAME)?.value;
 }
 
 export async function clearSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+  cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
 // ── Session validation (used by middleware + server components) ────────────
@@ -94,6 +101,32 @@ export async function getSession(): Promise<AuthResult | null> {
     role: payload.role,
     sessionId: payload.sessionId,
   };
+}
+
+export async function getActiveSession(): Promise<AuthResult | null> {
+  const session = await getSession();
+  if (!session) return null;
+
+  const dbSession = await prisma.session.findUnique({
+    where: { id: session.sessionId },
+    select: {
+      id: true,
+      expiresAt: true,
+      userId: true,
+      user: {
+        select: {
+          isActive: true,
+        },
+      },
+    },
+  });
+
+  if (!dbSession) return null;
+  if (dbSession.userId !== session.userId) return null;
+  if (!dbSession.user.isActive) return null;
+  if (dbSession.expiresAt <= new Date()) return null;
+
+  return session;
 }
 
 // ── Token hash (for DB storage — we store hash, not raw token) ────────────

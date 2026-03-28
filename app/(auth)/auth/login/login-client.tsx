@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SignalLost from '@/components/signal-lost';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 // ── Canvas background (nebula + stargate) ─────────────────────────────────
 
@@ -158,7 +158,6 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 // ── Main component ────────────────────────────────────────────────────────
 
 export default function LoginClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -186,6 +185,26 @@ export default function LoginClient() {
     setHsState('success');
   }, []);
 
+  const waitForSessionReady = useCallback(async () => {
+    for (let attempt = 0; attempt < 6; attempt++) {
+      try {
+        const response = await fetch('/api/auth/validate', {
+          method: 'GET',
+          credentials: 'include',
+          cache: 'no-store',
+        });
+
+        if (response.ok) return true;
+      } catch {
+        // noop — retry below
+      }
+
+      await sleep(150 * (attempt + 1));
+    }
+
+    return false;
+  }, []);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!identifier || !passphrase) {
@@ -209,10 +228,27 @@ export default function LoginClient() {
         setTimeout(() => { setHsState('idle'); setHsText('Secure channel ready'); }, 3500);
         return;
       }
-      await runHandshake();
-      await sleep(800);
-      router.push(searchParams.get('from') ?? '/home');
-      router.refresh();
+
+      const [_, sessionReady] = await Promise.all([
+        runHandshake(),
+        waitForSessionReady(),
+      ]);
+
+      if (!sessionReady) {
+        const msg = 'Session could not be established. Try again.';
+        setHsState('error');
+        setHsText(msg);
+        setErrorMsg(msg);
+        setTimeout(() => {
+          setHsState('idle');
+          setHsText('Secure channel ready');
+          setErrorMsg('');
+        }, 3500);
+        return;
+      }
+
+      await sleep(250);
+      window.location.assign(searchParams.get('from') ?? '/home');
     } catch {
       const msg = 'Connection error. Try again.';
       setHsState('error'); setHsText(msg); setErrorMsg(msg);
@@ -220,7 +256,7 @@ export default function LoginClient() {
     } finally {
       setLoading(false);
     }
-  }, [identifier, passphrase, runHandshake, router, searchParams]);
+  }, [identifier, passphrase, runHandshake, searchParams, waitForSessionReady]);
 
   const dotColor = hsState === 'success' ? '#22c55e'
     : hsState === 'error' ? '#e53e3e'

@@ -3,7 +3,12 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
-import { createToken, setSessionCookie, hashToken } from '@/lib/auth';
+import {
+  createToken,
+  setSessionCookie,
+  hashToken,
+  DEFAULT_SESSION_TTL_SECONDS,
+} from '@/lib/auth';
 
 const Schema = z.object({
   name:         z.string().min(1).max(80).trim(),
@@ -52,8 +57,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   // Auto-login
   const sessionId = randomUUID();
-  const token = await createToken({ sub: user.id, email: user.email, role: user.role, sessionId });
-  const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
+  const token = await createToken(
+    { sub: user.id, email: user.email, role: user.role, sessionId },
+    DEFAULT_SESSION_TTL_SECONDS
+  );
+  const expiresAt = new Date(Date.now() + DEFAULT_SESSION_TTL_SECONDS * 1000);
 
   await (prisma as any).session.create({
     data: {
@@ -65,7 +73,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     },
   });
 
-  await setSessionCookie(token);
+  await setSessionCookie(token, DEFAULT_SESSION_TTL_SECONDS);
 
   return NextResponse.json({ ok: true, user }, { status: 201 });
 }

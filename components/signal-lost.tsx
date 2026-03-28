@@ -99,7 +99,7 @@ export default function SignalLost() {
 
   // Verificar sessão ativa — redirecionar direto pro hub se já autenticado
   useEffect(() => {
-    fetch('/api/auth/me', { credentials: 'include' })
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d?.user) { window.location.href = '/home'; }

@@ -406,7 +406,7 @@ function PortalPageInner() {
 
   // Fetch authenticated user
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => d?.user && setUser(d.user))
       .catch(() => null);

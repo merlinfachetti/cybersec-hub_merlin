@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { getActiveSession, SESSION_COOKIE_NAME } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
-const COOKIE_NAME = 'cp_session';
 
 /**
  * GET /api/auth/signout
@@ -14,7 +12,7 @@ const COOKIE_NAME = 'cp_session';
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   // 1. Get session before clearing
-  const session = await getSession();
+  const session = await getActiveSession();
 
   // 2. Delete from DB
   if (session?.sessionId) {
@@ -27,7 +25,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const response = NextResponse.redirect(new URL('/auth/login', request.url));
 
   // Delete cookie explicitly — both approaches for max compatibility
-  response.cookies.set(COOKIE_NAME, '', {
+  response.cookies.set(SESSION_COOKIE_NAME, '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',

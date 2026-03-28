@@ -187,7 +187,7 @@ export default function HomePage() {
   useEffect(() => {
     const h = new Date().getHours();
     setGreeting(h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite');
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => d?.user && setUser(d.user))
       .catch(() => null);
