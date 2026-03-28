@@ -41,6 +41,7 @@ const CERT_LEVELS = [
 ];
 
 type PathId = keyof typeof CAREER_PATHS;
+const DEFAULT_PATH_ID: PathId = 'dev-to-security-engineer';
 
 interface RoadmapUser {
   name: string | null;
@@ -49,11 +50,20 @@ interface RoadmapUser {
   studyHoursPerWeek?: number | null;
 }
 
+function resolvePathId(hint?: string | null): PathId {
+  const resolved = resolveCareerPath(hint);
+  if (resolved?.id && resolved.id in CAREER_PATHS) {
+    return resolved.id as PathId;
+  }
+
+  return DEFAULT_PATH_ID;
+}
+
 export default function RoadmapPage() {
   const searchParams = useSearchParams();
+  const queryPathId = resolvePathId(searchParams.get('path'));
   const [activeTab, setActiveTab] = useState<'paths' | 'all'>('paths');
-  const [activePath, setActivePath] =
-    useState<PathId>('dev-to-security-engineer');
+  const [activePath, setActivePath] = useState<PathId>(queryPathId);
   const [openStep, setOpenStep] = useState<number | null>(0);
   const [allLevel, setAllLevel] = useState('ENTRY');
   const [user, setUser] = useState<RoadmapUser | null>(null);
@@ -68,21 +78,20 @@ export default function RoadmapPage() {
   }, []);
 
   useEffect(() => {
-    const hint = searchParams.get('path') ?? user?.targetRole ?? null;
-    const resolved = resolveCareerPath(hint);
+    const nextPathId = resolvePathId(searchParams.get('path') ?? user?.targetRole);
 
-    if (resolved?.id && resolved.id in CAREER_PATHS) {
-      setActivePath(resolved.id as PathId);
+    setActivePath((current) => {
+      if (current === nextPathId) return current;
       setOpenStep(0);
-    }
+      return nextPathId;
+    });
   }, [searchParams, user?.targetRole]);
 
   const path = CAREER_PATHS[activePath];
   const filteredAll = CERTIFICATIONS.filter((cert) => cert.level === allLevel);
   const pathStageMeta = getCareerStageMeta(path.stage);
   const recommendedPath = useMemo(() => {
-    const hint = searchParams.get('path') ?? user?.targetRole ?? null;
-    return resolveCareerPath(hint) ?? path;
+    return CAREER_PATHS[resolvePathId(searchParams.get('path') ?? user?.targetRole)];
   }, [path, searchParams, user?.targetRole]);
 
   const S = {

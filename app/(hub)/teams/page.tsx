@@ -2,6 +2,13 @@
 
 import Link from 'next/link';
 import { Shield, Sword, Zap, ChevronRight, Target, Eye, Wrench, BookOpen } from 'lucide-react';
+import { CAREER_PATHS } from '@/lib/content/career-guide';
+
+const TEAM_ROADMAPS = {
+  red: CAREER_PATHS['pentest-red-team'],
+  blue: CAREER_PATHS['foundations-to-soc'],
+  purple: CAREER_PATHS['architecture-leadership'],
+} as const;
 
 const TEAMS = [
   {
@@ -28,7 +35,8 @@ const TEAMS = [
       'Trabalhar sem comunicação com o Blue Team (em purple exercises)',
     ],
     certs: ['eJPT', 'CEH', 'PNPT', 'OSCP', 'GPEN', 'CRTO'],
-    roadmapHref: '/roadmap?path=pentest-red-team',
+    roadmapHref: `/roadmap?path=${TEAM_ROADMAPS.red.id}`,
+    roadmapLabel: TEAM_ROADMAPS.red.label,
     skills: ['Network Pentesting', 'Web App Attacks', 'Active Directory', 'Malware Dev', 'OSINT', 'Social Engineering'],
   },
   {
@@ -55,7 +63,8 @@ const TEAMS = [
       'Tomar decisões de negócio baseadas só em técnica',
     ],
     certs: ['Security+', 'CySA+', 'BTL1', 'GCIH', 'GCIA', 'CISSP'],
-    roadmapHref: '/roadmap?path=foundations-to-soc',
+    roadmapHref: `/roadmap?path=${TEAM_ROADMAPS.blue.id}`,
+    roadmapLabel: TEAM_ROADMAPS.blue.label,
     skills: ['SIEM Operations', 'Log Analysis', 'Threat Hunting', 'IR Playbooks', 'Hardening', 'Malware Triage'],
   },
   {
@@ -82,7 +91,8 @@ const TEAMS = [
       'Focar só em compliance sem aplicação prática',
     ],
     certs: ['GDAT', 'CISM', 'CISSP', 'CREST', 'Security+', 'CySA+'],
-    roadmapHref: '/roadmap?path=architecture-leadership',
+    roadmapHref: `/roadmap?path=${TEAM_ROADMAPS.purple.id}`,
+    roadmapLabel: TEAM_ROADMAPS.purple.label,
     skills: ['MITRE ATT&CK', 'Threat Intelligence', 'Detection Engineering', 'Purple Exercises', 'Tabletop', 'GRC'],
   },
 ];
@@ -141,6 +151,17 @@ export default function TeamsPage() {
                   background: `rgba(${team.rgb},0.1)`, border: `1px solid rgba(${team.rgb},0.3)`,
                   color: team.color, ...S.grotesk, fontWeight: 600, fontSize: 12,
                   flexShrink: 0, transition: 'all 150ms',
+                }}
+                title={team.roadmapLabel}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = `rgba(${team.rgb},0.16)`;
+                  el.style.borderColor = `rgba(${team.rgb},0.45)`;
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = `rgba(${team.rgb},0.1)`;
+                  el.style.borderColor = `rgba(${team.rgb},0.3)`;
                 }}>
                   <BookOpen size={13} /> Ver Roadmap <ChevronRight size={12} />
                 </Link>
