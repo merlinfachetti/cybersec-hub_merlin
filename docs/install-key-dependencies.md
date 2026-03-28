@@ -57,9 +57,9 @@ PS: Criar arquivo de configuração depois
 npm install -D prisma
 npm install @prisma/client
 
-PS - O Prisma 7.2.0 exige:
-nvm install 20.19.0
-nvm use 20.19.0
+PS - O stack atual do projeto usa Prisma 7.6.0 com Node 22:
+nvm install 22.19.0
+nvm use 22.19.0
 node -v
 
 // Inicializar Prisma (cria pasta prisma/ e arquivo .env)
@@ -69,9 +69,9 @@ npx prisma init --datasource-provider postgresql
 npm ls prisma @prisma/client
 npx prisma -v
 
-// Fixar Prisma CLI na mesma versão do client (7.2.0)
-npm i -D prisma@7.2.0 --save-exact
-npm i @prisma/client@7.2.0 --save-exact
+// Fixar Prisma CLI, client e adapter na mesma versão (7.6.0)
+npm i -D prisma@7.6.0 --save-exact
+npm i @prisma/client@7.6.0 @prisma/adapter-pg@7.6.0 --save-exact
 
 # Instalar dependências para PostgreSQL
 npm install pg
@@ -93,7 +93,7 @@ docker-compose down
 # Prisma
 - EXECUTAR MIGRATIONS E SEED:
 1. Gerar o Prisma Client
-npx prisma generate
+npm run prisma:generate
 
 2. Criar a primeira migration
 npx prisma migrate dev --name init
@@ -103,7 +103,7 @@ npx prisma migrate dev --name init
 //✔ Applied migration(s): 20250117_init
 
 3. Rodar o seed
-npx prisma db seed
+npm run db:seed
 
 //Você verá:
 //🌱 Starting seed...
@@ -116,7 +116,7 @@ npx prisma db seed
 //🌱 Seed completed successfully!
 
 4. Abrir o Prisma Studio (GUI para ver os dados)
-npx prisma studio
+npm run db:studio
 
 - Abre em: http://localhost:5555
 

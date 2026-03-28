@@ -2,6 +2,7 @@
   "name": "cybersecurity-by-merlin",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "npm run prisma:generate && next build --webpack",
@@ -11,19 +12,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "next typegen && tsc --noEmit",
-    "prisma:generate": "node scripts/prisma-cli.mjs generate",
-    "postinstall": "node scripts/prisma-cli.mjs generate || true",
-    "db:migrate": "node scripts/prisma-cli.mjs migrate deploy",
+    "prisma:generate": "prisma generate",
+    "postinstall": "prisma generate || true",
+    "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "node scripts/prisma-cli.mjs studio",
-    "db:reset": "node scripts/prisma-cli.mjs migrate reset --force && tsx prisma/seed.ts",
-    "db:seed:certs": "npx ts-node --project tsconfig.json -e \"const {Pool}=require('pg');const fs=require('fs');const p=new Pool({connectionString:process.env.DATABASE_URL});p.query(fs.readFileSync('prisma/seed-certs.sql','utf8')).then(()=>{console.log('✅ Certs seeded');p.end()}).catch(e=>{console.error(e);p.end()})\"",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
+    "db:seed:certs": "tsx scripts/seed-certs.ts",
     "build:full": "npm run prisma:generate && next build --webpack"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@prisma/adapter-pg": "6.15.0",
-    "@prisma/client": "6.15.0",
+    "@prisma/adapter-pg": "7.6.0",
+    "@prisma/client": "7.6.0",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -67,18 +68,15 @@
     "eslint-plugin-prettier": "^5.5.5",
     "postcss": "^8.5.6",
     "prettier": "^3.8.0",
-    "prisma": "6.15.0",
+    "prisma": "7.6.0",
     "tailwindcss": "^4.1.18",
     "ts-node": "^1.7.1",
     "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "engines": {
-    "node": "^20.19.0",
+    "node": "^22.12.0",
     "npm": "^10.0.0"
   }
 }

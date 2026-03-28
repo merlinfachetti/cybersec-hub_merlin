@@ -39,7 +39,8 @@ NEXT_PUBLIC_APP_URL="https://seu-dominio.vercel.app"
 
 4. Configure Build Settings:
    - Framework: Next.js
-   - Build Command: `npx prisma generate && npm run build`
+   - Node.js Version: `22.x`
+   - Build Command: `npm run build`
    - Output Directory: `.next`
 
 5. Deploy!
@@ -55,8 +56,8 @@ Execute migrations via CLI:
 
 ```bash
 vercel env pull .env.local
-npx prisma migrate deploy
-npx prisma db seed
+npm run db:migrate
+npm run db:seed
 ```
 
 ## Railway
@@ -95,7 +96,7 @@ Railway irá automaticamente:
 ### 1. Create Dockerfile
 
 ```dockerfile
-FROM node:18-alpine AS base
+FROM node:22-alpine AS base
 
 # Dependencies
 FROM base AS deps
@@ -109,7 +110,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npx prisma generate
 RUN npm run build
 
 # Runner

@@ -149,6 +149,7 @@ Route Groups isolam layouts radicalmente diferentes:
 # 1. Instalar
 git clone https://github.com/merlinfachetti/cybersec-lab.git
 cd cybersec-lab
+nvm use
 npm install
 
 # 2. Env vars
@@ -156,8 +157,8 @@ cp .env.example .env.local
 # Preencher DATABASE_URL e JWT_SECRET
 
 # 3. Banco
-npx prisma migrate deploy
-npx prisma db seed
+npm run db:migrate
+npm run db:seed
 
 # 4. Rodar
 npm run dev
@@ -183,9 +184,10 @@ npm run dev
 
 ```bash
 # 1. Banco no Neon (https://neon.tech)
-# 2. Env vars na Vercel: DATABASE_URL + JWT_SECRET
+# 2. Vercel Project Settings: Node.js 22.x
+# 3. Env vars na Vercel: DATABASE_URL + JWT_SECRET
 vercel --prod
-DATABASE_URL="..." npx prisma migrate deploy
+DATABASE_URL="..." npm run db:migrate
 ```
 
 ```json
