@@ -110,7 +110,7 @@ const PATH_INDEX: SearchItem[] = CAREER_PATH_LIST.map((path) => ({
   hours: path.totalHours,
   desc: path.realityCheck,
   meta: [
-    { label: 'Passos', value: path.steps.map((step) => step.acronym).join(' -> ') },
+    { label: 'Passos', value: path.steps.map((step) => step.acronym).join(' ⇒ ') },
     { label: 'Foco', value: path.goal },
   ],
   actions: [{ label: 'Ver roadmap', href: '/roadmap', primary: true }],
@@ -127,7 +127,7 @@ const MARKET_INDEX: SearchItem[] = [
     tags: ['soc', 'analyst', 'blue team', 'entry', 'monitoring'],
     desc: 'Boa porta de entrada para quem quer comecar com monitoramento, triagem, SIEM e resposta a incidentes.',
     meta: [
-      { label: 'Nível', value: 'Entry -> Mid' },
+      { label: 'Nível', value: 'Entry ⇒ Mid' },
       { label: 'Certs comuns', value: 'Security+ · CySA+' },
       { label: 'Labs úteis', value: 'Splunk · SOC Level 1' },
     ],
@@ -146,7 +146,7 @@ const MARKET_INDEX: SearchItem[] = [
     tags: ['pentest', 'red team', 'offensive', 'oscp', 'pnpt'],
     desc: 'Carreira que depende muito mais de prova prática e laboratório do que de storytelling no curriculo.',
     meta: [
-      { label: 'Nível', value: 'Junior -> Senior' },
+      { label: 'Nível', value: 'Junior ⇒ Senior' },
       { label: 'Certs comuns', value: 'eJPT · PNPT/CPTS · OSCP' },
       { label: 'Base real', value: 'Enumeration · AD · report writing' },
     ],
@@ -228,7 +228,7 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
 
   useEffect(() => { setActive(0); setSelected(null); }, [query]);
 
-  const SUGGESTIONS = ['SEC+', 'Dev -> Security', 'OSCP', 'SOC Analyst', 'Splunk', 'CISSP', 'AppSec'];
+  const SUGGESTIONS = ['SEC+', 'Dev ⇒ Security', 'OSCP', 'SOC Analyst', 'Splunk', 'CISSP', 'AppSec'];
 
   return (
     <>

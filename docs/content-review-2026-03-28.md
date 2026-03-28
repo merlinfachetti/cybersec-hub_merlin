@@ -25,8 +25,8 @@ Isso reduz duplicacao e evita divergencia entre catalogo, detalhe, roadmap, recu
 
 Os caminhos deixaram de ser apenas "beginner / intermediate / advanced" e passaram a refletir destinos mais reais:
 
-- Foundations -> SOC
-- Dev -> Security Engineer
+- Foundations ⇒ SOC
+- Dev ⇒ Security Engineer
 - Pentest / Red Team
 - Architecture / Leadership
 
