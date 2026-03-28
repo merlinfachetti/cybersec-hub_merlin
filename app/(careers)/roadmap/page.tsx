@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ArrowRight, ChevronRight, Compass, Layers } from 'lucide-react';
@@ -59,7 +59,7 @@ function resolvePathId(hint?: string | null): PathId {
   return DEFAULT_PATH_ID;
 }
 
-export default function RoadmapPage() {
+function RoadmapPageContent() {
   const searchParams = useSearchParams();
   const queryPathId = resolvePathId(searchParams.get('path'));
   const [activeTab, setActiveTab] = useState<'paths' | 'all'>('paths');
@@ -1117,5 +1117,13 @@ export default function RoadmapPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function RoadmapPage() {
+  return (
+    <Suspense fallback={null}>
+      <RoadmapPageContent />
+    </Suspense>
   );
 }
