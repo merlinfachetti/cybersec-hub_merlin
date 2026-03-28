@@ -48,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     data: {
       email, passwordHash,
       name: displayName,
-      targetRole: selectedTeam ?? null,
+      targetRole: selectedPath || selectedTeam || null,
       // Store bio + path in profile fields we have
       studyHoursPerWeek: 10,
     },

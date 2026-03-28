@@ -13,6 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="dark"
       enableSystem={false}
       storageKey="cp-theme"
+      disableTransitionOnChange
     >
       {children}
       <ErrorModal />

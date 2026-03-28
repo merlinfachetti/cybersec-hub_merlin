@@ -5,10 +5,11 @@ import Link from 'next/link';
 
 // ── Career paths ──────────────────────────────────────────────────────────
 const PATHS = [
-  { id: 'dev-security',  label: 'Dev → Security',   desc: 'Transição de engenharia para cybersecurity' },
-  { id: 'beginner',      label: 'Iniciante',         desc: 'Começando do zero em cybersecurity' },
-  { id: 'intermediate',  label: 'Intermediário',     desc: 'Já tem base, quer especializar' },
-  { id: 'advanced',      label: 'Avançado',          desc: 'Especialização e certs avançadas' },
+  { id: 'it-to-cyber-transition', label: 'IT → Cyber Transition', desc: 'Profissional experiente em outra área de TI migrando para Cyber' },
+  { id: 'foundations-to-soc', label: 'Foundations → SOC', desc: 'Primeira vaga em Blue Team / SOC com base realista' },
+  { id: 'dev-to-security-engineer', label: 'Dev → Security Engineer', desc: 'AppSec, cloud security e engenharia de segurança' },
+  { id: 'pentest-red-team', label: 'Pentest / Red Team', desc: 'Trilha ofensiva prática para ofensiva e validação' },
+  { id: 'architecture-leadership', label: 'Architecture / Leadership', desc: 'Senioridade, arquitetura e liderança em segurança' },
 ];
 
 const TEAMS = [

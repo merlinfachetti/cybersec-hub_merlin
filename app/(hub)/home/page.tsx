@@ -250,7 +250,7 @@ export default function HomePage() {
                     <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 20, color: 'var(--ds-title-card, #f0eeff)' }}>{featured.label}</span>
                     <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: `rgba(${featured.rgb},0.7)`, background: `rgba(${featured.rgb},0.1)`, border: `1px solid rgba(${featured.rgb},0.2)`, borderRadius: 4, padding: '2px 8px', letterSpacing: '0.1em' }}>{featured.badge}</span>
                   </div>
-                  <p style={{ fontSize: 13, color: 'rgba(155,176,198,0.7)', maxWidth: 480, lineHeight: 1.6 }}>{featured.description}</p>
+                  <p style={{ fontSize: 13, color: 'var(--ds-body-muted)', maxWidth: 480, lineHeight: 1.6 }}>{featured.description}</p>
                 </div>
               </div>
 

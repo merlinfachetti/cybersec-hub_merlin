@@ -1,6 +1,8 @@
 export const CONTENT_LAST_REVIEWED = '2026-03-28';
 
 export type GuideLevel = 'ENTRY' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
+export type CareerStage = 'TRANSITION' | 'ENTRY' | 'MID' | 'SENIOR';
+export type CareerTeam = 'red' | 'blue' | 'purple' | 'hybrid';
 export type GuideCategory =
   | 'DEFENSIVE_SECURITY'
   | 'OFFENSIVE_SECURITY'
@@ -60,6 +62,13 @@ export interface CareerPath {
   label: string;
   color: string;
   rgb: string;
+  stage: CareerStage;
+  stageLabel: string;
+  audience: string;
+  fromRole: string;
+  toRole: string;
+  team: CareerTeam;
+  aliases: string[];
   desc: string;
   icon: string;
   goal: string;
@@ -101,6 +110,36 @@ export interface GuideCertification {
   topics: string[];
   resources: GuideStepResource[];
 }
+
+export const CAREER_STAGE_META: Record<
+  CareerStage,
+  { label: string; market: string; color: string; bg: string }
+> = {
+  TRANSITION: {
+    label: 'Career Transition',
+    market: 'Profissional experiente migrando para Cyber',
+    color: '#06b6d4',
+    bg: 'rgba(6,182,212,0.12)',
+  },
+  ENTRY: {
+    label: 'Entry-Level',
+    market: 'Junior / primeira vaga na area',
+    color: '#22c55e',
+    bg: 'rgba(34,197,94,0.12)',
+  },
+  MID: {
+    label: 'Mid-Level',
+    market: 'Pleno / especializacao funcional',
+    color: '#3b82f6',
+    bg: 'rgba(59,130,246,0.12)',
+  },
+  SENIOR: {
+    label: 'Senior-Level',
+    market: 'Senior / arquitetura / lideranca',
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.12)',
+  },
+};
 
 export const STUDY_RESOURCES: GuideResource[] = [
   {
@@ -1122,6 +1161,13 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     label: 'Foundations ⇒ SOC',
     color: '#3b82f6',
     rgb: '59,130,246',
+    stage: 'ENTRY',
+    stageLabel: 'Entry-Level',
+    audience: 'Iniciantes e career switchers sem base forte em seguranca',
+    fromRole: 'Zero a pouca experiencia em Cyber',
+    toRole: 'SOC Analyst Junior / Blue Team Junior',
+    team: 'blue',
+    aliases: ['foundations-to-soc', 'soc', 'blue', 'beginner', 'entry', 'junior'],
     desc: 'Entrada realista para quem quer trabalhar com monitoramento, triagem e defesa',
     icon: '🛡️',
     goal: 'Construir base, ganhar contexto operacional e chegar pronto para vagas junior de SOC/blue team',
@@ -1276,11 +1322,187 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
       },
     ],
   },
+  'it-to-cyber-transition': {
+    id: 'it-to-cyber-transition',
+    label: 'IT ⇒ Cyber Transition',
+    color: '#14b8a6',
+    rgb: '20,184,166',
+    stage: 'TRANSITION',
+    stageLabel: 'Career Transition',
+    audience: 'Profissionais experientes de infra, suporte, redes, cloud ou devops migrando para Cyber',
+    fromRole: 'Profissional de TI experiente',
+    toRole: 'CyberSec Analyst / Security Engineer de entrada',
+    team: 'hybrid',
+    aliases: ['it-to-cyber-transition', 'transition', 'career-switch', 'career-transition', 'switcher'],
+    desc: 'Migracao orientada ao mercado para quem ja vem de outra area de TI e quer entrar em Cyber com menos retrabalho',
+    icon: '🧭',
+    goal: 'Aproveitar repertorio previo de TI para entrar em Cyber de forma mais rapida, realista e empregavel',
+    totalHours: '180-300h',
+    totalCost: '$0-$900',
+    realityCheck:
+      'Quem ja vem de TI nao precisa recomeçar do zero. O maior ganho costuma vir de traduzir experiencia anterior em linguagem de risco, deteccao, controle e evidencias praticas para vaga.',
+    steps: [
+      {
+        order: 1,
+        name: 'Mapear lacunas de Cyber',
+        acronym: 'GAP',
+        provider: 'Google / TryHackMe',
+        level: 'ENTRY',
+        color: '#14b8a6',
+        hours: '30-60h',
+        cost: 'baixo',
+        duration: '2-4 semanas',
+        why: 'Profissionais de TI ja trazem bagagem em rede, sistemas, cloud ou automacao. O primeiro passo e identificar o que falta em ameacas, IAM, IR e controles, sem voltar ao basico que voce ja domina.',
+        topics: [
+          'Threat landscape',
+          'IAM',
+          'Risk basics',
+          'IR fundamentals',
+          'Security vocabulary',
+        ],
+        resources: [
+          {
+            name: 'Google Cybersecurity Certificate',
+            type: 'Estrutura guiada',
+            url: 'https://www.coursera.org/professional-certificates/google-cybersecurity',
+            free: false,
+          },
+          {
+            name: 'TryHackMe Pre Security',
+            type: 'Labs introdutorios',
+            url: 'https://tryhackme.com/path/outline/presecurity',
+            free: true,
+          },
+        ],
+        outcome: 'Visao clara do que falta aprender para conversar e operar em Cyber',
+        href: '/resources?search=google',
+        linkLabel: 'Ver fundamentos',
+      },
+      {
+        order: 2,
+        name: 'CompTIA Security+',
+        acronym: 'SEC+',
+        slug: 'comptia-security-plus',
+        provider: 'CompTIA',
+        level: 'ENTRY',
+        color: '#14b8a6',
+        hours: '70-110h',
+        cost: '$404',
+        duration: '5-9 semanas',
+        why: 'Security+ costuma ser o melhor tradutor entre experiencia tecnica previa e expectativa de mercado para uma primeira vaga ou migracao formal para Cyber.',
+        topics: [
+          'Threats',
+          'IAM',
+          'Network Security',
+          'IR',
+          'Governance basics',
+        ],
+        resources: [
+          {
+            name: 'Professor Messer SY0-701',
+            type: 'Video gratuito',
+            url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/',
+            free: true,
+          },
+          {
+            name: 'Jason Dion Practice Exams',
+            type: 'Simulados',
+            url: 'https://www.udemy.com/user/jasonrobertdion/',
+            free: false,
+          },
+        ],
+        outcome: 'Base reconhecida para migracao e entrevistas iniciais',
+      },
+      {
+        order: 3,
+        name: 'Escolher direcao operacional',
+        acronym: 'TRACK',
+        provider: 'Splunk / PortSwigger / AWS',
+        level: 'INTERMEDIATE',
+        color: '#14b8a6',
+        hours: '40-90h',
+        cost: 'variavel',
+        duration: '4-8 semanas',
+        why: 'A transicao fica mais convincente quando voce aponta para um papel real. Infra tende a conversar bem com blue/cloud; devops e dev tendem a acelerar em appsec e security engineering.',
+        topics: [
+          'SIEM',
+          'AppSec',
+          'Cloud security',
+          'Threat modeling',
+          'Detection basics',
+        ],
+        resources: [
+          {
+            name: 'Splunk Fundamentals 1',
+            type: 'Blue team / SOC',
+            url: 'https://www.splunk.com/en_us/training/free-courses/splunk-fundamentals-1.html',
+            free: true,
+          },
+          {
+            name: 'PortSwigger Web Security Academy',
+            type: 'AppSec',
+            url: 'https://portswigger.net/web-security',
+            free: true,
+          },
+          {
+            name: 'AWS Skill Builder',
+            type: 'Cloud',
+            url: 'https://skillbuilder.aws/',
+            free: true,
+          },
+        ],
+        outcome: 'Narrativa mais forte para a vaga que voce realmente quer disputar',
+        href: '/resources',
+        linkLabel: 'Explorar trilhas',
+      },
+      {
+        order: 4,
+        name: 'Validar por portfolio ou cert funcional',
+        acronym: 'PROVE',
+        provider: 'Splunk / CompTIA / AWS',
+        level: 'INTERMEDIATE',
+        color: '#14b8a6',
+        hours: '40-80h',
+        cost: 'variavel',
+        duration: '4-8 semanas',
+        why: 'Depois da base, vale provar aderencia ao caminho escolhido: CySA+ para blue team, AWS Security para cloud ou portfolio forte de AppSec para security engineering.',
+        topics: [
+          'Portfolio',
+          'Case studies',
+          'Detection',
+          'Cloud controls',
+          'Interview readiness',
+        ],
+        resources: [
+          {
+            name: 'TryHackMe SOC Level 1',
+            type: 'Blue team',
+            url: 'https://tryhackme.com/path/outline/soclevel1',
+            free: false,
+          },
+          {
+            name: 'AWS Ramp-Up Guide',
+            type: 'Cloud guide',
+            url: 'https://d1.awsstatic.com/training-and-certification/ramp-up_guides/Security_Ramp-Up_Guide.pdf',
+            free: true,
+          },
+        ],
+        outcome: 'Transicao com prova de aderencia ao mercado, nao so com teoria',
+      },
+    ],
+  },
   'dev-to-security-engineer': {
     id: 'dev-to-security-engineer',
     label: 'Dev ⇒ Security Engineer',
     color: '#06b6d4',
     rgb: '6,182,212',
+    stage: 'MID',
+    stageLabel: 'Mid-Level',
+    audience: 'Desenvolvedores, devops e platform engineers migrando para seguranca',
+    fromRole: 'Dev / DevOps / Platform',
+    toRole: 'Security Engineer / AppSec Engineer',
+    team: 'hybrid',
+    aliases: ['dev-to-security-engineer', 'dev-security', 'security-engineer', 'appsec', 'engineering'],
     desc: 'Transicao para AppSec, cloud security e engenharia de seguranca sem perder o background de desenvolvimento',
     icon: '🔀',
     goal: 'Usar base de software para migrar para seguranca com mais rapidez e mais aderencia a engenharia',
@@ -1441,6 +1663,13 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     label: 'Pentest / Red Team',
     color: '#ef4444',
     rgb: '239,68,68',
+    stage: 'MID',
+    stageLabel: 'Mid-Level',
+    audience: 'Quem quer ofensiva pratica e pretende construir profundidade tecnica',
+    fromRole: 'Base tecnica pronta para ofensiva',
+    toRole: 'Pentester Junior / Mid-Level / Red Team',
+    team: 'red',
+    aliases: ['pentest-red-team', 'pentest', 'red', 'offensive', 'intermediate'],
     desc: 'Trilha ofensiva pratica, sem pular etapas e sem depender de certificacao teorica como prova de habilidade',
     icon: '🎯',
     goal: 'Construir base ofensiva realista e chegar a uma credencial hands-on forte',
@@ -1607,6 +1836,13 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     label: 'Architecture / Leadership',
     color: '#f59e0b',
     rgb: '245,158,11',
+    stage: 'SENIOR',
+    stageLabel: 'Senior-Level',
+    audience: 'Profissionais com experiencia real que precisam sinalizar amplitude, decisao e lideranca',
+    fromRole: 'Security Engineer / Lead / Consultant experiente',
+    toRole: 'Security Architect / Security Manager / Leadership',
+    team: 'purple',
+    aliases: ['architecture-leadership', 'advanced', 'senior', 'leadership', 'architect', 'purple'],
     desc: 'Trilha para senioridade, arquitetura, governanca e lideranca',
     icon: '🏗️',
     goal: 'Traduzir experiencia pratica em credenciais de amplitude e decisao',
@@ -1727,3 +1963,24 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
 };
 
 export const CAREER_PATH_LIST = Object.values(CAREER_PATHS);
+
+export function resolveCareerPath(input?: string | null) {
+  if (!input) return null;
+
+  const normalized = input.trim().toLowerCase();
+
+  return (
+    CAREER_PATH_LIST.find(
+      (path) =>
+        path.id === normalized ||
+        path.label.toLowerCase() === normalized ||
+        path.aliases.some((alias) => alias.toLowerCase() === normalized) ||
+        path.toRole.toLowerCase() === normalized ||
+        path.fromRole.toLowerCase() === normalized
+    ) ?? null
+  );
+}
+
+export function getCareerStageMeta(stage: CareerStage) {
+  return CAREER_STAGE_META[stage];
+}

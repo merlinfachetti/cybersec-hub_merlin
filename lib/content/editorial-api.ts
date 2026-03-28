@@ -304,13 +304,17 @@ export function getEditorialRoadmaps() {
     id: path.id,
     title: path.label,
     description: path.goal,
-    fromRole: path.desc,
-    toRole: path.label,
+    fromRole: path.fromRole,
+    toRole: path.toRole,
     duration: path.totalHours,
+    stage: path.stage,
+    stageLabel: path.stageLabel,
+    audience: path.audience,
+    team: path.team,
     difficulty:
-      path.steps.some((step) => step.level === 'ADVANCED')
+      path.stage === 'SENIOR'
         ? 'advanced'
-        : path.steps.some((step) => step.level === 'INTERMEDIATE')
+        : path.stage === 'MID'
           ? 'intermediate'
           : 'beginner',
   }));
@@ -345,13 +349,17 @@ export function getEditorialRoadmapGraph(id: string) {
       id: path.id,
       title: path.label,
       description: path.goal,
-      fromRole: path.desc,
-      toRole: path.label,
+      fromRole: path.fromRole,
+      toRole: path.toRole,
       duration: path.totalHours,
+      stage: path.stage,
+      stageLabel: path.stageLabel,
+      audience: path.audience,
+      team: path.team,
       difficulty:
-        path.steps.some((step) => step.level === 'ADVANCED')
+        path.stage === 'SENIOR'
           ? 'advanced'
-          : path.steps.some((step) => step.level === 'INTERMEDIATE')
+          : path.stage === 'MID'
             ? 'intermediate'
             : 'beginner',
     },

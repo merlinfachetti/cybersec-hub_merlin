@@ -81,7 +81,7 @@ function FooterGroup({ title, links }: { title: string; links: { label: string; 
           <li key={link.href}>
             <Link href={link.href}
               style={{ fontSize: 13, color: 'var(--ds-body-dim, rgba(155,176,198,0.45))', textDecoration: 'none', transition: 'color 150ms' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#e6eef8'}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--ds-title-section)'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--ds-body-dim, rgba(155,176,198,0.45))'}
             >
               {link.label}
@@ -109,12 +109,12 @@ export function SiteFooter() {
   const canSeeDocs = userRole === 'ADMIN' || userRole === 'DEV';
 
   return (
-    <footer style={{ background: '#0a0814', borderTop: '1px solid rgba(139,92,246,0.12)', marginTop: 'auto' }}>
+    <footer style={{ background: 'var(--ds-surface-strong)', borderTop: '1px solid var(--p-border)', marginTop: 'auto' }}>
 
       {/* Toggle strip */}
       <button
         onClick={() => setExpanded(v => !v)}
-        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '10px 16px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: expanded ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
+        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '10px 16px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: expanded ? '1px solid var(--p-border-soft)' : 'none' }}
         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,140,40,0.04)'}
         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'none'}
       >

@@ -7,8 +7,18 @@ import {
   Shield, Zap, ChevronRight, Star, Edit3, Plus,
   CheckCircle, Circle, BarChart2, User,
 } from 'lucide-react';
+import {
+  getCareerStageMeta,
+  resolveCareerPath,
+} from '@/lib/content/career-guide';
 
-interface UserSession { name: string | null; email: string; role: string; }
+interface UserSession {
+  name: string | null;
+  email: string;
+  role: string;
+  targetRole?: string | null;
+  studyHoursPerWeek?: number | null;
+}
 
 const STATUS_COLOR: Record<string, string> = {
   STUDYING: '#3b82f6', INTERESTED: '#8b5cf6', SCHEDULED: '#f59e0b',
@@ -29,13 +39,6 @@ const STUDY_PLAN = [
   { id: 6, task: 'Ler capítulo 3 – Cryptography (Darril Gibson)', cert: 'SEC+', hours: 2, done: true },
 ];
 
-const QUICK_STATS = [
-  { label: 'Estudo hoje', value: '2h 15m', icon: <Clock size={16} />, color: '#3b82f6' },
-  { label: 'Streak', value: '12 dias', icon: <Zap size={16} />, color: 'var(--ds-warn)' },
-  { label: 'Labs feitos', value: '8', icon: <BarChart2 size={16} />, color: '#8b5cf6' },
-  { label: 'Próxima meta', value: 'SEC+', icon: <Target size={16} />, color: 'var(--ds-ok)' },
-];
-
 export default function ProfilePage() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [tasks, setTasks] = useState(STUDY_PLAN);
@@ -54,6 +57,15 @@ export default function ProfilePage() {
 
   const completedTasks = tasks.filter(t => t.done).length;
   const totalHours = tasks.reduce((s, t) => s + (t.done ? t.hours : 0), 0);
+  const careerPath =
+    resolveCareerPath(user?.targetRole) ?? resolveCareerPath('it-to-cyber-transition');
+  const careerStage = careerPath ? getCareerStageMeta(careerPath.stage) : null;
+  const quickStats = [
+    { label: 'Estudo hoje', value: '2h 15m', icon: <Clock size={16} />, color: '#3b82f6' },
+    { label: 'Streak', value: '12 dias', icon: <Zap size={16} />, color: 'var(--ds-warn)' },
+    { label: 'Foco atual', value: careerPath?.team === 'hybrid' ? 'Cross-team' : `${careerPath?.team?.toUpperCase() ?? 'BLUE'} Team`, icon: <BarChart2 size={16} />, color: careerPath?.color ?? '#8b5cf6' },
+    { label: 'Próxima meta', value: careerPath?.steps[1]?.acronym ?? 'SEC+', icon: <Target size={16} />, color: 'var(--ds-ok)' },
+  ];
 
   const S = {
     card: { background: 'var(--ds-card)', border: '1px solid var(--ds-card-border)', borderRadius: 12 },
@@ -85,15 +97,25 @@ export default function ProfilePage() {
             <div style={{ fontSize: 13, color: 'var(--ds-body-dim)', marginTop: 2 }}>
               {user?.email} · <span style={{ color: '#8b5cf6', fontWeight: 600 }}>{user?.role?.toUpperCase() ?? 'ADMIN'}</span>
             </div>
-            <div style={{ ...S.mono, fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '0.1em', marginTop: 4 }}>
-              ● SESSÃO ATIVA · Transição para Security Engineer
+            {careerPath && careerStage && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 6 }}>
+                <span style={{ ...S.mono, fontSize: 9, color: careerStage.color, letterSpacing: '0.08em', background: careerStage.bg, border: `1px solid ${careerStage.color}30`, padding: '3px 8px', borderRadius: 999 }}>
+                  {careerStage.label}
+                </span>
+                <span style={{ ...S.mono, fontSize: 9, color: careerPath.color, letterSpacing: '0.08em', background: `rgba(${careerPath.rgb},0.12)`, border: `1px solid rgba(${careerPath.rgb},0.25)`, padding: '3px 8px', borderRadius: 999 }}>
+                  {careerPath.label}
+                </span>
+              </div>
+            )}
+            <div style={{ ...S.mono, fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '0.1em', marginTop: 6 }}>
+              ● SESSÃO ATIVA · {careerPath?.toRole ?? 'Objetivo ainda não definido'}
             </div>
           </div>
         </div>
 
         {/* Quick stats */}
         <div className="profile-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 28 }}>
-          {QUICK_STATS.map(s => (
+          {quickStats.map(s => (
             <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ color: s.color, flexShrink: 0 }}>{s.icon}</div>
               <div>
@@ -124,8 +146,12 @@ export default function ProfilePage() {
               {/* Progress towards SEC+ */}
               <div style={{ ...S.card, padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>CompTIA Security+ SY0-701</div>
-                  <span style={{ ...S.mono, fontSize: 10, color: '#3b82f6', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', padding: '2px 8px', borderRadius: 4 }}>STUDYING</span>
+                  <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)' }}>
+                    {careerPath?.steps[1]?.name ?? 'CompTIA Security+ SY0-701'}
+                  </div>
+                  <span style={{ ...S.mono, fontSize: 10, color: careerPath?.color ?? '#3b82f6', background: `rgba(${careerPath?.rgb ?? '59,130,246'},0.12)`, border: `1px solid rgba(${careerPath?.rgb ?? '59,130,246'},0.25)`, padding: '2px 8px', borderRadius: 4 }}>
+                    {careerPath?.stageLabel ?? 'STUDYING'}
+                  </span>
                 </div>
                 <div style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -139,7 +165,7 @@ export default function ProfilePage() {
                 <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'var(--ds-body-dim)' }}>
                   <span>80h estudadas</span>
                   <span>~40h restantes</span>
-                  <span>Meta: 90 dias</span>
+                  <span>Meta: {careerPath?.toRole ?? 'primeira vaga em Cyber'}</span>
                 </div>
               </div>
 
@@ -170,11 +196,11 @@ export default function ProfilePage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ ...S.card, padding: '16px' }}>
                 <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>PRÓXIMOS PASSOS</div>
-                {[
-                  { n: 1, text: 'Completar Security+ (45% feito, ~40h)', color: '#3b82f6' },
-                  { n: 2, text: 'Agendar exame (2-3 sem após conclusão)', color: 'var(--ds-warn)' },
-                  { n: 3, text: 'Iniciar prep eJPT para red team básico', color: 'var(--ds-ok)' },
-                ].map(r => (
+                {(careerPath?.steps.slice(0, 3).map((step, index) => ({
+                  n: index + 1,
+                  text: `${step.name} · ${step.outcome}`,
+                  color: index === 0 ? careerPath.color : index === 1 ? 'var(--ds-warn)' : 'var(--ds-ok)',
+                })) ?? []).map(r => (
                   <div key={r.n} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                     <span style={{ ...S.mono, fontSize: 11, color: r.color, fontWeight: 700, minWidth: 16 }}>{r.n}.</span>
                     <span style={{ fontSize: 12, color: 'var(--ds-body-muted)', lineHeight: 1.5 }}>{r.text}</span>
@@ -185,8 +211,8 @@ export default function ProfilePage() {
                 <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>ACESSO RÁPIDO</div>
                 {[
                   { href: '/certifications', label: 'Browse Certificações', icon: <Award size={12} /> },
-                  { href: '/roadmap', label: 'Ver Roadmap', icon: <TrendingUp size={12} /> },
-                  { href: '/resources', label: 'Study Resources', icon: <BookOpen size={12} /> },
+                  { href: `/roadmap?path=${careerPath?.id ?? 'it-to-cyber-transition'}`, label: 'Ver Roadmap', icon: <TrendingUp size={12} /> },
+                  { href: `/resources?path=${careerPath?.id ?? 'it-to-cyber-transition'}`, label: 'Study Resources', icon: <BookOpen size={12} /> },
                   { href: '/threat-universe', label: '← Threat Universe', icon: <Shield size={12} /> },
                 ].map(l => (
                   <Link key={l.href} href={l.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', textDecoration: 'none', color: 'var(--ds-body-muted)', fontSize: 13, transition: 'color 150ms' }}

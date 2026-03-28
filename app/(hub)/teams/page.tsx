@@ -28,7 +28,7 @@ const TEAMS = [
       'Trabalhar sem comunicação com o Blue Team (em purple exercises)',
     ],
     certs: ['eJPT', 'CEH', 'PNPT', 'OSCP', 'GPEN', 'CRTO'],
-    roadmapHref: '/roadmap?path=intermediate&focus=offensive',
+    roadmapHref: '/roadmap?path=pentest-red-team',
     skills: ['Network Pentesting', 'Web App Attacks', 'Active Directory', 'Malware Dev', 'OSINT', 'Social Engineering'],
   },
   {
@@ -55,7 +55,7 @@ const TEAMS = [
       'Tomar decisões de negócio baseadas só em técnica',
     ],
     certs: ['Security+', 'CySA+', 'BTL1', 'GCIH', 'GCIA', 'CISSP'],
-    roadmapHref: '/roadmap?path=dev-security',
+    roadmapHref: '/roadmap?path=foundations-to-soc',
     skills: ['SIEM Operations', 'Log Analysis', 'Threat Hunting', 'IR Playbooks', 'Hardening', 'Malware Triage'],
   },
   {
@@ -82,7 +82,7 @@ const TEAMS = [
       'Focar só em compliance sem aplicação prática',
     ],
     certs: ['GDAT', 'CISM', 'CISSP', 'CREST', 'Security+', 'CySA+'],
-    roadmapHref: '/roadmap?path=advanced',
+    roadmapHref: '/roadmap?path=architecture-leadership',
     skills: ['MITRE ATT&CK', 'Threat Intelligence', 'Detection Engineering', 'Purple Exercises', 'Tabletop', 'GRC'],
   },
 ];

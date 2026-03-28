@@ -2,11 +2,8 @@
 html { color-scheme: dark; }
 html.light { color-scheme: light; }
 
-*,*::before,*::after {
-  transition-property: background-color, border-color, color !important;
-  transition-duration: 120ms !important;
-  transition-timing-function: ease !important;
-}
+/* Theme swaps should feel instant. Individual components that need motion
+   already declare their own transitions inline or via component classes. */
 canvas,[style*="animation"],.secure-dot {
   transition: none !important;
 }
@@ -68,6 +65,7 @@ canvas,[style*="animation"],.secure-dot {
   --ds-card:    rgba(12, 8, 28, 0.85);
   --ds-card-border: rgba(255, 255, 255, 0.07);
   --ds-input:   rgba(15, 10, 35, 0.80);
+  --ds-surface-strong: rgba(8, 6, 18, 0.92);
 }
 
 .light {
@@ -76,11 +74,11 @@ canvas,[style*="animation"],.secure-dot {
   --ds-title-section: #1a1d2e;
   --ds-title-card:    #1a1d2e;
   --ds-body:          rgba(30, 35, 60, 0.90);
-  --ds-body-muted:    rgba(60, 70, 100, 0.75);
-  --ds-body-dim:      rgba(60, 70, 100, 0.55);
+  --ds-body-muted:    rgba(44, 54, 84, 0.84);
+  --ds-body-dim:      rgba(56, 66, 96, 0.68);
   --ds-body-faint:    rgba(60, 70, 100, 0.35);
-  --ds-mono:          rgba(60, 70, 100, 0.65);
-  --ds-mono-dim:      rgba(60, 70, 100, 0.42);
+  --ds-mono:          rgba(44, 54, 84, 0.78);
+  --ds-mono-dim:      rgba(56, 66, 96, 0.56);
 
   /* Semantic (maintained, only slightly adjusted for light bg) */
   --ds-ok:      #16a34a;
@@ -99,8 +97,9 @@ canvas,[style*="animation"],.secure-dot {
 
   /* Surfaces */
   --ds-card:        rgba(255, 255, 255, 0.92);
-  --ds-card-border: rgba(0, 0, 0, 0.09);
+  --ds-card-border: rgba(20, 30, 55, 0.14);
   --ds-input:       rgba(255, 255, 255, 0.95);
+  --ds-surface-strong: rgba(255, 255, 255, 0.96);
 }
 
 /* ── Apply design system via CSS (overrides inline styles in light mode) ── */
@@ -136,6 +135,7 @@ canvas,[style*="animation"],.secure-dot {
   /* Backgrounds */
   --p-bg:           #0b0f14;
   --p-bg-deep:      #080c10;
+  --p-bg-rgb:       11, 15, 20;
   --p-bg-card:      rgba(12, 8, 28, 0.85);
   --p-bg-card-hover:rgba(14, 10, 32, 0.95);
   --p-surface:      rgba(15, 10, 35, 0.80);
@@ -143,8 +143,8 @@ canvas,[style*="animation"],.secure-dot {
   /* Text */
   --p-text:         #e6eef8;
   --p-text-bright:  #f0eeff;
-  --p-text-muted:   rgba(155, 176, 198, 0.6);
-  --p-text-dim:     rgba(155, 176, 198, 0.4);
+  --p-text-muted:   rgba(155, 176, 198, 0.68);
+  --p-text-dim:     rgba(155, 176, 198, 0.48);
   --p-text-faint:   rgba(155, 176, 198, 0.25);
 
   /* Borders */
@@ -186,13 +186,13 @@ canvas,[style*="animation"],.secure-dot {
   /* Text */
   --p-text:        #1a1d2e;
   --p-text-bright: #0d0f1a;
-  --p-text-muted:  rgba(60, 70, 100, 0.75);
-  --p-text-dim:    rgba(60, 70, 100, 0.55);
+  --p-text-muted:  rgba(44, 54, 84, 0.82);
+  --p-text-dim:    rgba(56, 66, 96, 0.64);
   --p-text-faint:  rgba(60, 70, 100, 0.35);
 
   /* Borders */
-  --p-border:      rgba(0, 0, 0, 0.09);
-  --p-border-soft: rgba(0, 0, 0, 0.05);
+  --p-border:      rgba(20, 30, 55, 0.14);
+  --p-border-soft: rgba(20, 30, 55, 0.08);
 
   /* Nav */
   --p-nav-bg:     rgba(255, 255, 255, 0.95);

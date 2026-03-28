@@ -1,12 +1,13 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, Clock, Search, Shield, TriangleAlert } from 'lucide-react';
 import {
   CERTIFICATIONS,
   CONTENT_LAST_REVIEWED,
+  resolveCareerPath,
 } from '@/lib/content/career-guide';
 
 const LEVELS = [
@@ -342,6 +343,10 @@ function CertCard({
 
 function CertificationsPageInner() {
   const searchParams = useSearchParams();
+  const recommendedPath = useMemo(
+    () => resolveCareerPath(searchParams.get('path')),
+    [searchParams]
+  );
   const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [level, setLevel] = useState('all');
   const [category, setCategory] = useState('all');
@@ -424,6 +429,73 @@ function CertificationsPageInner() {
             costuma ser superestimada. Revisado em {CONTENT_LAST_REVIEWED}.
           </p>
         </div>
+
+        {recommendedPath && (
+          <div
+            style={{
+              padding: '14px 16px',
+              borderRadius: 12,
+              background: `linear-gradient(135deg, rgba(${recommendedPath.rgb},0.12), rgba(34,197,94,0.05))`,
+              border: `1px solid rgba(${recommendedPath.rgb},0.24)`,
+              marginBottom: 18,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: 9,
+                color: recommendedPath.color,
+                letterSpacing: '0.12em',
+                marginBottom: 6,
+              }}
+            >
+              TRILHA ATIVA
+            </div>
+            <div
+              style={{
+                fontFamily: '"Space Grotesk", sans-serif',
+                fontWeight: 700,
+                fontSize: 16,
+                color: 'var(--ds-title-card, #f0eeff)',
+                marginBottom: 4,
+              }}
+            >
+              {recommendedPath.label}
+            </div>
+            <p
+              style={{
+                margin: '0 0 10px',
+                fontSize: 13,
+                lineHeight: 1.6,
+                color: 'var(--ds-body)',
+              }}
+            >
+              Para chegar em <strong>{recommendedPath.toRole}</strong>, as
+              certificacoes abaixo tendem a fazer mais sentido nesta ordem.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {recommendedPath.steps
+                .filter((step) => step.slug)
+                .map((step) => (
+                  <Link
+                    key={step.slug}
+                    href={`/certifications/${step.slug}`}
+                    style={{
+                      textDecoration: 'none',
+                      padding: '6px 10px',
+                      borderRadius: 999,
+                      border: `1px solid rgba(${recommendedPath.rgb},0.24)`,
+                      background: `rgba(${recommendedPath.rgb},0.08)`,
+                      color: 'var(--ds-title-section, #e6eef8)',
+                      fontSize: 11,
+                    }}
+                  >
+                    {step.acronym} · {step.name}
+                  </Link>
+                ))}
+            </div>
+          </div>
+        )}
 
         <div
           style={{

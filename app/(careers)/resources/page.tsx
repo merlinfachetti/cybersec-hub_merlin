@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   BookOpen,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import {
   CONTENT_LAST_REVIEWED,
+  resolveCareerPath,
   STUDY_RESOURCES,
 } from '@/lib/content/career-guide';
 
@@ -38,6 +39,10 @@ function ResourcesPageInner() {
   const [freeOnly, setFreeOnly] = useState(false);
   const [type, setType] = useState('all');
   const [level, setLevel] = useState('all');
+  const recommendedPath = useMemo(
+    () => resolveCareerPath(searchParams.get('path')),
+    [searchParams]
+  );
 
   const filtered = STUDY_RESOURCES.filter((resource) => {
     if (freeOnly && resource.cost > 0) return false;
@@ -114,6 +119,74 @@ function ResourcesPageInner() {
             {CONTENT_LAST_REVIEWED}.
           </p>
         </div>
+
+        {recommendedPath && (
+          <div
+            style={{
+              padding: '14px 16px',
+              borderRadius: 12,
+              background: `linear-gradient(135deg, rgba(${recommendedPath.rgb},0.12), rgba(139,92,246,0.05))`,
+              border: `1px solid rgba(${recommendedPath.rgb},0.24)`,
+              marginBottom: 18,
+            }}
+          >
+            <div
+              style={{
+                ...S.mono,
+                fontSize: 9,
+                color: recommendedPath.color,
+                letterSpacing: '0.12em',
+                marginBottom: 6,
+              }}
+            >
+              TRILHA ATIVA
+            </div>
+            <div
+              style={{
+                ...S.grotesk,
+                fontWeight: 700,
+                fontSize: 16,
+                color: 'var(--ds-title-card, #f0eeff)',
+                marginBottom: 4,
+              }}
+            >
+              {recommendedPath.label}
+            </div>
+            <p
+              style={{
+                margin: '0 0 10px',
+                fontSize: 13,
+                lineHeight: 1.6,
+                color: 'var(--ds-body)',
+              }}
+            >
+              De <strong>{recommendedPath.fromRole}</strong> para{' '}
+              <strong>{recommendedPath.toRole}</strong>. Os recursos abaixo fazem
+              mais sentido quando ajudam a cumprir essa migracao.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {recommendedPath.steps.slice(0, 4).map((step) => (
+                <a
+                  key={`${recommendedPath.id}-${step.order}`}
+                  href={step.resources[0]?.url ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    textDecoration: 'none',
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    border: `1px solid rgba(${recommendedPath.rgb},0.24)`,
+                    background: `rgba(${recommendedPath.rgb},0.08)`,
+                    color: 'var(--ds-title-section, #e6eef8)',
+                    fontSize: 11,
+                  }}
+                >
+                  {step.acronym} · {step.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div
           style={{

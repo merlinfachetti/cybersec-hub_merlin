@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowRight, ChevronRight, Compass, Layers } from 'lucide-react';
 import {
   CAREER_PATHS,
   CAREER_PATH_LIST,
   CERTIFICATIONS,
   CONTENT_LAST_REVIEWED,
+  getCareerStageMeta,
+  resolveCareerPath,
 } from '@/lib/content/career-guide';
 
 const CERT_LEVELS = [
@@ -39,15 +42,48 @@ const CERT_LEVELS = [
 
 type PathId = keyof typeof CAREER_PATHS;
 
+interface RoadmapUser {
+  name: string | null;
+  role: string;
+  targetRole?: string | null;
+  studyHoursPerWeek?: number | null;
+}
+
 export default function RoadmapPage() {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'paths' | 'all'>('paths');
   const [activePath, setActivePath] =
     useState<PathId>('dev-to-security-engineer');
   const [openStep, setOpenStep] = useState<number | null>(0);
   const [allLevel, setAllLevel] = useState('ENTRY');
+  const [user, setUser] = useState<RoadmapUser | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (data?.user) setUser(data.user);
+      })
+      .catch(() => null);
+  }, []);
+
+  useEffect(() => {
+    const hint = searchParams.get('path') ?? user?.targetRole ?? null;
+    const resolved = resolveCareerPath(hint);
+
+    if (resolved?.id && resolved.id in CAREER_PATHS) {
+      setActivePath(resolved.id as PathId);
+      setOpenStep(0);
+    }
+  }, [searchParams, user?.targetRole]);
 
   const path = CAREER_PATHS[activePath];
   const filteredAll = CERTIFICATIONS.filter((cert) => cert.level === allLevel);
+  const pathStageMeta = getCareerStageMeta(path.stage);
+  const recommendedPath = useMemo(() => {
+    const hint = searchParams.get('path') ?? user?.targetRole ?? null;
+    return resolveCareerPath(hint) ?? path;
+  }, [path, searchParams, user?.targetRole]);
 
   const S = {
     card: {
@@ -110,6 +146,96 @@ export default function RoadmapPage() {
             simples escada de certificacoes. Conteudo editorial revisado em{' '}
             {CONTENT_LAST_REVIEWED}.
           </p>
+        </div>
+
+        <div
+          style={{
+            ...S.card,
+            padding: '16px 18px',
+            marginBottom: 18,
+            borderColor: `${pathStageMeta.color}35`,
+            background: `linear-gradient(135deg, ${pathStageMeta.bg}, rgba(139,92,246,0.05))`,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ maxWidth: 760 }}>
+              <div
+                style={{
+                  ...S.mono,
+                  fontSize: 9,
+                  color: `${pathStageMeta.color}`,
+                  letterSpacing: '0.12em',
+                  marginBottom: 6,
+                }}
+              >
+                PERFIL E MERCADO
+              </div>
+              <div
+                style={{
+                  ...S.grotesk,
+                  fontWeight: 700,
+                  fontSize: 17,
+                  color: 'var(--ds-title-card, #f0eeff)',
+                  marginBottom: 4,
+                }}
+              >
+                {recommendedPath.label}
+              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 13,
+                  lineHeight: 1.65,
+                  color: 'var(--ds-body)',
+                }}
+              >
+                {user?.targetRole
+                  ? `Objetivo salvo no seu perfil: ${user.targetRole}.`
+                  : 'Sem objetivo salvo no perfil ainda; usando a trilha atualmente aberta como referencia.'}{' '}
+                Este caminho mira <strong>{recommendedPath.toRole}</strong> e
+                foi organizado para <strong>{pathStageMeta.market}</strong>.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  ...S.mono,
+                  fontSize: 10,
+                  color: pathStageMeta.color,
+                  background: pathStageMeta.bg,
+                  border: `1px solid ${pathStageMeta.color}30`,
+                  padding: '5px 10px',
+                  borderRadius: 999,
+                }}
+              >
+                {recommendedPath.stageLabel}
+              </span>
+              <span
+                style={{
+                  ...S.mono,
+                  fontSize: 10,
+                  color: path.color,
+                  background: `rgba(${path.rgb},0.12)`,
+                  border: `1px solid rgba(${path.rgb},0.28)`,
+                  padding: '5px 10px',
+                  borderRadius: 999,
+                }}
+              >
+                {recommendedPath.team === 'hybrid'
+                  ? 'Cross-team'
+                  : `${recommendedPath.team.toUpperCase()} TEAM`}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div
@@ -248,6 +374,43 @@ export default function RoadmapPage() {
                         >
                           {item.desc}
                         </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: 6,
+                            flexWrap: 'wrap',
+                            marginTop: 8,
+                          }}
+                        >
+                          <span
+                            style={{
+                              ...S.mono,
+                              fontSize: 9,
+                              color: getCareerStageMeta(item.stage).color,
+                              background: getCareerStageMeta(item.stage).bg,
+                              border: `1px solid ${getCareerStageMeta(item.stage).color}30`,
+                              padding: '2px 7px',
+                              borderRadius: 999,
+                            }}
+                          >
+                            {item.stageLabel}
+                          </span>
+                          <span
+                            style={{
+                              ...S.mono,
+                              fontSize: 9,
+                              color: item.color,
+                              background: `rgba(${item.rgb},0.12)`,
+                              border: `1px solid rgba(${item.rgb},0.22)`,
+                              padding: '2px 7px',
+                              borderRadius: 999,
+                            }}
+                          >
+                            {item.team === 'hybrid'
+                              ? 'Cross-team'
+                              : `${item.team.toUpperCase()} TEAM`}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div
@@ -324,6 +487,41 @@ export default function RoadmapPage() {
                     >
                       {path.goal}
                     </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: 8,
+                        flexWrap: 'wrap',
+                        marginBottom: 8,
+                      }}
+                    >
+                      <span
+                        style={{
+                          ...S.mono,
+                          fontSize: 9,
+                          color: pathStageMeta.color,
+                          background: pathStageMeta.bg,
+                          border: `1px solid ${pathStageMeta.color}30`,
+                          padding: '2px 8px',
+                          borderRadius: 999,
+                        }}
+                      >
+                        {pathStageMeta.market}
+                      </span>
+                      <span
+                        style={{
+                          ...S.mono,
+                          fontSize: 9,
+                          color: path.color,
+                          background: `rgba(${path.rgb},0.12)`,
+                          border: `1px solid rgba(${path.rgb},0.22)`,
+                          padding: '2px 8px',
+                          borderRadius: 999,
+                        }}
+                      >
+                        {path.fromRole} -> {path.toRole}
+                      </span>
+                    </div>
                     <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
                       <span
                         style={{
@@ -371,9 +569,20 @@ export default function RoadmapPage() {
                       fontSize: 12,
                       color: 'rgba(220,230,245,0.8)',
                       lineHeight: 1.6,
+                      marginBottom: 10,
                     }}
                   >
                     {path.realityCheck}
+                  </div>
+                  <div
+                    style={{
+                      ...S.mono,
+                      fontSize: 9,
+                      color: 'var(--ds-mono-dim)',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    Melhor para: {path.audience}
                   </div>
                 </div>
               </div>
