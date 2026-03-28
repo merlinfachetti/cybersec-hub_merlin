@@ -37,8 +37,9 @@ export default function HomePage() {
             </h1>
 
             <p className="mx-auto max-w-3xl text-base text-muted-foreground sm:text-xl">
-              Complete guide to cybersecurity certifications, career roadmaps,
-              market insights, and curated study resources. All in one place.
+              Role-based cybersecurity roadmaps, realistic certification
+              guidance, curated study resources, and market context in one
+              place.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
@@ -72,25 +73,25 @@ export default function HomePage() {
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <CardHeader>
                   <img src="/logo.png" alt="CYBER PORTAL" style={{ width: 56, height: 56, objectFit: "contain", filter: "drop-shadow(0 0 10px rgba(139,92,246,0.5))", marginBottom: "1rem" }} />
-                  <CardTitle>100+ Certifications</CardTitle>
+                  <CardTitle>Curated Certifications</CardTitle>
                   <CardDescription>
-                    Complete catalog from Security+ to OSCP. Filter by level,
-                    category, and cost.
+                    A reviewed certification set with clearer fit, tradeoffs,
+                    and realistic next steps.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Detailed exam information
+                      Better role and level fit
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Cost comparison by region
+                      Official exam context
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Prerequisites mapped
+                      Practical caution notes
                     </li>
                   </ul>
                 </CardContent>
@@ -104,23 +105,23 @@ export default function HomePage() {
                   <Map className="h-12 w-12 text-primary mb-4" />
                   <CardTitle>Visual Roadmaps</CardTitle>
                   <CardDescription>
-                    Interactive career paths from beginner to advanced. See your
-                    progression clearly.
+                    Career tracks organized by real target roles instead of a
+                    generic cert ladder.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />3
-                      predefined career paths
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />Role
+                      based tracks
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Interactive graph visualization
+                      Mix of certs, labs, and milestones
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Estimated timelines
+                      Reality-check guidance
                     </li>
                   </ul>
                 </CardContent>
@@ -164,15 +165,15 @@ export default function HomePage() {
                   <BookOpen className="h-12 w-12 text-primary mb-4" />
                   <CardTitle>Study Resources</CardTitle>
                   <CardDescription>
-                    Curated courses, books, labs, and practice exams. Rated by
-                    the community.
+                    Resources chosen for when they actually help, not just
+                    because they are popular.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      100+ vetted resources
+                      Best-fit recommendations
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -180,7 +181,7 @@ export default function HomePage() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Ratings and reviews
+                      Usage caveats and sequencing
                     </li>
                   </ul>
                 </CardContent>

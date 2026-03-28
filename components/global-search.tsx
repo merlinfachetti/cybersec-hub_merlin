@@ -1,8 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, ChevronRight, ExternalLink, ArrowRight } from 'lucide-react';
+import { Search, X, ChevronRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import {
+  CAREER_PATH_LIST,
+  CERTIFICATIONS,
+  STUDY_RESOURCES,
+} from '@/lib/content/career-guide';
 
 // ── Search index ────────────────────────────────────────────────────────────
 type ItemType = 'cert' | 'resource' | 'path' | 'market';
@@ -18,168 +23,145 @@ interface SearchItem {
   actions?: { label: string; href: string; primary?: boolean }[];
 }
 
+const LEVEL_COLOR: Record<string, string> = {
+  ENTRY: '#22c55e',
+  INTERMEDIATE: '#3b82f6',
+  ADVANCED: '#f59e0b',
+  EXPERT: '#ef4444',
+};
+
+const CERT_INDEX: SearchItem[] = CERTIFICATIONS.map((cert) => ({
+  id: `cert-${cert.slug}`,
+  type: 'cert',
+  icon:
+    cert.category === 'OFFENSIVE_SECURITY'
+      ? '🎯'
+      : cert.category === 'CLOUD_SECURITY'
+        ? '☁️'
+        : cert.category === 'GOVERNANCE_RISK'
+          ? '🏗️'
+          : '🛡️',
+  title: cert.acronym,
+  sub: `${cert.provider} · ${cert.level} · ${cert.searchCost}`,
+  href: `/certifications?search=${encodeURIComponent(cert.acronym)}`,
+  tags: [
+    cert.slug,
+    cert.name.toLowerCase(),
+    cert.acronym.toLowerCase(),
+    cert.provider.toLowerCase(),
+    cert.category.toLowerCase(),
+  ],
+  level: cert.level,
+  levelColor: LEVEL_COLOR[cert.level] ?? '#8b5cf6',
+  cost: cert.searchCost,
+  hours: cert.studyHours,
+  provider: cert.provider,
+  desc: cert.marketSignal,
+  meta: [
+    { label: 'Formato', value: cert.numberOfQuestions > 0 ? `${cert.numberOfQuestions} questoes` : 'Exame pratico' },
+    { label: 'Duracao', value: cert.examDuration > 0 ? `${cert.examDuration} min` : 'Modular' },
+    { label: 'Validade', value: cert.validityLabel },
+  ],
+  actions: [
+    { label: 'Ver certificacao', href: `/certifications/${cert.slug}`, primary: true },
+    { label: 'Abrir recursos', href: `/resources?search=${encodeURIComponent(cert.acronym)}` },
+  ],
+}));
+
+const RESOURCE_INDEX: SearchItem[] = STUDY_RESOURCES.map((resource) => ({
+  id: `resource-${resource.id}`,
+  type: 'resource',
+  icon: resource.type === 'LAB' ? '🧪' : resource.type === 'VIDEO' ? '▶️' : '📘',
+  title: resource.title,
+  sub: `${resource.cost === 0 ? 'Gratis' : `$${resource.cost}`} · ${resource.type} · ${resource.hours}h`,
+  href: '/resources',
+  tags: [...resource.tags, resource.provider.toLowerCase(), resource.cert.toLowerCase()],
+  provider: resource.provider,
+  cost: resource.cost === 0 ? 'Gratis' : `$${resource.cost}`,
+  hours: `${resource.hours}h`,
+  desc: resource.bestFor,
+  meta: [
+    { label: 'Tipo', value: resource.type },
+    { label: 'Rating', value: `⭐ ${resource.rating.toFixed(1)}` },
+  ],
+  actions: [
+    { label: 'Abrir recurso', href: resource.url, primary: true },
+    { label: 'Ver tela completa', href: `/resources?search=${encodeURIComponent(resource.provider)}` },
+  ],
+}));
+
+const PATH_INDEX: SearchItem[] = CAREER_PATH_LIST.map((path) => ({
+  id: `path-${path.id}`,
+  type: 'path',
+  icon: path.icon,
+  title: path.label,
+  sub: `${path.totalHours} · ${path.totalCost}`,
+  href: '/roadmap',
+  tags: [
+    path.id,
+    path.label.toLowerCase(),
+    path.goal.toLowerCase(),
+    ...path.steps.flatMap((step) => [
+      step.acronym.toLowerCase(),
+      step.name.toLowerCase(),
+    ]),
+  ],
+  cost: path.totalCost,
+  hours: path.totalHours,
+  desc: path.realityCheck,
+  meta: [
+    { label: 'Passos', value: path.steps.map((step) => step.acronym).join(' -> ') },
+    { label: 'Foco', value: path.goal },
+  ],
+  actions: [{ label: 'Ver roadmap', href: '/roadmap', primary: true }],
+}));
+
+const MARKET_INDEX: SearchItem[] = [
+  {
+    id: 'mk1',
+    type: 'market',
+    icon: '💼',
+    title: 'SOC Analyst',
+    sub: 'Role defensiva de entrada',
+    href: '/market',
+    tags: ['soc', 'analyst', 'blue team', 'entry', 'monitoring'],
+    desc: 'Boa porta de entrada para quem quer comecar com monitoramento, triagem, SIEM e resposta a incidentes.',
+    meta: [
+      { label: 'Nível', value: 'Entry -> Mid' },
+      { label: 'Certs comuns', value: 'Security+ · CySA+' },
+      { label: 'Labs úteis', value: 'Splunk · SOC Level 1' },
+    ],
+    actions: [
+      { label: 'Ver mercado', href: '/market', primary: true },
+      { label: 'Abrir roadmap', href: '/roadmap' },
+    ],
+  },
+  {
+    id: 'mk2',
+    type: 'market',
+    icon: '🎯',
+    title: 'Penetration Tester',
+    sub: 'Trilha ofensiva prática',
+    href: '/market',
+    tags: ['pentest', 'red team', 'offensive', 'oscp', 'pnpt'],
+    desc: 'Carreira que depende muito mais de prova prática e laboratório do que de storytelling no curriculo.',
+    meta: [
+      { label: 'Nível', value: 'Junior -> Senior' },
+      { label: 'Certs comuns', value: 'eJPT · PNPT/CPTS · OSCP' },
+      { label: 'Base real', value: 'Enumeration · AD · report writing' },
+    ],
+    actions: [
+      { label: 'Ver mercado', href: '/market', primary: true },
+      { label: 'Abrir roadmap', href: '/roadmap' },
+    ],
+  },
+];
+
 const INDEX: SearchItem[] = [
-  // ── Certificações ─────────────────────────────────────────────────────────
-  { id:'c1', type:'cert', icon:'🛡️', title:'Security+', sub:'CompTIA · Entry · $392', href:'/certifications?search=Security%2B', tags:['sec+','entry','defensive','baseline','dod','comptia'],
-    level:'ENTRY', levelColor:'#22c55e', cost:'$392', hours:'80–120h', provider:'CompTIA',
-    desc:'Certificação baseline mais reconhecida mundialmente. Exigida pelo DoD dos EUA. Abre portas para qualquer role entry-level em security. Ideal como primeiro passo.',
-    meta:[{label:'Duração exame',value:'90 min · 90 questões'},{label:'Score mínimo',value:'750/900'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=Security%2B',primary:true},{label:'Ver recursos',href:'/resources?search=sec+'}] },
-
-  { id:'c2', type:'cert', icon:'🎯', title:'eJPT', sub:'INE Security · Entry · $200', href:'/certifications?search=eJPT', tags:['ejpt','entry','pentest','offensive','ine','prático'],
-    level:'ENTRY', levelColor:'#22c55e', cost:'$200', hours:'60–80h', provider:'INE Security',
-    desc:'Certificação prática de pentest para iniciantes. Exame 100% hands-on em laboratório. Sem questões de múltipla escolha. Melhor ponto de entrada para red team.',
-    meta:[{label:'Tipo de exame',value:'24h prático em lab'},{label:'Validade',value:'Lifetime'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=eJPT',primary:true},{label:'Roadmap ofensivo',href:'/roadmap'}] },
-
-  { id:'c3', type:'cert', icon:'🔵', title:'CySA+', sub:'CompTIA · Intermediate · $392', href:'/certifications?search=CySA%2B', tags:['cysa','intermediate','blue team','soc','defensive'],
-    level:'INTERMEDIATE', levelColor:'#3b82f6', cost:'$392', hours:'80–100h', provider:'CompTIA',
-    desc:'Análise comportamental para combater ameaças. Foca em threat intelligence, gestão de vulnerabilidades e IR. Muito pedido em SOC Tier 2.',
-    meta:[{label:'Duração exame',value:'165 min · 85 questões'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CySA%2B',primary:true},{label:'Ver recursos blue team',href:'/resources'}] },
-
-  { id:'c4', type:'cert', icon:'🔴', title:'CEH', sub:'EC-Council · Intermediate · $1.199', href:'/certifications?search=CEH', tags:['ceh','intermediate','ethical hacking','offensive','ec-council'],
-    level:'INTERMEDIATE', levelColor:'#3b82f6', cost:'$1.199', hours:'120–160h', provider:'EC-Council',
-    desc:'Metodologia de ethical hacking com 20 disciplinas. Reconhecido por Fortune 500. Mais teórico que o PNPT/OSCP mas tem forte reconhecimento de marca.',
-    meta:[{label:'Duração exame',value:'240 min · 125 questões'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CEH',primary:true}] },
-
-  { id:'c5', type:'cert', icon:'🔴', title:'GPEN', sub:'SANS/GIAC · Intermediate · $979', href:'/certifications?search=GPEN', tags:['gpen','intermediate','pentest','offensive','sans','giac','active directory'],
-    level:'INTERMEDIATE', levelColor:'#3b82f6', cost:'$979', hours:'120–140h', provider:'SANS/GIAC',
-    desc:'Certificação de pentest reconhecida pela indústria. Cobre metodologia completa, Active Directory attacks e ambientes corporativos reais.',
-    meta:[{label:'Duração exame',value:'180 min · 115 questões'},{label:'Validade',value:'4 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=GPEN',primary:true}] },
-
-  { id:'c6', type:'cert', icon:'🔥', title:'OSCP', sub:'Offensive Security · Advanced · $1.499', href:'/certifications?search=OSCP', tags:['oscp','advanced','pentest','offensive','try harder','offensive security'],
-    level:'ADVANCED', levelColor:'#f59e0b', cost:'$1.499', hours:'300–500h', provider:'Offensive Security',
-    desc:'A certificação ofensiva mais respeitada. Exame prático de 24h em rede isolada. "Try Harder" é o mantra. Diferencia candidatos de forma definitiva no mercado.',
-    meta:[{label:'Tipo de exame',value:'24h prático + 24h relatório'},{label:'Validade',value:'Lifetime'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=OSCP',primary:true},{label:'Prep list TJ Null',href:'/resources?search=oscp'}] },
-
-  { id:'c7', type:'cert', icon:'🏆', title:'CISSP', sub:'(ISC)² · Advanced · $749', href:'/certifications?search=CISSP', tags:['cissp','advanced','governance','gold standard','isc2','arquitetura'],
-    level:'ADVANCED', levelColor:'#f59e0b', cost:'$749', hours:'200–300h', provider:'(ISC)²',
-    desc:'O padrão ouro para liderança em security. Cobre 8 domínios. Exigido para CISO, Security Architect. Requer 5 anos de experiência para certificar.',
-    meta:[{label:'Duração exame',value:'360 min · 125–175 questões'},{label:'Experiência requerida',value:'5 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CISSP',primary:true}] },
-
-  { id:'c8', type:'cert', icon:'🟣', title:'CISM', sub:'ISACA · Advanced · $575', href:'/certifications?search=CISM', tags:['cism','advanced','governance','risk','management','isaca'],
-    level:'ADVANCED', levelColor:'#f59e0b', cost:'$575', hours:'150–200h', provider:'ISACA',
-    desc:'Gestão de segurança da informação. Governance, risk management e desenvolvimento de programas. Muito valorizado na Europa e em roles que combinam técnica com negócio.',
-    meta:[{label:'Duração exame',value:'240 min · 150 questões'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CISM',primary:true}] },
-
-  { id:'c9', type:'cert', icon:'🆓', title:'ISC2 CC', sub:'(ISC)² · Entry · ~$199', href:'/certifications?search=CC', tags:['cc','entry','isc2','gratuito','free','iniciante','transição','dev'],
-    level:'ENTRY', levelColor:'#22c55e', cost:'~$199', hours:'40–60h', provider:'(ISC)²',
-    desc:'Certificação entry-level da mesma organização do CISSP. Peso de marca enorme para iniciante. Treinamento oficial gratuito. Primeira credencial ideal para devs em transição.',
-    meta:[{label:'Duração exame',value:'120 min · 100 questões'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CC',primary:true},{label:'Dev → Security path',href:'/roadmap'}] },
-
-  { id:'c10', type:'cert', icon:'⚡', title:'PNPT', sub:'TCM Security · Intermediate · $400', href:'/certifications?search=PNPT', tags:['pnpt','intermediate','pentest','practical','tcm','dev','relatório'],
-    level:'INTERMEDIATE', levelColor:'#3b82f6', cost:'$400', hours:'80–120h', provider:'TCM Security',
-    desc:'Certificação 100% prática do TCM Security. Exame de 5 dias com relatório real de pentest. Muito mais respeitada tecnicamente que CEH. Background dev é vantagem direta.',
-    meta:[{label:'Tipo de exame',value:'5 dias + relatório'},{label:'Validade',value:'Lifetime'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=PNPT',primary:true},{label:'TCM Academy',href:'/resources'}] },
-
-  { id:'c11', type:'cert', icon:'☁️', title:'AWS Security', sub:'AWS · Advanced · $300', href:'/certifications?search=AWS', tags:['aws','advanced','cloud','cloud security','amazon','specialty'],
-    level:'ADVANCED', levelColor:'#f59e0b', cost:'$300', hours:'150–200h', provider:'Amazon Web Services',
-    desc:'A certificação de cloud security mais pedida. 80% das vagas de Security Engineer envolvem cloud. Foco em IAM, encryption, logging e IR na AWS.',
-    meta:[{label:'Duração exame',value:'170 min · 65 questões'},{label:'Validade',value:'3 anos'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=AWS',primary:true},{label:'Ver mercado cloud',href:'/market'}] },
-
-  { id:'c12', type:'cert', icon:'🌐', title:'Google Cyber', sub:'Google · Entry · ~$200', href:'/certifications?search=Google', tags:['google','entry','certificado','coursera','linkedin'],
-    level:'ENTRY', levelColor:'#22c55e', cost:'~$200', hours:'120–180h', provider:'Google/Coursera',
-    desc:'Certificado do Google em parceria com o Coursera. 6 meses, ~$200 total. Aceito como equivalente a experiência em muitas vagas entry. Excelente para o LinkedIn.',
-    meta:[{label:'Formato',value:'6 meses · Online self-paced'},{label:'Validade',value:'Lifetime'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=Google',primary:true}] },
-
-  { id:'c13', type:'cert', icon:'🧪', title:'HTB CPTS', sub:'HackTheBox · Advanced · $490', href:'/certifications?search=CPTS', tags:['cpts','advanced','hackthebox','htb','pentest','oscp alternativa'],
-    level:'ADVANCED', levelColor:'#f59e0b', cost:'$490', hours:'200–300h', provider:'HackTheBox',
-    desc:'Certificação hands-on do HackTheBox lançada em 2023. Completamente prática, reconhecida pelo mercado técnico. Boa alternativa ao OSCP com preço mais acessível.',
-    meta:[{label:'Tipo de exame',value:'10 dias prático'},{label:'Validade',value:'Lifetime'}],
-    actions:[{label:'Ver certificação',href:'/certifications?search=CPTS',primary:true}] },
-
-  // ── Resources ──────────────────────────────────────────────────────────────
-  { id:'r1', type:'resource', icon:'🎓', title:'Professor Messer SY0-701', sub:'Gratuito · Vídeo · 14h', href:'/resources', tags:['professor messer','sec+','free','gratuito','video'],
-    provider:'Professor Messer', cost:'Gratuito', hours:'14h',
-    desc:'O melhor curso gratuito para Security+. Vídeos curtos e objetivos cobrindo todo o SY0-701. Rating 4.9. Acompanha notas de estudo e simulados opcionais.',
-    meta:[{label:'Tipo',value:'Vídeo gratuito'},{label:'Rating',value:'⭐ 4.9'}],
-    actions:[{label:'Acessar recurso',href:'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/',primary:true},{label:'Ver todos os recursos',href:'/resources?search=sec+'}] },
-
-  { id:'r2', type:'resource', icon:'🧪', title:'TryHackMe Pre-Security', sub:'Freemium · Lab · 40h', href:'/resources', tags:['tryhackme','free','lab','iniciante','beginner','fundamentos'],
-    provider:'TryHackMe', cost:'Gratuito / $14/mês', hours:'40h',
-    desc:'Caminho interativo para iniciantes. Cobre networking, Linux, web basics e security fundamentals. Conteúdo básico gratuito, labs avançados precisam de assinatura.',
-    meta:[{label:'Tipo',value:'Lab interativo'},{label:'Rating',value:'⭐ 4.8'}],
-    actions:[{label:'Acessar recurso',href:'https://tryhackme.com/path/outline/presecurity',primary:true}] },
-
-  { id:'r3', type:'resource', icon:'🧪', title:'HackTheBox Starting Point', sub:'Gratuito · Lab · 20h', href:'/resources', tags:['hackthebox','htb','free','gratuito','lab','pentest','guiado'],
-    provider:'HackTheBox', cost:'Gratuito', hours:'20h',
-    desc:'Série de máquinas guiadas para iniciantes em HTB. Introduz metodologia de pentest real com writeups inclusos.',
-    meta:[{label:'Tipo',value:'Lab guiado'},{label:'Rating',value:'⭐ 4.7'}],
-    actions:[{label:'Acessar recurso',href:'https://www.hackthebox.com/starting-point',primary:true}] },
-
-  { id:'r4', type:'resource', icon:'📖', title:'OWASP Testing Guide v4', sub:'Gratuito · PDF · Web Security', href:'/resources', tags:['owasp','free','web','app security','guia','pdf'],
-    provider:'OWASP', cost:'Gratuito', hours:'~30h',
-    desc:'Referência definitiva para testes em aplicações web. Cobre todos os vetores do OWASP Top 10. Essencial para qualquer dev em transição para security.',
-    meta:[{label:'Tipo',value:'Guia / PDF'},{label:'Rating',value:'⭐ 4.8'}],
-    actions:[{label:'Acessar recurso',href:'https://owasp.org/www-project-web-security-testing-guide/',primary:true}] },
-
-  { id:'r5', type:'resource', icon:'▶️', title:'ippsec YouTube', sub:'Gratuito · Vídeo · OSCP prep', href:'/resources', tags:['ippsec','youtube','free','oscp','walkthroughs','htb'],
-    provider:'ippsec', cost:'Gratuito', hours:'200h+',
-    desc:'Canal do YouTube com walkthroughs detalhados de máquinas HTB. Essencial para preparação do OSCP. Explica o raciocínio passo a passo.',
-    meta:[{label:'Tipo',value:'YouTube'},{label:'Rating',value:'⭐ 4.9'}],
-    actions:[{label:'Acessar recurso',href:'https://www.youtube.com/@ippsec',primary:true}] },
-
-  { id:'r6', type:'resource', icon:'🆓', title:'Splunk Free Training', sub:'Gratuito · Curso · SIEM', href:'/resources', tags:['splunk','free','siem','soc','logs','blue team','gratuito'],
-    provider:'Splunk', cost:'Gratuito', hours:'20–30h',
-    desc:'Treinamento oficial do Splunk gratuitamente. SIEM mais usado no mercado. Colocar no currículo diferencia muito em vagas de SOC. Query de logs é trivial para dev.',
-    meta:[{label:'Tipo',value:'Curso oficial'},{label:'Rating',value:'⭐ 4.7'}],
-    actions:[{label:'Acessar recurso',href:'https://www.splunk.com/en_us/training/free-courses/splunk-fundamentals-1.html',primary:true}] },
-
-  { id:'r7', type:'resource', icon:'⚡', title:'TCM Security PEH', sub:'$30 · Curso · PNPT/OSCP prep', href:'/resources', tags:['tcm','practical ethical hacking','peh','pentest','active directory'],
-    provider:'TCM Security', cost:'$30', hours:'25h',
-    desc:'Um dos melhores cursos de ethical hacking disponíveis. Cobre AD attacks, web app, relatório. Excelente custo-benefício. Background dev é vantagem enorme aqui.',
-    meta:[{label:'Tipo',value:'Curso'},{label:'Rating',value:'⭐ 4.9'}],
-    actions:[{label:'Acessar recurso',href:'https://academy.tcm-sec.com',primary:true}] },
-
-  // ── Roadmap Paths ──────────────────────────────────────────────────────────
-  { id:'m1', type:'path', icon:'🔀', title:'Dev → Security', sub:'Transição · 200–320h · $400–$1.200', href:'/roadmap', tags:['dev','transição','transition','developer','software','career change','começar'],
-    cost:'$400–$1.200', hours:'200–320h',
-    desc:'Caminho estratégico para devs mudando para security. Aproveita seu background em código — você já entende APIs, lógica de sistemas, criptografia. Mais rápido que começar do zero.',
-    meta:[{label:'Passos',value:'CC → SEC+ → Splunk → PNPT'},{label:'Tempo estimado',value:'8–14 meses'}],
-    actions:[{label:'Ver roadmap',href:'/roadmap',primary:true}] },
-
-  { id:'m2', type:'path', icon:'🌱', title:'Beginner Path', sub:'Sem experiência · SEC+ + eJPT', href:'/roadmap', tags:['beginner','iniciante','zero','começar','entry','primeiro'],
-    cost:'$392–$600', hours:'180–240h',
-    desc:'Para quem está começando do zero em security. Foco em fundamentos sólidos antes de qualquer especialização.',
-    meta:[{label:'Passos',value:'SEC+ → eJPT'},{label:'Tempo estimado',value:'6–12 meses'}],
-    actions:[{label:'Ver roadmap',href:'/roadmap',primary:true}] },
-
-  { id:'m3', type:'path', icon:'⚡', title:'Intermediate Path', sub:'1–3 anos · CySA+ / CEH / GPEN', href:'/roadmap', tags:['intermediate','intermediário','crescimento','blue team','red team'],
-    cost:'$1.000–$2.500', hours:'300–500h',
-    desc:'Para quem já tem Security+ e quer se especializar. Escolha entre Blue Team (CySA+), Red Team (CEH/GPEN) ou ambos.',
-    meta:[{label:'Passos',value:'CySA+ ou CEH/GPEN'},{label:'Tempo estimado',value:'12–24 meses'}],
-    actions:[{label:'Ver roadmap',href:'/roadmap',primary:true}] },
-
-  // ── Market ─────────────────────────────────────────────────────────────────
-  { id:'mk1', type:'market', icon:'💼', title:'SOC Analyst', sub:'$55k–$85k US · €42k–€65k DE', href:'/market', tags:['soc','analyst','salário','salary','blue team','entry'],
-    desc:'Role de entrada mais comum no mercado. Alta demanda global. Foco em monitoramento, análise de alertas, SIEM e IR. Certs: Security+ e CySA+.',
-    meta:[{label:'Nível',value:'Entry–Mid'},{label:'Demanda',value:'🔴 CRITICAL'},{label:'Certs recomendadas',value:'SEC+ · CySA+'}],
-    actions:[{label:'Ver mercado',href:'/market',primary:true},{label:'Ver roadmap',href:'/roadmap'}] },
-
-  { id:'mk2', type:'market', icon:'💼', title:'Penetration Tester', sub:'$90k–$145k US · €65k–€110k DE', href:'/market', tags:['pentest','pentester','red team','salário','salary','offensive'],
-    desc:'Alta remuneração e demanda crescente. Exige certs práticas (OSCP/PNPT). Background dev acelera muito a entrada. Foco em simulação de ataques reais.',
-    meta:[{label:'Nível',value:'Mid–Senior'},{label:'Demanda',value:'🟡 HIGH'},{label:'Certs recomendadas',value:'PNPT · CEH · OSCP'}],
-    actions:[{label:'Ver mercado',href:'/market',primary:true},{label:'Ver roadmap ofensivo',href:'/roadmap'}] },
-
-  { id:'mk3', type:'market', icon:'🌍', title:'Mercado Alemanha', sub:'CRITICAL · +42% crescimento · €82k médio', href:'/market', tags:['alemanha','germany','europa','europe','koln','berlin','köln'],
-    desc:'Déficit crítico de profissionais de security na Alemanha. Crescimento de +42% ao ano. 90k+ vagas abertas. Salário médio €82k. Você está no lugar certo.',
-    meta:[{label:'Demanda',value:'🔴 CRITICAL'},{label:'Crescimento',value:'+42% ao ano'},{label:'Vagas abertas',value:'90k+'}],
-    actions:[{label:'Ver análise completa',href:'/market',primary:true}] },
-
-  { id:'mk4', type:'market', icon:'🌍', title:'Mercado EUA', sub:'CRITICAL · 850k+ vagas · $105k médio', href:'/market', tags:['eua','usa','estados unidos','america','vagas','remoto'],
-    desc:'O maior mercado de cybersecurity do mundo. 850k+ vagas abertas. Trabalho remoto comum para roles técnicos. Salário médio $105k para Security Engineer.',
-    meta:[{label:'Demanda',value:'🔴 CRITICAL'},{label:'Vagas abertas',value:'850k+'},{label:'Crescimento',value:'+35% até 2031'}],
-    actions:[{label:'Ver análise completa',href:'/market',primary:true}] },
+  ...CERT_INDEX,
+  ...RESOURCE_INDEX,
+  ...PATH_INDEX,
+  ...MARKET_INDEX,
 ];
 
 const TYPE_META: Record<ItemType, { label: string; color: string; bg: string }> = {
@@ -246,7 +228,7 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean }) {
 
   useEffect(() => { setActive(0); setSelected(null); }, [query]);
 
-  const SUGGESTIONS = ['SEC+', 'Dev → Security', 'OSCP', 'Gratuito', 'Alemanha', 'SOC Analyst', 'Splunk'];
+  const SUGGESTIONS = ['SEC+', 'Dev -> Security', 'OSCP', 'SOC Analyst', 'Splunk', 'CISSP', 'AppSec'];
 
   return (
     <>
