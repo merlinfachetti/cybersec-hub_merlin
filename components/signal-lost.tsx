@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Login canvas — same as desktop auth (blue nebula, core, rings) ─────────
-function initLoginBg(canvas: HTMLCanvasElement, mobile = false, centerRef?: { current: {x:number,y:number} }) {
+function initLoginBg(canvas: HTMLCanvasElement, mobile = false, centerRef?: { current: {x:number,y:number} }, gate = false) {
   const ctx = canvas.getContext('2d')!;
   let W = 0, H = 0, cx = 0, cy = 0;
   type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
@@ -58,8 +58,8 @@ function initLoginBg(canvas: HTMLCanvasElement, mobile = false, centerRef?: { cu
       cx = centerRef.current.x;
       cy = centerRef.current.y;
     }
-    // Mobile: half luminosity so content elements read clearly
-    const mo = mobile ? 0.28 : 1.0;
+    // Gate only: half luminosity so scanner + SIGNAL LOST text read clearly
+    const mo = gate ? 0.14 : 1.0;
     for (const l of [
       { r: base * 5.5 * p, c: `rgba(100,130,255,${0.05 * mo})`, c2: `rgba(70,100,255,${0.015 * mo})` },
       { r: base * 3.2 * p, c: `rgba(140,170,255,${0.12 * mo})`, c2: `rgba(100,140,255,${0.04 * mo})` },
@@ -71,8 +71,8 @@ function initLoginBg(canvas: HTMLCanvasElement, mobile = false, centerRef?: { cu
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
     }
     const gc = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.22);
-    gc.addColorStop(0, mobile ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.72)');
-    gc.addColorStop(0.5, mobile ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.3)');
+    gc.addColorStop(0, gate ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.72)');
+    gc.addColorStop(0.5, gate ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.3)');
     gc.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = gc; ctx.fillRect(0, 0, W, H);
   }
@@ -319,7 +319,7 @@ export default function SignalLost() {
   }, [resetGate]);
 
   useEffect(() => {
-    if (canvasRef.current) return initLoginBg(canvasRef.current, true, bloomCenterRef);
+    if (canvasRef.current) return initLoginBg(canvasRef.current, true, bloomCenterRef, true);
   }, []);
 
   // Bloquear context menu e seleção nativa do browser no mobile
@@ -635,7 +635,7 @@ export default function SignalLost() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 32px', textAlign: 'center' }}>
 
           {/* Scanner target */}
-          <div ref={scannerRef} style={{ marginTop: 10, marginBottom: 24, position: 'relative', width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div ref={scannerRef} style={{ marginTop: 20, marginBottom: 24, position: 'relative', width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Outer ring */}
             <div style={{
               position: 'absolute', inset: 0, borderRadius: '50%',
