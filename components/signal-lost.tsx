@@ -497,13 +497,13 @@ export default function SignalLost() {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, background: '#020208', overflow: 'hidden',
+        position: 'fixed', inset: 0, overflow: 'hidden',
         touchAction: 'none', userSelect: 'none',
         WebkitUserSelect: 'none', WebkitTouchCallout: 'none',
       }}
       onContextMenu={e => e.preventDefault()}
     >
-      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
       <HiddenStar onActivate={restoreFullGate} />
 
       {/* Grain */}
@@ -773,13 +773,12 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'linear-gradient(180deg, #0a0618 0%, #050310 100%)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: '24px',
       animation: 'auth-reveal 0.5s ease-out both',
       fontFamily: 'sans-serif',
     }}>
-      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
       {/* Nebula glow */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 40%, rgba(139,92,246,0.12) 0%, transparent 65%)' }} />
 
@@ -870,7 +869,7 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
       </div>
 
       <style>{`
-        @keyframes auth-reveal { from{opacity:0;background:white} 30%{opacity:1} to{opacity:1} }
+        @keyframes auth-reveal { from{opacity:0} to{opacity:1} }
         @keyframes auth-neon-pulse {
           0%, 100% { opacity: 0.5; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.12); }
