@@ -8,7 +8,9 @@ function initBg(canvas: HTMLCanvasElement) {
   let W = 0, H = 0, animId: number;
   let glitchOn = false, glitchStr = 0;
   type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
+  type Comet = { x: number; y: number; vx: number; vy: number; len: number; width: number; alpha: number };
   let stars: Star[] = [];
+  let comets: Comet[] = [];
 
   function resize() {
     W = canvas.width = window.innerWidth;
@@ -18,6 +20,18 @@ function initBg(canvas: HTMLCanvasElement) {
       r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.85 + 0.15,
       ts: Math.random() * 0.018 + 0.004, to: Math.random() * Math.PI * 2,
     }));
+    comets = Array.from({ length: 5 }, (_, index) => {
+      const leftToRight = index % 2 === 0;
+      return {
+        x: leftToRight ? -Math.random() * W * 0.6 : W + Math.random() * W * 0.6,
+        y: Math.random() * H * 0.8 + H * 0.05,
+        vx: (leftToRight ? 1 : -1) * (0.35 + Math.random() * 0.7),
+        vy: (Math.random() - 0.5) * 0.08,
+        len: 70 + Math.random() * 120,
+        width: 1 + Math.random() * 1.8,
+        alpha: 0.18 + Math.random() * 0.3,
+      };
+    });
   }
 
   function render(t: number) {
@@ -42,6 +56,36 @@ function initBg(canvas: HTMLCanvasElement) {
       const fl = glitchOn ? (Math.random() > .25 ? 1 : 0) : 1;
       ctx.beginPath(); ctx.arc(s.x, s.y, s.r * fl, 0, Math.PI*2);
       ctx.fillStyle = `rgba(215,205,255,${s.a*(.5+.5*tw)*fl})`; ctx.fill();
+    }
+    for (const comet of comets) {
+      comet.x += comet.vx;
+      comet.y += comet.vy;
+      const offscreenRight = comet.vx > 0 && comet.x - comet.len > W + 40;
+      const offscreenLeft = comet.vx < 0 && comet.x + comet.len < -40;
+      if (offscreenRight || offscreenLeft) {
+        comet.x = comet.vx > 0 ? -comet.len - Math.random() * W * 0.45 : W + comet.len + Math.random() * W * 0.45;
+        comet.y = Math.random() * H * 0.8 + H * 0.05;
+        comet.vx = Math.sign(comet.vx) * (0.35 + Math.random() * 0.7);
+        comet.vy = (Math.random() - 0.5) * 0.08;
+      }
+      const trail = ctx.createLinearGradient(
+        comet.x,
+        comet.y,
+        comet.x - comet.vx * comet.len,
+        comet.y - comet.vy * comet.len,
+      );
+      trail.addColorStop(0, `rgba(255,255,255,${comet.alpha})`);
+      trail.addColorStop(0.25, `rgba(180,150,255,${comet.alpha * 0.7})`);
+      trail.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.save();
+      ctx.lineWidth = comet.width;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = trail;
+      ctx.beginPath();
+      ctx.moveTo(comet.x, comet.y);
+      ctx.lineTo(comet.x - comet.vx * comet.len, comet.y - comet.vy * comet.len);
+      ctx.stroke();
+      ctx.restore();
     }
     if (glitchOn) {
       for (let i = 0; i < Math.floor(glitchStr * 14); i++) {
@@ -81,6 +125,58 @@ const TEAMS = [
 
 const STORAGE_KEY = 'cp_mobile_intro_seen';
 const COMPACT_KEY = 'cp_mobile_compact';
+const DEFAULT_STATUS = 'SIGNAL LOST';
+const DEFAULT_SUBTEXT = 'full-spectrum viewport required';
+const RIDDLE_HINT = 'the patient sigil wakes the silent eye';
+const LOGO_SIZE = 64;
+const LOGO_RADIUS = LOGO_SIZE / 2;
+
+function clampCenterPosition(x: number, y: number) {
+  if (typeof window === 'undefined') return { x, y };
+
+  return {
+    x: Math.min(Math.max(x, LOGO_RADIUS), window.innerWidth - LOGO_RADIUS),
+    y: Math.min(Math.max(y, LOGO_RADIUS), window.innerHeight - LOGO_RADIUS),
+  };
+}
+
+function HiddenStar({ onActivate }: { onActivate: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onActivate}
+      aria-label="cosmic relay"
+      style={{
+        position: 'absolute',
+        top: '8%',
+        right: '6%',
+        width: 22,
+        height: 22,
+        padding: 0,
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
+        zIndex: 30,
+      }}
+    >
+      <span
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(240,235,255,0.88)',
+          fontSize: 14,
+          textShadow: '0 0 8px rgba(255,255,255,0.8), 0 0 22px rgba(139,92,246,0.7)',
+          animation: 'sl-star-glint 3.8s ease-in-out infinite',
+        }}
+      >
+        ✦
+      </span>
+    </button>
+  );
+}
 
 // ── Main component ─────────────────────────────────────────────────────────
 export default function SignalLost() {
@@ -113,7 +209,7 @@ export default function SignalLost() {
   const scannerRef = useRef<HTMLDivElement>(null);
   const holdTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const holdStartRef = useRef<number>(0);
-  const dragOffsetRef = useRef({ x: 0, y: 0 });
+  const pointerOriginRef = useRef({ x: 0, y: 0 });
   const stateRef = useRef<GateState>('idle');
 
   stateRef.current = gateState;
@@ -124,6 +220,27 @@ export default function SignalLost() {
     const compact = localStorage.getItem(COMPACT_KEY);
     if (seen === 'true') setCompactMode(compact !== 'false');
   }, []);
+
+  const resetGate = useCallback(() => {
+    if (holdTimerRef.current) {
+      clearInterval(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    setGateState('idle');
+    setIsDragging(false);
+    setHoldProgress(0);
+    setLogoPos({ x: 0, y: 0 });
+    setStatusText(DEFAULT_STATUS);
+    setSubText(DEFAULT_SUBTEXT);
+    setScannerColor('#e53e3e');
+  }, []);
+
+  const restoreFullGate = useCallback(() => {
+    localStorage.setItem(COMPACT_KEY, 'false');
+    setCompactMode(false);
+    setShowAuthReveal(false);
+    resetGate();
+  }, [resetGate]);
 
   useEffect(() => {
     if (canvasRef.current) return initBg(canvasRef.current);
@@ -162,7 +279,9 @@ export default function SignalLost() {
   // ── Compact mode: tap & hold 0.8s ──────────────────────────────────────
   const startCompactHold = useCallback(() => {
     if (stateRef.current !== 'idle') return;
+    if (holdTimerRef.current) clearInterval(holdTimerRef.current);
     holdStartRef.current = Date.now();
+    setHoldProgress(0);
     setGateState('armed');
     setStatusText('scanning for secure token...');
     setScannerColor('#f59e0b');
@@ -181,14 +300,10 @@ export default function SignalLost() {
   // ── Full mode: tap & hold 1.5s → drag ──────────────────────────────────
   const startFullHold = useCallback((e: React.PointerEvent) => {
     if (stateRef.current !== 'idle') return;
+    if (holdTimerRef.current) clearInterval(holdTimerRef.current);
     holdStartRef.current = Date.now();
-
-    const logoEl = logoRef.current!;
-    const rect = logoEl.getBoundingClientRect();
-    dragOffsetRef.current = {
-      x: e.clientX - rect.left - rect.width/2,
-      y: e.clientY - rect.top - rect.height/2,
-    };
+    pointerOriginRef.current = clampCenterPosition(e.clientX, e.clientY);
+    setHoldProgress(0);
 
     holdTimerRef.current = setInterval(() => {
       const elapsed = Date.now() - holdStartRef.current;
@@ -198,9 +313,10 @@ export default function SignalLost() {
         clearInterval(holdTimerRef.current!);
         setGateState('armed');
         setStatusText('beacon detected');
-        setSubText('drag seal to scanner to authenticate');
+        setSubText(RIDDLE_HINT);
         setScannerColor('#f59e0b');
         setIsDragging(true);
+        setLogoPos(pointerOriginRef.current);
         // Haptic
         if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
       }
@@ -209,22 +325,22 @@ export default function SignalLost() {
 
   const cancelHold = useCallback(() => {
     if (holdTimerRef.current) clearInterval(holdTimerRef.current);
-    if (stateRef.current === 'idle') {
-      setHoldProgress(0);
+    holdTimerRef.current = null;
+    if (!isDragging && (stateRef.current === 'idle' || stateRef.current === 'armed')) {
+      resetGate();
     }
-  }, []);
+  }, [isDragging, resetGate]);
 
   const onPointerMove = useCallback((e: PointerEvent) => {
     if (!isDragging || stateRef.current !== 'armed') return;
     e.preventDefault();
 
-    const newX = e.clientX - dragOffsetRef.current.x;
-    const newY = e.clientY - dragOffsetRef.current.y;
-    setLogoPos({ x: newX, y: newY });
+    const nextPos = clampCenterPosition(e.clientX, e.clientY);
+    setLogoPos(nextPos);
 
     // Check proximity to scanner (snap zone ~80px)
-    const dx = e.clientX - scannerPos.x;
-    const dy = e.clientY - scannerPos.y;
+    const dx = nextPos.x - scannerPos.x;
+    const dy = nextPos.y - scannerPos.y;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist < 80) {
@@ -242,8 +358,9 @@ export default function SignalLost() {
   const onPointerUp = useCallback((e: PointerEvent) => {
     if (!isDragging || stateRef.current !== 'armed') return;
 
-    const dx = e.clientX - scannerPos.x;
-    const dy = e.clientY - scannerPos.y;
+    const nextPos = clampCenterPosition(e.clientX, e.clientY);
+    const dx = nextPos.x - scannerPos.x;
+    const dy = nextPos.y - scannerPos.y;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist < 80) {
@@ -252,15 +369,9 @@ export default function SignalLost() {
       triggerLockSequence();
     } else {
       // Too far — reset
-      setIsDragging(false);
-      setGateState('idle');
-      setLogoPos({ x: 0, y: 0 });
-      setHoldProgress(0);
-      setStatusText('SIGNAL LOST');
-      setSubText('full-spectrum viewport required');
-      setScannerColor('#e53e3e');
+      resetGate();
     }
-  }, [isDragging, scannerPos]);
+  }, [isDragging, resetGate, scannerPos]);
 
   useEffect(() => {
     window.addEventListener('pointermove', onPointerMove, { passive: false });
@@ -274,6 +385,8 @@ export default function SignalLost() {
   // ── Lock → Charge → Burst → Auth ───────────────────────────────────────
   const triggerLockSequence = useCallback(() => {
     setGateState('locked');
+    setIsDragging(false);
+    setHoldProgress(0);
     setStatusText('signal lock acquired');
     setSubText('admin mobile node detected');
     setScannerColor('#22c55e');
@@ -305,7 +418,7 @@ export default function SignalLost() {
 
   // If auth revealed, show login
   if (showAuthReveal) {
-    return <AuthReveal />;
+    return <AuthReveal onReset={restoreFullGate} />;
   }
 
   if (checking) return (
@@ -325,6 +438,7 @@ export default function SignalLost() {
       onContextMenu={e => e.preventDefault()}
     >
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      <HiddenStar onActivate={restoreFullGate} />
 
       {/* Grain */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: .055 }}>
@@ -378,8 +492,8 @@ export default function SignalLost() {
             onDragStart={e => e.preventDefault()}
             style={{
               position: isDragging && gateState === 'armed' ? 'fixed' : 'relative',
-              left: isDragging && gateState === 'armed' ? logoPos.x - 28 : 'auto',
-              top: isDragging && gateState === 'armed' ? logoPos.y - 28 : 'auto',
+              left: isDragging && gateState === 'armed' ? logoPos.x - LOGO_RADIUS : 'auto',
+              top: isDragging && gateState === 'armed' ? logoPos.y - LOGO_RADIUS : 'auto',
               zIndex: isDragging ? 100 : 1,
               cursor: gateState === 'idle' ? 'grab' : gateState === 'armed' ? 'grabbing' : 'default',
               touchAction: 'none',
@@ -432,7 +546,7 @@ export default function SignalLost() {
           {/* Hold hint */}
           {gateState === 'idle' && (
             <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(139,92,246,0.4)', letterSpacing: '.08em', marginTop: 8, animation: 'sl-blink-slow 2s ease-in-out infinite' }}>
-              {compactMode ? 'hold seal to authenticate' : 'hold seal · drag to scanner'}
+              {RIDDLE_HINT}
             </span>
           )}
         </div>
@@ -544,22 +658,33 @@ export default function SignalLost() {
           60%{opacity:0.6}
           100%{opacity:0}
         }
+        @keyframes sl-star-glint {
+          0%,100%{opacity:0.35;transform:scale(0.92)}
+          40%{opacity:0.95;transform:scale(1.08)}
+          55%{opacity:0.55;transform:scale(0.98)}
+          70%{opacity:1;transform:scale(1.14)}
+        }
       `}</style>
     </div>
   );
 }
 
 // ── Auth reveal — clean login form ──────────────────────────────────────────
-function AuthReveal() {
+function AuthReveal({ onReset }: { onReset: () => void }) {
   const [identifier, setIdentifier] = useState('');
   const [passphrase, setPassphrase] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState<'appear' | 'ready'>('appear');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     setTimeout(() => setStep('ready'), 400);
+  }, []);
+
+  useEffect(() => {
+    if (canvasRef.current) return initBg(canvasRef.current);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -593,6 +718,8 @@ function AuthReveal() {
       animation: 'auth-reveal 0.5s ease-out both',
       fontFamily: 'sans-serif',
     }}>
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      <HiddenStar onActivate={onReset} />
       {/* Nebula glow */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 40%, rgba(139,92,246,0.12) 0%, transparent 65%)' }} />
 
