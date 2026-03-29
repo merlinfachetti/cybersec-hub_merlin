@@ -339,7 +339,7 @@ export default function SignalLost() {
     };
   }, []);
 
-  // Position scanner at center
+  // Position scanner at center — defer to after paint so layout is computed
   useEffect(() => {
     const updateScannerPos = () => {
       if (scannerRef.current) {
@@ -347,13 +347,13 @@ export default function SignalLost() {
         const x = rect.left + rect.width/2;
         const y = rect.top + rect.height/2;
         setScannerPos({ x, y });
-        // Keep bloom center in sync with scanner (read live by canvas each frame)
         bloomCenterRef.current = { x, y };
       }
     };
-    updateScannerPos();
+    // Run after first paint so flex layout is fully computed
+    const raf = requestAnimationFrame(updateScannerPos);
     window.addEventListener('resize', updateScannerPos);
-    return () => window.removeEventListener('resize', updateScannerPos);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', updateScannerPos); };
   }, []);
 
   // ── Compact mode: tap & hold 0.8s ──────────────────────────────────────
