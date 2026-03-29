@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Canvas background ──────────────────────────────────────────────────────
 function initBg(canvas: HTMLCanvasElement) {
@@ -698,6 +699,7 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
       });
       const data = await res.json();
       if (res.ok) {
+        touchSessionActivity();
         window.location.href = '/home';
       } else {
         setError(data.error ?? 'Could not verify credentials.');

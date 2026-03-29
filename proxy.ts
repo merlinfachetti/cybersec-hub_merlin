@@ -16,6 +16,7 @@ const PUBLIC_PATHS = [
   '/auth/login',
   '/auth/register',
   '/api/auth/login',
+  '/api/auth/register',
   '/api/auth/logout',
   '/api/auth/signout',
   '/api/auth/validate',
@@ -28,6 +29,10 @@ function isPublic(pathname: string): boolean {
     pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|css|js)$/)
   ) return true;
   return PUBLIC_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'));
+}
+
+function isApiRequest(pathname: string): boolean {
+  return pathname.startsWith('/api/');
 }
 
 async function handler(request: NextRequest): Promise<NextResponse> {
@@ -52,6 +57,9 @@ async function handler(request: NextRequest): Promise<NextResponse> {
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (!token) {
+    if (isApiRequest(pathname)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const loginUrl = new URL('/auth/login', request.url);
     loginUrl.searchParams.set('from', pathname);
     return NextResponse.redirect(loginUrl);
@@ -61,6 +69,11 @@ async function handler(request: NextRequest): Promise<NextResponse> {
     await jwtVerify(token, getSecret());
     return NextResponse.next();
   } catch {
+    if (isApiRequest(pathname)) {
+      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      res.cookies.delete(COOKIE_NAME);
+      return res;
+    }
     const res = NextResponse.redirect(new URL('/auth/login', request.url));
     res.cookies.delete(COOKIE_NAME);
     return res;

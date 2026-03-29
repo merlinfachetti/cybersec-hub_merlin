@@ -15,6 +15,11 @@ interface UserSession {
   role: string;
 }
 
+function supportsHoverInteractions() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+}
+
 const NAV_SECTIONS = [
   {
     id: 'universe',
@@ -95,6 +100,7 @@ function NavCard({ section }: { section: {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const onEnter = () => {
+    if (!supportsHoverInteractions()) return;
     const rect = rectRef.current;
     const card = cardRef.current;
     if (!rect || !card) return;
@@ -110,6 +116,7 @@ function NavCard({ section }: { section: {
   };
 
   const onLeave = () => {
+    if (!supportsHoverInteractions()) return;
     const rect = rectRef.current;
     const card = cardRef.current;
     if (!rect || !card) return;
@@ -233,8 +240,16 @@ export default function HomePage() {
               transition: 'all 200ms ease',
               position: 'relative', overflow: 'hidden',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `rgba(${featured.rgb},0.5)`; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `rgba(${featured.rgb},0.25)`; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+            onMouseEnter={e => {
+              if (!supportsHoverInteractions()) return;
+              (e.currentTarget as HTMLElement).style.borderColor = `rgba(${featured.rgb},0.5)`;
+              (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={e => {
+              if (!supportsHoverInteractions()) return;
+              (e.currentTarget as HTMLElement).style.borderColor = `rgba(${featured.rgb},0.25)`;
+              (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+            }}
             >
               {/* Glow */}
               <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, borderRadius: '50%', background: `radial-gradient(circle, rgba(${featured.rgb},0.12) 0%, transparent 70%)`, pointerEvents: 'none' }} />

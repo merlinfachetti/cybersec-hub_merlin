@@ -852,8 +852,11 @@ html.light .cp-dark-zone [style*="rgba(255, 255, 255, 0.2)"] {
   border: 1px solid var(--ds-card-border);
   transition: background 200ms ease, transform 200ms ease;
 }
-.hub-nav-card:hover {
-  transform: translateY(-2px);
+
+@media (hover: hover) and (pointer: fine) {
+  .hub-nav-card:hover {
+    transform: translateY(-2px);
+  }
 }
 
 /* hub-card-rect: animação controlada via React state em NavCard — sem CSS aqui */

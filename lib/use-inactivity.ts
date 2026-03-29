@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-
-const STORAGE_KEY = 'cp_last_active';
+import { SESSION_ACTIVITY_KEY, touchSessionActivity, clearSessionActivity } from '@/lib/session-activity';
 
 /**
  * Auto-logout por inatividade.
@@ -23,13 +22,12 @@ export function useInactivity(
   onTimeoutRef.current = onTimeout;
 
   const fire = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    clearSessionActivity();
     onTimeoutRef.current?.();
   }, []);
 
   const reset = useCallback(() => {
-    const now = Date.now();
-    try { localStorage.setItem(STORAGE_KEY, String(now)); } catch {}
+    touchSessionActivity();
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(fire, timeoutMs);
   }, [timeoutMs, fire]);
@@ -37,7 +35,7 @@ export function useInactivity(
   useEffect(() => {
     // ── CHECK ON MOUNT: tempo desde última atividade ──
     try {
-      const last = parseInt(localStorage.getItem(STORAGE_KEY) ?? '0', 10);
+      const last = parseInt(localStorage.getItem(SESSION_ACTIVITY_KEY) ?? '0', 10);
       if (last > 0) {
         const elapsed = Date.now() - last;
         if (elapsed >= timeoutMs) {
@@ -57,7 +55,7 @@ export function useInactivity(
     const onVisible = () => {
       if (document.visibilityState === 'visible') {
         try {
-          const last = parseInt(localStorage.getItem(STORAGE_KEY) ?? '0', 10);
+          const last = parseInt(localStorage.getItem(SESSION_ACTIVITY_KEY) ?? '0', 10);
           if (last > 0) {
             const elapsed = Date.now() - last;
             if (elapsed >= timeoutMs) { fire(); return; }

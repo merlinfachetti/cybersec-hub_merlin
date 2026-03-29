@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SignalLost from '@/components/signal-lost';
 import { useSearchParams } from 'next/navigation';
+import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Canvas background (nebula + stargate) ─────────────────────────────────
 
@@ -155,6 +156,13 @@ const STEPS = [
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
+function getSafeRedirectTarget(rawTarget: string | null): string {
+  if (!rawTarget || !rawTarget.startsWith('/')) return '/home';
+  if (rawTarget.startsWith('/api/')) return '/home';
+  if (rawTarget.startsWith('/auth/')) return '/home';
+  return rawTarget;
+}
+
 // ── Main component ────────────────────────────────────────────────────────
 
 export default function LoginClient() {
@@ -248,7 +256,8 @@ export default function LoginClient() {
       }
 
       await sleep(250);
-      window.location.assign(searchParams.get('from') ?? '/home');
+      touchSessionActivity();
+      window.location.assign(getSafeRedirectTarget(searchParams.get('from')));
     } catch {
       const msg = 'Connection error. Try again.';
       setHsState('error'); setHsText(msg); setErrorMsg(msg);

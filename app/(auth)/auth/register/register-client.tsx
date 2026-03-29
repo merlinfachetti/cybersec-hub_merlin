@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Career paths ──────────────────────────────────────────────────────────
 const PATHS = [
@@ -158,6 +159,7 @@ export default function RegisterClient() {
         setError('Sessão criada, mas ainda não ficou estável. Tente novamente.');
         return;
       }
+      touchSessionActivity();
       window.location.assign('/home');
     } catch { setError('Erro de conexão.'); }
     finally { setLoading(false); }
