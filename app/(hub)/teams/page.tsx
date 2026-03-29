@@ -104,18 +104,34 @@ export default function TeamsPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0b0f14', color: '#e6eef8', fontFamily: '"Inter", sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg)', color: 'var(--ds-title-section)', fontFamily: '"Inter", sans-serif' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px,4vw,48px) clamp(16px,4vw,24px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 48, textAlign: 'center' }}>
-          <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 10 }}>
-            RED · BLUE · PURPLE
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+            {TEAMS.map(team => (
+              <span
+                key={team.id}
+                style={{
+                  ...S.mono,
+                  fontSize: 9,
+                  color: team.color,
+                  letterSpacing: '0.12em',
+                  padding: '4px 10px',
+                  borderRadius: 999,
+                  border: `1px solid rgba(${team.rgb},0.35)`,
+                  background: `rgba(${team.rgb},0.06)`,
+                }}
+              >
+                {team.label.toUpperCase()}
+              </span>
+            ))}
           </div>
-          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 'clamp(24px,4vw,36px)', color: '#f0eeff', marginBottom: 12 }}>
+          <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 'clamp(24px,4vw,36px)', color: 'var(--ds-title-card)', marginBottom: 12 }}>
             Os Times de Cybersecurity
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(155,176,198,0.6)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 14, color: 'var(--ds-body-dim)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
             Entenda o que cada time faz, suas responsabilidades, o que nunca fazem, e qual trilha seguir para chegar lá.
           </p>
         </div>
@@ -171,7 +187,7 @@ export default function TeamsPage() {
 
                 {/* Description */}
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <p style={{ fontSize: 14, color: 'rgba(220,215,240,0.75)', lineHeight: 1.7, margin: 0 }}>
+                  <p style={{ fontSize: 14, color: 'var(--ds-body)', lineHeight: 1.7, margin: 0 }}>
                     {team.description}
                   </p>
                 </div>
@@ -186,7 +202,7 @@ export default function TeamsPage() {
                     {team.does.map(d => (
                       <li key={d} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                         <span style={{ color: team.color, flexShrink: 0, marginTop: 1 }}>✓</span>
-                        <span style={{ fontSize: 13, color: 'rgba(200,195,225,0.75)', lineHeight: 1.45 }}>{d}</span>
+                        <span style={{ fontSize: 13, color: 'var(--ds-body)', lineHeight: 1.45 }}>{d}</span>
                       </li>
                     ))}
                   </ul>
@@ -202,7 +218,7 @@ export default function TeamsPage() {
                     {team.doesNot.map(d => (
                       <li key={d} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                         <span style={{ color: '#f59e0b', flexShrink: 0, marginTop: 1 }}>✗</span>
-                        <span style={{ fontSize: 13, color: 'rgba(200,195,225,0.65)', lineHeight: 1.45 }}>{d}</span>
+                        <span style={{ fontSize: 13, color: 'var(--ds-body-dim)', lineHeight: 1.45 }}>{d}</span>
                       </li>
                     ))}
                   </ul>
@@ -211,7 +227,7 @@ export default function TeamsPage() {
                 {/* Skills + Certs */}
                 <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 20, flexWrap: 'wrap' }}>
                   <div>
-                    <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.1em', marginBottom: 8 }}>SKILLS</div>
+                    <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', letterSpacing: '0.1em', marginBottom: 8 }}>SKILLS</div>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {team.skills.map(s => (
                         <span key={s} style={{ ...S.mono, fontSize: 10, padding: '3px 9px', borderRadius: 5, background: `rgba(${team.rgb},0.08)`, border: `1px solid rgba(${team.rgb},0.2)`, color: team.color }}>
@@ -221,7 +237,7 @@ export default function TeamsPage() {
                     </div>
                   </div>
                   <div>
-                    <div style={{ ...S.mono, fontSize: 9, color: 'rgba(155,176,198,0.4)', letterSpacing: '0.1em', marginBottom: 8 }}>CERTIFICAÇÕES</div>
+                    <div style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', letterSpacing: '0.1em', marginBottom: 8 }}>CERTIFICAÇÕES</div>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {team.certs.map(cert => (
                         <Link key={cert} href={`/certifications?search=${cert}`} style={{ textDecoration: 'none' }}>

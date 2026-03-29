@@ -1,4 +1,5 @@
 export const CONTENT_LAST_REVIEWED = '2026-03-28';
+export const CONTENT_REVIEW_MAX_AGE_DAYS = 120;
 
 export type GuideLevel = 'ENTRY' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
 export type CareerStage = 'TRANSITION' | 'ENTRY' | 'MID' | 'SENIOR';

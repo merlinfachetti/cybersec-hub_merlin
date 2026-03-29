@@ -95,7 +95,7 @@ function CertCard({
         }}
         onMouseLeave={(event) => {
           const element = event.currentTarget as HTMLElement;
-          element.style.borderColor = 'rgba(255,255,255,0.07)';
+          element.style.borderColor = 'var(--ds-card-border)';
           element.style.transform = 'translateY(0)';
           element.style.boxShadow = 'none';
         }}
@@ -190,7 +190,7 @@ function CertCard({
         <p
           style={{
             fontSize: 12,
-            color: 'var(--ds-body-muted)',
+            color: 'var(--ds-body)',
             lineHeight: 1.65,
             marginBottom: 14,
             display: '-webkit-box',
@@ -233,7 +233,7 @@ function CertCard({
               <div
                 style={{
                   fontSize: 12,
-                  color: 'rgba(220,230,245,0.82)',
+                  color: 'var(--ds-body)',
                   lineHeight: 1.55,
                 }}
               >
@@ -274,7 +274,7 @@ function CertCard({
               <div
                 style={{
                   fontSize: 12,
-                  color: 'rgba(220,230,245,0.76)',
+                  color: 'var(--ds-body-dim)',
                   lineHeight: 1.55,
                 }}
               >
@@ -289,7 +289,7 @@ function CertCard({
             display: 'flex',
             gap: 14,
             flexWrap: 'wrap',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
+            borderTop: '1px solid var(--p-border-soft)',
             paddingTop: 12,
             marginTop: 'auto',
           }}
@@ -398,7 +398,7 @@ function CertificationsPageInner() {
             style={{
               fontFamily: '"JetBrains Mono", monospace',
               fontSize: 10,
-              color: 'rgba(139,92,246,0.6)',
+              color: 'var(--ds-purple)',
               letterSpacing: '0.14em',
               marginBottom: 8,
             }}
@@ -419,7 +419,7 @@ function CertificationsPageInner() {
           <p
             style={{
               fontSize: 14,
-              color: 'var(--ds-body-muted)',
+              color: 'var(--ds-body)',
               maxWidth: 760,
               lineHeight: 1.65,
             }}
@@ -513,11 +513,11 @@ function CertificationsPageInner() {
               gap: 8,
               padding: '10px 12px',
               borderRadius: 10,
-              background: 'rgba(15,10,35,0.8)',
-              border: '1px solid rgba(139,92,246,0.2)',
+              background: 'var(--ds-input)',
+              border: '1px solid var(--p-input-border)',
             }}
           >
-            <Search size={14} style={{ color: 'rgba(155,176,198,0.5)' }} />
+            <Search size={14} style={{ color: 'var(--ds-mono-dim)' }} />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -526,7 +526,7 @@ function CertificationsPageInner() {
                 width: '100%',
                 border: 'none',
                 background: 'transparent',
-                color: 'var(--ds-title-section, #e6eef8)',
+                color: 'var(--ds-title-section)',
                 fontSize: 13,
                 outline: 'none',
               }}
@@ -563,13 +563,13 @@ function CertificationsPageInner() {
                   fontWeight: 600,
                   background: active
                     ? meta?.bg ?? 'rgba(139,92,246,0.15)'
-                    : 'rgba(255,255,255,0.04)',
+                    : 'rgba(255,140,40,0.06)',
                   color: active
                     ? meta?.color ?? '#a78bfa'
-                    : 'rgba(155,176,198,0.5)',
+                    : 'var(--ds-body-dim)',
                   boxShadow: active
                     ? `0 0 0 1px ${meta?.color ?? '#a78bfa'}40`
-                    : 'none',
+                    : '0 0 0 1px rgba(255,140,40,0.16)',
                 }}
               >
                 {item.label}
@@ -596,13 +596,13 @@ function CertificationsPageInner() {
                   letterSpacing: '0.05em',
                   background: active
                     ? `${item.color ?? '#8b5cf6'}18`
-                    : 'rgba(255,255,255,0.04)',
+                    : 'rgba(255,140,40,0.06)',
                   color: active
                     ? item.color ?? '#a78bfa'
-                    : 'rgba(155,176,198,0.5)',
+                    : 'var(--ds-body-dim)',
                   boxShadow: active
                     ? `0 0 0 1px ${(item.color ?? '#8b5cf6')}40`
-                    : 'none',
+                    : '0 0 0 1px rgba(255,140,40,0.16)',
                 }}
               >
                 {item.label}

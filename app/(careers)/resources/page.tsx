@@ -88,7 +88,7 @@ function ResourcesPageInner() {
             style={{
               ...S.mono,
               fontSize: 10,
-              color: 'rgba(139,92,246,0.6)',
+              color: 'var(--ds-purple)',
               letterSpacing: '0.14em',
               marginBottom: 8,
             }}
@@ -213,7 +213,7 @@ function ResourcesPageInner() {
             style={{
               margin: 0,
               fontSize: 13,
-              color: 'rgba(220,230,245,0.8)',
+              color: 'var(--ds-body)',
               lineHeight: 1.65,
             }}
           >
@@ -236,9 +236,9 @@ function ResourcesPageInner() {
                 width: '100%',
                 padding: '9px 12px',
                 borderRadius: 9,
-                background: 'rgba(15,10,35,0.8)',
-                border: '1px solid rgba(139,92,246,0.2)',
-                color: 'var(--ds-title-section, #e6eef8)',
+                background: 'var(--ds-input)',
+                border: '1px solid var(--p-input-border)',
+                color: 'var(--ds-title-section)',
                 fontSize: 13,
                 outline: 'none',
               }}
@@ -262,9 +262,20 @@ function ResourcesPageInner() {
                 fontWeight: 600,
                 background:
                   type === item.id
-                    ? 'rgba(139,92,246,0.15)'
-                    : 'rgba(255,255,255,0.04)',
-                color: type === item.id ? '#a78bfa' : 'rgba(155,176,198,0.5)',
+                    ? item.id === 'all'
+                      ? 'rgba(139,92,246,0.15)'
+                      : 'rgba(255,140,40,0.12)'
+                    : 'rgba(255,140,40,0.06)',
+                color:
+                  type === item.id
+                    ? item.id === 'all'
+                      ? '#a78bfa'
+                      : 'rgba(255,140,40,0.95)'
+                    : 'rgba(255,140,40,0.85)',
+                boxShadow:
+                  type === item.id
+                    ? `0 0 0 1px ${item.id === 'all' ? 'rgba(139,92,246,0.3)' : 'rgba(255,140,40,0.28)'}`
+                    : '0 0 0 1px rgba(255,140,40,0.16)',
               }}
             >
               {item.icon}
@@ -287,11 +298,11 @@ function ResourcesPageInner() {
               fontWeight: 600,
               background: freeOnly
                 ? 'rgba(34,197,94,0.15)'
-                : 'rgba(255,255,255,0.04)',
-              color: freeOnly ? '#22c55e' : 'rgba(155,176,198,0.5)',
+                : 'rgba(255,140,40,0.06)',
+              color: freeOnly ? '#22c55e' : 'rgba(255,140,40,0.85)',
               boxShadow: freeOnly
                 ? '0 0 0 1px rgba(34,197,94,0.28)'
-                : 'none',
+                : '0 0 0 1px rgba(255,140,40,0.16)',
             }}
           >
             Gratis
@@ -314,15 +325,15 @@ function ResourcesPageInner() {
                 background:
                   level === item.id
                     ? `${item.color ?? '#8b5cf6'}20`
-                    : 'rgba(255,255,255,0.04)',
+                    : 'rgba(255,140,40,0.06)',
                 color:
                   level === item.id
                     ? item.color ?? '#a78bfa'
-                    : 'rgba(155,176,198,0.44)',
+                    : 'var(--ds-body-dim)',
                 boxShadow:
                   level === item.id
                     ? `0 0 0 1px ${item.color ?? '#a78bfa'}40`
-                    : 'none',
+                    : '0 0 0 1px rgba(255,140,40,0.16)',
               }}
             >
               {item.label}
@@ -386,7 +397,7 @@ function ResourcesPageInner() {
                   }}
                   onMouseLeave={(event) => {
                     const element = event.currentTarget as HTMLElement;
-                    element.style.borderColor = 'rgba(255,255,255,0.07)';
+                    element.style.borderColor = 'var(--ds-card-border)';
                     element.style.transform = 'none';
                     element.style.boxShadow = 'none';
                   }}
@@ -439,8 +450,9 @@ function ResourcesPageInner() {
                             fontSize: 9,
                             padding: '2px 8px',
                             borderRadius: 999,
-                            color: 'rgba(220,230,245,0.7)',
-                            background: 'rgba(255,255,255,0.04)',
+                            color: 'var(--ds-mono-dim)',
+                            background: 'var(--p-surface)',
+                            border: '1px solid var(--p-border-soft)',
                           }}
                         >
                           {resource.cert}
@@ -493,7 +505,7 @@ function ResourcesPageInner() {
                   <p
                     style={{
                       fontSize: 12,
-                      color: 'var(--ds-body-muted)',
+                      color: 'var(--ds-body)',
                       lineHeight: 1.65,
                       marginBottom: 14,
                     }}
@@ -534,7 +546,7 @@ function ResourcesPageInner() {
                         <div
                           style={{
                             fontSize: 12,
-                            color: 'rgba(220,230,245,0.82)',
+                            color: 'var(--ds-body)',
                             lineHeight: 1.55,
                           }}
                         >
@@ -569,7 +581,7 @@ function ResourcesPageInner() {
                         <div
                           style={{
                             fontSize: 12,
-                            color: 'rgba(220,230,245,0.76)',
+                            color: 'var(--ds-body-dim)',
                             lineHeight: 1.55,
                           }}
                         >

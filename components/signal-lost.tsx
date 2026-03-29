@@ -546,7 +546,7 @@ export default function SignalLost() {
 
           {/* Hold hint */}
           {gateState === 'idle' && (
-            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(139,92,246,0.4)', letterSpacing: '.08em', marginTop: 8, animation: 'sl-blink-slow 2s ease-in-out infinite' }}>
+            <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.72)', letterSpacing: '.08em', marginTop: 8, animation: 'sl-blink-slow 2s ease-in-out infinite' }}>
               {RIDDLE_HINT}
             </span>
           )}

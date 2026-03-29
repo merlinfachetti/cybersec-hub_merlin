@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { TrendingUp, DollarSign, Globe, BarChart2, Briefcase, Award } from 'lucide-react';
+import { CONTENT_LAST_REVIEWED } from '@/lib/content/career-guide';
 
 const MARKET_DATA = {
   global: {
@@ -72,23 +73,25 @@ export default function MarketPage() {
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
-          <div style={{ ...S.mono, fontSize: 10, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / MARKET ANALYSIS</div>
+          <div style={{ ...S.mono, fontSize: 10, color: 'var(--ds-purple)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / MARKET ANALYSIS</div>
           <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 6 }}>Market Analysis</h1>
           <p style={{ fontSize: 13, color: 'var(--ds-body-dim)', maxWidth: 520 }}>
-            Dados reais de mercado para cybersecurity — salários, demanda por certificação e oportunidades por região.
-            <span style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', marginLeft: 8 }}>Fontes: ISC2, CompTIA, LinkedIn, Glassdoor (2024–2025)</span>
+            Indicadores de mercado para cybersecurity revisados editorialmente — salarios, demanda por certificacao e oportunidades por regiao.
+            <span style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', marginLeft: 8 }}>
+              Revisado em {CONTENT_LAST_REVIEWED} · Fontes-base: (ISC)2 Workforce Study, CompTIA Research, CyberSeek, BLS OOH e LinkedIn Jobs
+            </span>
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="market-tabs" style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
+        <div className="market-tabs" style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid var(--p-border-soft)', paddingBottom: 0 }}>
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id as Tab)} style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '9px 18px', background: 'none', border: 'none', cursor: 'pointer',
               ...S.grotesk, fontSize: 13, fontWeight: 600, transition: 'all 150ms',
-              color: tab === t.id ? '#a78bfa' : 'rgba(155,176,198,0.45)',
-              borderBottom: `2px solid ${tab === t.id ? '#8b5cf6' : 'transparent'}`,
+              color: tab === t.id ? 'var(--ds-purple)' : 'var(--ds-mono-dim)',
+              borderBottom: `2px solid ${tab === t.id ? 'var(--ds-purple)' : 'transparent'}`,
               marginBottom: -1,
             }}>
               {t.icon}{t.label}
@@ -104,7 +107,7 @@ export default function MarketPage() {
                 { label: 'Vagas em aberto global', value: MARKET_DATA.global.openJobs, sub: 'worldwide', color: 'var(--ds-danger)', icon: <Briefcase size={16} /> },
                 { label: 'Salário médio (US)', value: MARKET_DATA.global.avgSalaryUS, sub: 'security engineer', color: 'var(--ds-ok)', icon: <DollarSign size={16} /> },
                 { label: 'Crescimento previsto', value: MARKET_DATA.global.growth, sub: `até ${MARKET_DATA.global.until}`, color: '#3b82f6', icon: <TrendingUp size={16} /> },
-                { label: 'Déficit de profissionais', value: MARKET_DATA.global.shortage, sub: 'ISC2 Report 2024', color: 'var(--ds-warn)', icon: <BarChart2 size={16} /> },
+                { label: 'Déficit de profissionais', value: MARKET_DATA.global.shortage, sub: 'baseline editorial mais recente', color: 'var(--ds-warn)', icon: <BarChart2 size={16} /> },
               ].map(s => (
                 <div key={s.label} style={{ ...S.card, padding: '18px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -126,7 +129,7 @@ export default function MarketPage() {
                   return (
                     <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                       <span style={{ ...S.grotesk, fontWeight: 700, fontSize: 13, color: 'var(--ds-title-card, #f0eeff)', minWidth: 90 }}>{c.name}</span>
-                      <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.05)', borderRadius: 3 }}>
+                      <div style={{ flex: 1, height: 6, background: 'var(--p-border-soft)', borderRadius: 3 }}>
                         <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg,${c.color},${c.color}80)`, borderRadius: 3, transition: 'width 0.6s ease' }} />
                       </div>
                       <span style={{ ...S.mono, fontSize: 10, color: 'var(--ds-body-dim)', minWidth: 60 }}>{c.jobs.toLocaleString()} vagas</span>
@@ -197,7 +200,7 @@ export default function MarketPage() {
                   </span>
                   <div style={{ display: 'flex', gap: 6 }}>
                     {r.certs.map(c => (
-                      <span key={c} style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: 'rgba(139,92,246,0.1)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.2)' }}>{c}</span>
+                      <span key={c} style={{ ...S.mono, fontSize: 9, padding: '2px 7px', borderRadius: 4, background: 'var(--ds-purple-dim)', color: 'var(--ds-purple)', border: '1px solid color-mix(in srgb, var(--ds-purple) 22%, transparent)' }}>{c}</span>
                     ))}
                   </div>
                 </div>

@@ -125,7 +125,7 @@ function RoadmapPageContent() {
             style={{
               ...S.mono,
               fontSize: 10,
-              color: 'rgba(139,92,246,0.6)',
+              color: 'var(--ds-purple)',
               letterSpacing: '0.14em',
               marginBottom: 8,
             }}
@@ -272,7 +272,7 @@ function RoadmapPageContent() {
             style={{
               margin: 0,
               fontSize: 13,
-              color: 'rgba(220,230,245,0.82)',
+              color: 'var(--ds-body)',
               lineHeight: 1.65,
             }}
           >
@@ -306,11 +306,11 @@ function RoadmapPageContent() {
                   fontWeight: 600,
                   background: active
                     ? 'rgba(139,92,246,0.15)'
-                    : 'rgba(255,255,255,0.04)',
-                  color: active ? '#a78bfa' : 'rgba(155,176,198,0.52)',
+                    : 'rgba(255,140,40,0.06)',
+                  color: active ? '#a78bfa' : 'var(--ds-body-dim)',
                   boxShadow: active
                     ? '0 0 0 1px rgba(139,92,246,0.25)'
-                    : 'none',
+                    : '0 0 0 1px rgba(255,140,40,0.16)',
                 }}
               >
                 {tab.icon}
@@ -345,10 +345,10 @@ function RoadmapPageContent() {
                       cursor: 'pointer',
                       borderColor: active
                         ? `${item.color}55`
-                        : 'rgba(255,255,255,0.07)',
+                        : 'var(--ds-card-border)',
                       background: active
                         ? `rgba(${item.rgb},0.09)`
-                        : 'rgba(12,8,28,0.6)',
+                        : 'var(--p-surface)',
                       boxShadow: active
                         ? `0 0 24px rgba(${item.rgb},0.14)`
                         : 'none',
@@ -369,7 +369,7 @@ function RoadmapPageContent() {
                             ...S.grotesk,
                             fontWeight: 700,
                             fontSize: 15,
-                            color: active ? item.color : '#e6eef8',
+                            color: active ? item.color : 'var(--ds-title-section)',
                           }}
                         >
                           {item.label}
@@ -425,7 +425,7 @@ function RoadmapPageContent() {
                     <div
                       style={{
                         fontSize: 12,
-                        color: 'rgba(220,230,245,0.76)',
+                        color: 'var(--ds-body)',
                         lineHeight: 1.6,
                         marginBottom: 10,
                       }}
@@ -490,7 +490,7 @@ function RoadmapPageContent() {
                     <div
                       style={{
                         fontSize: 13,
-                        color: 'rgba(220,230,245,0.78)',
+                        color: 'var(--ds-body)',
                         marginBottom: 6,
                       }}
                     >
@@ -578,7 +578,7 @@ function RoadmapPageContent() {
                   <div
                     style={{
                       fontSize: 12,
-                      color: 'rgba(220,230,245,0.8)',
+                      color: 'var(--ds-body)',
                       lineHeight: 1.6,
                       marginBottom: 10,
                     }}
@@ -612,7 +612,7 @@ function RoadmapPageContent() {
                         overflow: 'hidden',
                         borderColor: isOpen
                           ? `${step.color}35`
-                          : 'rgba(255,255,255,0.07)',
+                          : 'var(--ds-card-border)',
                         transition: 'border-color 200ms',
                       }}
                     >
@@ -752,7 +752,7 @@ function RoadmapPageContent() {
                         <div
                           style={{
                             padding: '0 20px 20px',
-                            borderTop: '1px solid rgba(255,255,255,0.05)',
+                            borderTop: '1px solid var(--p-border-soft)',
                           }}
                         >
                           <p
@@ -926,7 +926,7 @@ function RoadmapPageContent() {
                               <div
                                 style={{
                                   fontSize: 12,
-                                  color: 'rgba(220,215,240,0.84)',
+                                  color: 'var(--ds-body)',
                                 }}
                               >
                                 {step.outcome}
@@ -984,15 +984,15 @@ function RoadmapPageContent() {
                     fontWeight: 600,
                     transition: 'all 150ms',
                     background:
-                      allLevel === level.id ? level.bg : 'rgba(255,255,255,0.04)',
+                      allLevel === level.id ? level.bg : 'rgba(255,140,40,0.06)',
                     color:
                       allLevel === level.id
                         ? level.color
-                        : 'rgba(155,176,198,0.5)',
+                        : 'var(--ds-body-dim)',
                     boxShadow:
                       allLevel === level.id
                         ? `0 0 0 1px ${level.color}40`
-                        : 'none',
+                        : '0 0 0 1px rgba(255,140,40,0.16)',
                   }}
                 >
                   {level.label}
@@ -1035,7 +1035,7 @@ function RoadmapPageContent() {
                       }}
                       onMouseLeave={(event) => {
                         const element = event.currentTarget as HTMLElement;
-                        element.style.borderColor = 'rgba(255,255,255,0.07)';
+                        element.style.borderColor = 'var(--ds-card-border)';
                         element.style.transform = 'none';
                       }}
                     >
@@ -1072,7 +1072,7 @@ function RoadmapPageContent() {
                       <p
                         style={{
                           fontSize: 12,
-                          color: 'rgba(220,230,245,0.72)',
+                          color: 'var(--ds-body)',
                           lineHeight: 1.6,
                           minHeight: 58,
                         }}
