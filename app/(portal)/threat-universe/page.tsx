@@ -187,8 +187,10 @@ function initUniverse(
       const isHovered = hoveredNode === node.id;
       const isSelected = selectedNode === node.id;
       const isFocused = node.team === activeMode;
+      const isFiltered = filteredIds !== null && !filteredIds.has(node.id);
       const scaled = node.size * zoom;
-      const alpha = isFocused ? 1 : 0.4;
+      // Dim nodes that don't match the search filter
+      const alpha = isFiltered ? 0.08 : isFocused ? 1 : 0.4;
 
       // ── Pulsação lenta e contínua ──────────────────────────────────────
       // Cada nó tem uma fase única baseada no index para pulsação desincronizada
@@ -342,12 +344,15 @@ function initUniverse(
     zoom = Math.max(0.75, Math.min(2.0, zoom + (e.deltaY > 0 ? -0.08 : 0.08)));
   }, { passive: false });
 
+  let filteredIds: Set<string> | null = null;
+
   resize();
   window.addEventListener('resize', resize);
   animId = requestAnimationFrame(render);
 
   return {
     setMode(mode: TeamColor) { activeMode = mode; },
+    setFilter(ids: string[] | null) { filteredIds = ids ? new Set(ids) : null; },
     resetView() { panX = 0; panY = 0; zoom = 1; },
     destroy() { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); },
   };
@@ -422,13 +427,18 @@ function PortalPageInner() {
 
   const panel = selectedNode ? NODE_DETAILS[selectedNode] : NODE_DETAILS['phishing'];
 
-  // ESC closes search + user menu; click outside closes user menu
+  // ESC closes search + user menu; ⌘K/Ctrl+K opens search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setShowSearch(false);
         setSearchQuery('');
         setShowUserMenu(false);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSearch(v => !v);
+        if (showSearch) setSearchQuery('');
       }
     };
     const onClickOutside = (e: MouseEvent) => {
@@ -500,7 +510,17 @@ function PortalPageInner() {
     return () => window.removeEventListener('popstate', handlePop);
   }, []);
 
-  // Auto-logout por inatividade (30 min)
+  // Sync filtered nodes to canvas
+  useEffect(() => {
+    if (!universeRef.current) return;
+    if (!searchQuery) {
+      universeRef.current.setFilter(null);
+    } else {
+      universeRef.current.setFilter(filteredNodes.map(n => n.id));
+    }
+  }, [searchQuery, filteredNodes]);
+
+  // Auto-logout on inactivity (30 min)
   useInactivity(30 * 60 * 1000, () => {
     window.location.href = '/api/auth/signout?reason=timeout';
   });
@@ -681,6 +701,114 @@ function PortalPageInner() {
           {/* ── Right: Search + LocaleToggle + User ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '0 0 auto' }}>
             <LocaleToggle variant="nav" />
+
+            {/* ── Universe Search ── */}
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              {showSearch ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8,
+                  background: 'rgba(5,5,20,0.80)', border: '1px solid rgba(139,92,246,0.40)',
+                  borderRadius: 9, padding: '0 12px', height: 34,
+                  boxShadow: '0 0 0 3px rgba(139,92,246,0.08)', animation: 'cp-fade-in 0.15s ease-out both' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(139,92,246,0.7)" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input
+                    autoFocus
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder={t('tu.search')}
+                    style={{ background: 'transparent', border: 'none', outline: 'none',
+                      fontFamily: '"JetBrains Mono", monospace', fontSize: 12,
+                      color: '#e8e4ff', width: 200, letterSpacing: '0.04em' }}
+                  />
+                  {searchQuery && (
+                    <button onClick={() => { setSearchQuery(''); }} type="button"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer',
+                        color: 'rgba(255,255,255,0.3)', padding: 0, display: 'flex', lineHeight: 1 }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  )}
+                  <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} type="button"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'rgba(255,255,255,0.25)', padding: '0 0 0 4px', display: 'flex', fontSize: 10,
+                      fontFamily: '"JetBrains Mono", monospace', letterSpacing: '0.06em' }}>
+                    ESC
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => setShowSearch(true)} type="button"
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '0 12px',
+                    height: 34, borderRadius: 9, background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer',
+                    fontFamily: '"JetBrains Mono", monospace', fontSize: 11,
+                    color: 'rgba(180,170,230,0.45)', letterSpacing: '0.06em',
+                    transition: 'all 180ms ease' }}
+                  onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(139,92,246,0.08)'; el.style.borderColor = 'rgba(139,92,246,0.25)'; el.style.color = 'rgba(180,170,230,0.75)'; }}
+                  onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(255,255,255,0.04)'; el.style.borderColor = 'rgba(255,255,255,0.08)'; el.style.color = 'rgba(180,170,230,0.45)'; }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  {t('generic.search')}
+                  <span style={{ opacity: 0.4, fontSize: 9 }}>⌘K</span>
+                </button>
+              )}
+
+              {/* Live results dropdown */}
+              {showSearch && searchQuery && (
+                <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                  background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(139,92,246,0.2)',
+                  borderRadius: 12, padding: '6px', minWidth: 280, zIndex: 200,
+                  backdropFilter: 'blur(24px)',
+                  boxShadow: '0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.08)',
+                  animation: 'cp-fade-in 0.12s ease-out both' }}>
+                  {filteredNodes.length === 0 ? (
+                    <div style={{ padding: '12px 14px', fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: 11, color: 'rgba(155,176,198,0.4)', textAlign: 'center' }}>
+                      {t('tu.noResult')}
+                    </div>
+                  ) : (
+                    filteredNodes.map(node => {
+                      const detail = NODE_DETAILS[node.id as NodeId];
+                      const tc = TEAM_COLORS[node.team as TeamColor];
+                      return (
+                        <button key={node.id} type="button"
+                          onClick={() => {
+                            setSelectedNode(node.id as NodeId);
+                            setPanelHidden(false);
+                            setSearchQuery('');
+                            setShowSearch(false);
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                            padding: '9px 12px', background: 'none', border: 'none', cursor: 'pointer',
+                            borderRadius: 8, textAlign: 'left', transition: 'background 120ms' }}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(139,92,246,0.08)'}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'none'}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                            background: tc.main, boxShadow: `0 0 6px ${tc.main}` }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 12,
+                              fontWeight: 600, color: '#e8e4ff', lineHeight: 1.2 }}>{detail.title}</div>
+                            <div style={{ fontFamily: '"Inter", sans-serif', fontSize: 10,
+                              color: 'rgba(155,176,198,0.5)', lineHeight: 1.3, marginTop: 2,
+                              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {detail.desc.slice(0, 60)}…
+                            </div>
+                          </div>
+                          <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8,
+                            color: tc.soft, background: `${tc.main}18`, border: `1px solid ${tc.main}30`,
+                            padding: '2px 6px', borderRadius: 4, flexShrink: 0 }}>
+                            {node.team.toUpperCase()}
+                          </span>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
 
 
 
