@@ -17,7 +17,7 @@ function initLoginBg(canvas: HTMLCanvasElement) {
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    cx = W / 2; cy = H * 0.42;
+    cx = W / 2; cy = -H * 0.05;
     stars = Array.from({ length: Math.min(Math.floor((W * H) / 2800), 320) }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.7 + 0.3,
@@ -53,17 +53,17 @@ function initLoginBg(canvas: HTMLCanvasElement) {
     const p = 0.92 + 0.08 * Math.sin(t * 0.001);
     const base = Math.min(W, H) * 0.15;
     for (const l of [
-      { r: base * 5.5 * p, c: 'rgba(100,130,255,0.05)', c2: 'rgba(70,100,255,0.015)' },
-      { r: base * 3.2 * p, c: 'rgba(140,170,255,0.12)', c2: 'rgba(100,140,255,0.04)' },
-      { r: base * 1.9 * p, c: 'rgba(195,210,255,0.26)', c2: 'rgba(155,180,255,0.10)' },
-      { r: base * 0.9 * p, c: 'rgba(230,240,255,0.45)', c2: 'rgba(200,220,255,0.18)' },
+      { r: base * 3.8 * p, c: 'rgba(100,130,255,0.04)', c2: 'rgba(70,100,255,0.01)' },
+      { r: base * 2.2 * p, c: 'rgba(140,170,255,0.09)', c2: 'rgba(100,140,255,0.03)' },
+      { r: base * 1.4 * p, c: 'rgba(195,210,255,0.20)', c2: 'rgba(155,180,255,0.08)' },
+      { r: base * 0.7 * p, c: 'rgba(230,240,255,0.38)', c2: 'rgba(200,220,255,0.14)' },
     ]) {
       const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, l.r);
       gr.addColorStop(0, l.c); gr.addColorStop(0.5, l.c2); gr.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
     }
     const gc = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.22);
-    gc.addColorStop(0, 'rgba(255,255,255,1)'); gc.addColorStop(0.5, 'rgba(255,255,255,0.6)');
+    gc.addColorStop(0, 'rgba(255,255,255,0.72)'); gc.addColorStop(0.5, 'rgba(255,255,255,0.3)');
     gc.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = gc; ctx.fillRect(0, 0, W, H);
   }
