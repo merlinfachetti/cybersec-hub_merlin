@@ -6,7 +6,140 @@ import { LocaleToggle } from '@/components/locale-toggle';
 import { useI18n } from '@/lib/i18n';
 import { useSearchParams } from 'next/navigation';
 import { touchSessionActivity } from '@/lib/session-activity';
-import { initCosmosBg as initLoginBg } from '@/lib/cosmos-bg';
+
+// ── Canvas background — original stargate / nebula ────────────────────────
+
+function initLoginBg(canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext('2d')!;
+  let W = 0, H = 0, cx = 0, cy = 0;
+  type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
+  type Dust = { x: number; y: number; r: number; vx: number; vy: number; a: number };
+  let stars: Star[] = [];
+  let dust: Dust[] = [];
+  let animId: number;
+  let lastT = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W / 2; cy = H * 0.42;
+    stars = Array.from({ length: Math.min(Math.floor((W * H) / 2800), 320) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.7 + 0.3,
+      ts: Math.random() * 0.02 + 0.005, to: Math.random() * Math.PI * 2,
+    }));
+    dust = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.4,
+      vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.1,
+      a: Math.random() * 0.3 + 0.1,
+    }));
+  }
+
+  function drawBg() {
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.8);
+    g.addColorStop(0, '#12132a'); g.addColorStop(0.3, '#0d0e1f');
+    g.addColorStop(0.7, '#090a14'); g.addColorStop(1, '#050508');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    for (const cl of [
+      { x: cx - W * 0.1, y: cy - H * 0.05, r: W * 0.45, c: [80, 60, 180], a: 0.09 },
+      { x: cx + W * 0.05, y: cy, r: W * 0.35, c: [40, 80, 200], a: 0.08 },
+      { x: W * 0.85, y: H * 0.15, r: W * 0.35, c: [200, 70, 50], a: 0.07 },
+      { x: W * 0.1, y: H * 0.85, r: W * 0.3, c: [190, 60, 40], a: 0.06 },
+    ] as const) {
+      const ng = ctx.createRadialGradient(cl.x, cl.y, 0, cl.x, cl.y, cl.r);
+      ng.addColorStop(0, `rgba(${cl.c.join(',')},${cl.a})`);
+      ng.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = ng; ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  function drawStars(t: number) {
+    for (const s of stars) {
+      const tw = 0.5 + 0.5 * Math.sin(t * s.ts + s.to);
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(220,225,255,${s.a * (0.6 + 0.4 * tw)})`; ctx.fill();
+    }
+  }
+
+  function drawCore(t: number) {
+    const p = 0.92 + 0.08 * Math.sin(t * 0.001);
+    const base = Math.min(W, H) * 0.15;
+    for (const l of [
+      { r: base * 5.5 * p, c: 'rgba(100,130,255,0.05)', c2: 'rgba(70,100,255,0.015)' },
+      { r: base * 3.2 * p, c: 'rgba(140,170,255,0.12)', c2: 'rgba(100,140,255,0.04)' },
+      { r: base * 1.9 * p, c: 'rgba(195,210,255,0.26)', c2: 'rgba(155,180,255,0.10)' },
+      { r: base * 0.9 * p, c: 'rgba(230,240,255,0.45)', c2: 'rgba(200,220,255,0.18)' },
+    ]) {
+      const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, l.r);
+      gr.addColorStop(0, l.c); gr.addColorStop(0.5, l.c2); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    }
+    const gc = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.22);
+    gc.addColorStop(0, 'rgba(255,255,255,1)'); gc.addColorStop(0.5, 'rgba(255,255,255,0.6)');
+    gc.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gc; ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawRings(t: number) {
+    ctx.save(); ctx.translate(cx, cy);
+    for (const r of [
+      { rx: 0.28, ry: 0.10, rot: -0.15, a: 0.14 },
+      { rx: 0.38, ry: 0.14, rot: -0.10, a: 0.10 },
+      { rx: 0.50, ry: 0.18, rot: -0.05, a: 0.07 },
+      { rx: 0.65, ry: 0.24, rot:  0.00, a: 0.04 },
+    ]) {
+      const p2 = 1 + 0.012 * Math.sin(t * 0.0005 + r.rx * 10);
+      ctx.save(); ctx.rotate(r.rot);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, W * r.rx * p2, H * r.ry * p2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(170,190,230,${r.a})`; ctx.lineWidth = 1; ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function drawRays(t: number) {
+    const maxLen = Math.min(W, H) * 0.55;
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.globalCompositeOperation = 'screen';
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 + t * 0.00005;
+      const len = maxLen * (0.4 + 0.3 * Math.sin(t * 0.0008 + i * 1.5));
+      const g = ctx.createLinearGradient(0, 0, Math.cos(angle) * len, Math.sin(angle) * len);
+      g.addColorStop(0, 'rgba(200,215,255,0.07)'); g.addColorStop(1, 'rgba(200,215,255,0)');
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle - 0.014) * len, Math.sin(angle - 0.014) * len);
+      ctx.lineTo(Math.cos(angle + 0.014) * len, Math.sin(angle + 0.014) * len);
+      ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over'; ctx.restore();
+  }
+
+  function drawDust(t: number) {
+    for (const p of dust) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+      if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+      const fl = 0.7 + 0.3 * Math.sin(t * 0.003 + p.x);
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,195,230,${p.a * fl})`; ctx.fill();
+    }
+  }
+
+  function render(t: number) {
+    if (t - lastT < 25) { animId = requestAnimationFrame(render); return; }
+    lastT = t;
+    ctx.clearRect(0, 0, W, H);
+    drawBg(); drawStars(t); drawRays(t); drawCore(t); drawRings(t); drawDust(t);
+    animId = requestAnimationFrame(render);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  animId = requestAnimationFrame(render);
+  return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
+}
 
 
 // ── Helpers ───────────────────────────────────────────────────────────────

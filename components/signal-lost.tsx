@@ -2,7 +2,117 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { touchSessionActivity } from '@/lib/session-activity';
-import { initCosmosBg as initBg } from '@/lib/cosmos-bg';
+
+// ── Canvas background — original nebula + comets + glitch ─────────────────
+function initBg(canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext('2d')!;
+  let W = 0, H = 0, animId: number;
+  let glitchOn = false, glitchStr = 0;
+  type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
+  type Comet = { x: number; y: number; vx: number; vy: number; len: number; width: number; alpha: number };
+  let stars: Star[] = [];
+  let comets: Comet[] = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    stars = Array.from({ length: Math.floor((W * H) / 1400) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.85 + 0.15,
+      ts: Math.random() * 0.018 + 0.004, to: Math.random() * Math.PI * 2,
+    }));
+    comets = Array.from({ length: 5 }, (_, index) => {
+      const leftToRight = index % 2 === 0;
+      return {
+        x: leftToRight ? -Math.random() * W * 0.6 : W + Math.random() * W * 0.6,
+        y: Math.random() * H * 0.8 + H * 0.05,
+        vx: (leftToRight ? 1 : -1) * (0.35 + Math.random() * 0.7),
+        vy: (Math.random() - 0.5) * 0.08,
+        len: 70 + Math.random() * 120,
+        width: 1 + Math.random() * 1.8,
+        alpha: 0.18 + Math.random() * 0.3,
+      };
+    });
+  }
+
+  function render(t: number) {
+    ctx.clearRect(0, 0, W, H);
+    const bg = ctx.createRadialGradient(W*.5, H*.38, 0, W*.5, H*.38, Math.max(W,H));
+    bg.addColorStop(0, '#180c2c'); bg.addColorStop(0.35, '#0c071a');
+    bg.addColorStop(0.7, '#06040e'); bg.addColorStop(1, '#020208');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    for (const n of [
+      { x: W*.25, y: H*.18, r: W*.9, c: [130,35,210], a: 0.16 },
+      { x: W*.82, y: H*.28, r: W*.65, c: [210,35,75], a: 0.12 },
+      { x: W*.5,  y: H*.5,  r: W*.4,  c: [55,18,130], a: 0.08 },
+    ]) {
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+      g.addColorStop(0, `rgba(${n.c},${n.a})`);
+      g.addColorStop(.5, `rgba(${n.c},${n.a*.25})`);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    }
+    for (const s of stars) {
+      const tw = .5 + .5 * Math.sin(t * s.ts + s.to);
+      const fl = glitchOn ? (Math.random() > .25 ? 1 : 0) : 1;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * fl, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(215,205,255,${s.a*(.5+.5*tw)*fl})`; ctx.fill();
+    }
+    for (const comet of comets) {
+      comet.x += comet.vx;
+      comet.y += comet.vy;
+      const offscreenRight = comet.vx > 0 && comet.x - comet.len > W + 40;
+      const offscreenLeft = comet.vx < 0 && comet.x + comet.len < -40;
+      if (offscreenRight || offscreenLeft) {
+        comet.x = comet.vx > 0 ? -comet.len - Math.random() * W * 0.45 : W + comet.len + Math.random() * W * 0.45;
+        comet.y = Math.random() * H * 0.8 + H * 0.05;
+        comet.vx = Math.sign(comet.vx) * (0.35 + Math.random() * 0.7);
+        comet.vy = (Math.random() - 0.5) * 0.08;
+      }
+      const trail = ctx.createLinearGradient(
+        comet.x, comet.y,
+        comet.x - comet.vx * comet.len,
+        comet.y - comet.vy * comet.len,
+      );
+      trail.addColorStop(0, `rgba(255,255,255,${comet.alpha})`);
+      trail.addColorStop(0.25, `rgba(180,150,255,${comet.alpha * 0.7})`);
+      trail.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.save();
+      ctx.lineWidth = comet.width;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = trail;
+      ctx.beginPath();
+      ctx.moveTo(comet.x, comet.y);
+      ctx.lineTo(comet.x - comet.vx * comet.len, comet.y - comet.vy * comet.len);
+      ctx.stroke();
+      ctx.restore();
+    }
+    if (glitchOn) {
+      for (let i = 0; i < Math.floor(glitchStr * 14); i++) {
+        const y = Math.random() * H, h2 = Math.random() * 3 + 1;
+        ctx.fillStyle = `rgba(${Math.random()>.5?'255,40,80':'20,120,255'},${Math.random()*.13})`;
+        ctx.fillRect(0, y, W, h2);
+      }
+    }
+    const vig = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*.72);
+    vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,.78)');
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+    animId = requestAnimationFrame(render);
+  }
+
+  function scheduleGlitch() {
+    setTimeout(() => {
+      glitchOn = true; glitchStr = .35 + Math.random() * .65;
+      setTimeout(() => { glitchOn = false; glitchStr = 0; scheduleGlitch(); }, 55 + Math.random() * 230);
+    }, 1200 + Math.random() * 3800);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  animId = requestAnimationFrame(render);
+  scheduleGlitch();
+  return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
+}
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type GateState = 'idle' | 'armed' | 'dragging' | 'locked' | 'charging' | 'burst' | 'auth';
