@@ -3,107 +3,299 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { touchSessionActivity } from '@/lib/session-activity';
 
-// ── Canvas background ──────────────────────────────────────────────────────
+// ── Canvas background — Living Cosmos ─────────────────────────────────────
 function initBg(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d')!;
-  let W = 0, H = 0, animId: number;
+  let W = 0, H = 0, animId: number, lastT = 0;
   let glitchOn = false, glitchStr = 0;
-  type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
-  type Comet = { x: number; y: number; vx: number; vy: number; len: number; width: number; alpha: number };
+
+  // Three parallax star layers — different sizes, speeds, colors
+  type Star = { x: number; y: number; r: number; a: number; ts: number; to: number; layer: number };
+  // Free-angle comets — direction, speed, angle all random
+  type Comet = {
+    x: number; y: number;
+    vx: number; vy: number;
+    len: number; width: number; alpha: number;
+    hue: number; // color variation
+    life: number; maxLife: number; // fade in/out
+  };
+  // Cosmic dust — slow drifting particles
+  type Dust = { x: number; y: number; vx: number; vy: number; r: number; a: number; pulse: number };
+  // Occasional dramatic shooting star
+  type ShootingStar = { x: number; y: number; vx: number; vy: number; len: number; alpha: number; active: boolean; timer: number };
+
   let stars: Star[] = [];
   let comets: Comet[] = [];
+  let dust: Dust[] = [];
+  let shootingStar: ShootingStar = { x: 0, y: 0, vx: 0, vy: 0, len: 0, alpha: 0, active: false, timer: 0 };
+
+  // Nebula state — slowly evolving colors
+  let nebulaPhase = 0;
+
+  function spawnComet(): Comet {
+    // Random angle — true free direction, not just horizontal
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.4 + Math.random() * 1.1;
+    // Start from outside viewport
+    const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
+    let x, y;
+    if (edge === 0) { x = Math.random() * W; y = -50; }
+    else if (edge === 1) { x = W + 50; y = Math.random() * H; }
+    else if (edge === 2) { x = Math.random() * W; y = H + 50; }
+    else { x = -50; y = Math.random() * H; }
+    // Direction toward viewport center with some randomness
+    const toCx = W/2 + (Math.random() - 0.5) * W * 0.6 - x;
+    const toCy = H/2 + (Math.random() - 0.5) * H * 0.6 - y;
+    const len = Math.sqrt(toCx*toCx + toCy*toCy);
+    const vx = (toCx/len) * speed;
+    const vy = (toCy/len) * speed;
+    return {
+      x, y, vx, vy,
+      len: 60 + Math.random() * 140,
+      width: 0.8 + Math.random() * 1.6,
+      alpha: 0,
+      hue: Math.random() < 0.5 ? 260 + Math.random() * 60 : // purple-blue
+            Math.random() < 0.5 ? 200 + Math.random() * 40 : // cyan-blue
+            330 + Math.random() * 30,                          // red-pink
+      life: 0,
+      maxLife: 180 + Math.random() * 280,
+    };
+  }
+
+  function spawnShootingStar() {
+    const startX = Math.random() * W * 0.8;
+    const startY = Math.random() * H * 0.3;
+    const angle = Math.PI * 0.15 + Math.random() * Math.PI * 0.2; // mostly diagonal
+    const speed = 6 + Math.random() * 8;
+    shootingStar = {
+      x: startX, y: startY,
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      len: 120 + Math.random() * 200,
+      alpha: 0.9,
+      active: true,
+      timer: 0,
+    };
+  }
 
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    stars = Array.from({ length: Math.floor((W * H) / 1400) }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.85 + 0.15,
-      ts: Math.random() * 0.018 + 0.004, to: Math.random() * Math.PI * 2,
-    }));
-    comets = Array.from({ length: 5 }, (_, index) => {
-      const leftToRight = index % 2 === 0;
+    const count = Math.min(Math.floor((W * H) / 900), 500);
+    stars = Array.from({ length: count }, () => {
+      const layer = Math.floor(Math.random() * 3); // 0=far, 1=mid, 2=near
       return {
-        x: leftToRight ? -Math.random() * W * 0.6 : W + Math.random() * W * 0.6,
-        y: Math.random() * H * 0.8 + H * 0.05,
-        vx: (leftToRight ? 1 : -1) * (0.35 + Math.random() * 0.7),
-        vy: (Math.random() - 0.5) * 0.08,
-        len: 70 + Math.random() * 120,
-        width: 1 + Math.random() * 1.8,
-        alpha: 0.18 + Math.random() * 0.3,
+        x: Math.random() * W, y: Math.random() * H,
+        r: layer === 0 ? Math.random() * 0.8 + 0.2
+         : layer === 1 ? Math.random() * 1.2 + 0.5
+         : Math.random() * 2.0 + 0.8,
+        a: layer === 0 ? Math.random() * 0.5 + 0.15
+         : layer === 1 ? Math.random() * 0.6 + 0.2
+         : Math.random() * 0.85 + 0.3,
+        ts: layer === 0 ? Math.random() * 0.008 + 0.002
+          : layer === 1 ? Math.random() * 0.015 + 0.006
+          : Math.random() * 0.025 + 0.012,
+        to: Math.random() * Math.PI * 2,
+        layer,
       };
     });
+    comets = Array.from({ length: 7 }, () => spawnComet());
+    dust = Array.from({ length: 60 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.12, vy: (Math.random() - 0.5) * 0.08,
+      r: Math.random() * 1.0 + 0.3,
+      a: Math.random() * 0.25 + 0.05,
+      pulse: Math.random() * Math.PI * 2,
+    }));
   }
 
-  function render(t: number) {
-    ctx.clearRect(0, 0, W, H);
-    const bg = ctx.createRadialGradient(W*.5, H*.38, 0, W*.5, H*.38, Math.max(W,H));
-    bg.addColorStop(0, '#180c2c'); bg.addColorStop(0.35, '#0c071a');
-    bg.addColorStop(0.7, '#06040e'); bg.addColorStop(1, '#020208');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-    for (const n of [
-      { x: W*.25, y: H*.18, r: W*.9, c: [130,35,210], a: 0.16 },
-      { x: W*.82, y: H*.28, r: W*.65, c: [210,35,75], a: 0.12 },
-      { x: W*.5,  y: H*.5,  r: W*.4,  c: [55,18,130], a: 0.08 },
-    ]) {
+  function drawBg(t: number) {
+    // Deep space base — subtle position variation for living feel
+    const cx = W * 0.5 + Math.sin(t * 0.00008) * W * 0.04;
+    const cy = H * 0.42 + Math.cos(t * 0.00006) * H * 0.03;
+    const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.9);
+    bg.addColorStop(0, '#14102a');
+    bg.addColorStop(0.3, '#0c0818');
+    bg.addColorStop(0.7, '#06040e');
+    bg.addColorStop(1, '#020208');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Evolving nebulae — 4 clouds with phase-shifted pulse
+    nebulaPhase = t * 0.00018;
+    const nebulae = [
+      { x: W*0.22, y: H*0.20, r: W*0.85, c: [120, 30, 200], a: 0.13 + 0.04*Math.sin(nebulaPhase) },
+      { x: W*0.80, y: H*0.25, r: W*0.60, c: [200, 30, 70],  a: 0.10 + 0.03*Math.sin(nebulaPhase + 1.2) },
+      { x: W*0.50, y: H*0.65, r: W*0.55, c: [40, 60, 180],  a: 0.08 + 0.03*Math.sin(nebulaPhase + 2.4) },
+      { x: W*0.08, y: H*0.78, r: W*0.45, c: [180, 40, 30],  a: 0.07 + 0.02*Math.sin(nebulaPhase + 3.6) },
+    ];
+    for (const n of nebulae) {
       const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-      g.addColorStop(0, `rgba(${n.c},${n.a})`);
-      g.addColorStop(.5, `rgba(${n.c},${n.a*.25})`);
+      g.addColorStop(0, `rgba(${n.c[0]},${n.c[1]},${n.c[2]},${n.a})`);
+      g.addColorStop(0.45, `rgba(${n.c[0]},${n.c[1]},${n.c[2]},${n.a * 0.3})`);
       g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
     }
+  }
+
+  function drawStars(t: number) {
     for (const s of stars) {
-      const tw = .5 + .5 * Math.sin(t * s.ts + s.to);
-      const fl = glitchOn ? (Math.random() > .25 ? 1 : 0) : 1;
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * fl, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(215,205,255,${s.a*(.5+.5*tw)*fl})`; ctx.fill();
-    }
-    for (const comet of comets) {
-      comet.x += comet.vx;
-      comet.y += comet.vy;
-      const offscreenRight = comet.vx > 0 && comet.x - comet.len > W + 40;
-      const offscreenLeft = comet.vx < 0 && comet.x + comet.len < -40;
-      if (offscreenRight || offscreenLeft) {
-        comet.x = comet.vx > 0 ? -comet.len - Math.random() * W * 0.45 : W + comet.len + Math.random() * W * 0.45;
-        comet.y = Math.random() * H * 0.8 + H * 0.05;
-        comet.vx = Math.sign(comet.vx) * (0.35 + Math.random() * 0.7);
-        comet.vy = (Math.random() - 0.5) * 0.08;
+      const tw = 0.5 + 0.5 * Math.sin(t * s.ts + s.to);
+      const brightness = s.a * (0.55 + 0.45 * tw);
+      // Layer-specific colors: far=cold white, mid=warm white, near=slight color
+      const color = s.layer === 0
+        ? `rgba(200,205,240,${brightness})`
+        : s.layer === 1
+        ? `rgba(220,215,255,${brightness})`
+        : `rgba(240,235,255,${brightness})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * (0.85 + 0.15 * tw), 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      // Near stars get a tiny cross-flare at peak brightness
+      if (s.layer === 2 && tw > 0.85) {
+        const fl = (tw - 0.85) / 0.15;
+        ctx.strokeStyle = `rgba(240,235,255,${fl * 0.3})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r * 2.5, s.y);
+        ctx.lineTo(s.x + s.r * 2.5, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 2.5);
+        ctx.lineTo(s.x, s.y + s.r * 2.5);
+        ctx.stroke();
       }
-      const trail = ctx.createLinearGradient(
-        comet.x,
-        comet.y,
-        comet.x - comet.vx * comet.len,
-        comet.y - comet.vy * comet.len,
-      );
-      trail.addColorStop(0, `rgba(255,255,255,${comet.alpha})`);
-      trail.addColorStop(0.25, `rgba(180,150,255,${comet.alpha * 0.7})`);
+    }
+  }
+
+  function drawDust(t: number) {
+    for (const p of dust) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -5) p.x = W + 5; if (p.x > W + 5) p.x = -5;
+      if (p.y < -5) p.y = H + 5; if (p.y > H + 5) p.y = -5;
+      p.pulse += 0.018;
+      const fl = 0.6 + 0.4 * Math.sin(p.pulse);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,170,230,${p.a * fl})`;
+      ctx.fill();
+    }
+  }
+
+  function drawComets(t: number) {
+    for (let i = 0; i < comets.length; i++) {
+      const c = comets[i];
+      c.x += c.vx; c.y += c.vy;
+      c.life++;
+
+      // Fade in first 20 frames, fade out last 40
+      if (c.life < 20) c.alpha = (c.life / 20) * (0.15 + Math.random() * 0.25);
+      else if (c.life > c.maxLife - 40) c.alpha *= 0.96;
+
+      // Offscreen or expired — respawn
+      if (c.life > c.maxLife || c.x < -200 || c.x > W + 200 || c.y < -200 || c.y > H + 200) {
+        comets[i] = spawnComet();
+        continue;
+      }
+
+      // Draw trail
+      const tailX = c.x - c.vx * (c.len / Math.sqrt(c.vx*c.vx + c.vy*c.vy));
+      const tailY = c.y - c.vy * (c.len / Math.sqrt(c.vx*c.vx + c.vy*c.vy));
+      const trail = ctx.createLinearGradient(c.x, c.y, tailX, tailY);
+      trail.addColorStop(0, `hsla(${c.hue},80%,80%,${c.alpha})`);
+      trail.addColorStop(0.3, `hsla(${c.hue},60%,70%,${c.alpha * 0.5})`);
       trail.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.save();
-      ctx.lineWidth = comet.width;
+      ctx.lineWidth = c.width;
       ctx.lineCap = 'round';
       ctx.strokeStyle = trail;
       ctx.beginPath();
-      ctx.moveTo(comet.x, comet.y);
-      ctx.lineTo(comet.x - comet.vx * comet.len, comet.y - comet.vy * comet.len);
+      ctx.moveTo(c.x, c.y);
+      ctx.lineTo(tailX, tailY);
       ctx.stroke();
+      // Head glow
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, c.width * 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${c.hue},90%,90%,${c.alpha * 0.8})`;
+      ctx.fill();
       ctx.restore();
     }
-    if (glitchOn) {
-      for (let i = 0; i < Math.floor(glitchStr * 14); i++) {
-        const y = Math.random() * H, h2 = Math.random() * 3 + 1;
-        ctx.fillStyle = `rgba(${Math.random()>.5?'255,40,80':'20,120,255'},${Math.random()*.13})`;
-        ctx.fillRect(0, y, W, h2);
+  }
+
+  function drawShootingStar(t: number) {
+    // Schedule next shooting star
+    if (!shootingStar.active) {
+      shootingStar.timer++;
+      if (shootingStar.timer > 280 + Math.random() * 400) {
+        spawnShootingStar();
       }
+      return;
     }
-    const vig = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*.72);
-    vig.addColorStop(0, 'rgba(0,0,0,0)'); vig.addColorStop(1, 'rgba(0,0,0,.78)');
-    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+    shootingStar.x += shootingStar.vx;
+    shootingStar.y += shootingStar.vy;
+    shootingStar.alpha -= 0.018;
+    if (shootingStar.alpha <= 0 || shootingStar.x > W + 100 || shootingStar.y > H + 100) {
+      shootingStar.active = false;
+      shootingStar.timer = 0;
+      return;
+    }
+    const spd = Math.sqrt(shootingStar.vx * shootingStar.vx + shootingStar.vy * shootingStar.vy);
+    const tx = shootingStar.x - shootingStar.vx * (shootingStar.len / (spd || 1));
+    const ty = shootingStar.y - shootingStar.vy * (shootingStar.len / (spd || 1));
+    const g = ctx.createLinearGradient(shootingStar.x, shootingStar.y, tx, ty);
+    g.addColorStop(0, `rgba(255,255,255,${shootingStar.alpha})`);
+    g.addColorStop(0.4, `rgba(200,210,255,${shootingStar.alpha * 0.5})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(shootingStar.x, shootingStar.y);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    // Bright head
+    ctx.beginPath();
+    ctx.arc(shootingStar.x, shootingStar.y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${shootingStar.alpha})`;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawGlitch() {
+    if (!glitchOn) return;
+    for (let i = 0; i < Math.floor(glitchStr * 14); i++) {
+      const y = Math.random() * H, h2 = Math.random() * 3 + 1;
+      ctx.fillStyle = `rgba(${Math.random() > 0.5 ? '255,40,80' : '20,120,255'},${Math.random() * 0.13})`;
+      ctx.fillRect(0, y, W, h2);
+    }
+  }
+
+  function drawVignette() {
+    const vig = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.72);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, 'rgba(0,0,0,0.82)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function render(t: number) {
+    // ~40fps — smooth enough for cosmos, easy on battery
+    if (t - lastT < 24) { animId = requestAnimationFrame(render); return; }
+    lastT = t;
+    ctx.clearRect(0, 0, W, H);
+    drawBg(t);
+    drawStars(t);
+    drawDust(t);
+    drawComets(t);
+    drawShootingStar(t);
+    drawGlitch();
+    drawVignette();
     animId = requestAnimationFrame(render);
   }
 
   function scheduleGlitch() {
     setTimeout(() => {
-      glitchOn = true; glitchStr = .35 + Math.random() * .65;
+      glitchOn = true; glitchStr = 0.35 + Math.random() * 0.65;
       setTimeout(() => { glitchOn = false; glitchStr = 0; scheduleGlitch(); }, 55 + Math.random() * 230);
     }, 1200 + Math.random() * 3800);
   }
@@ -112,6 +304,8 @@ function initBg(canvas: HTMLCanvasElement) {
   window.addEventListener('resize', resize);
   animId = requestAnimationFrame(render);
   scheduleGlitch();
+  // Schedule first shooting star after a short delay
+  setTimeout(spawnShootingStar, 2000 + Math.random() * 3000);
   return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
 }
 
@@ -141,40 +335,98 @@ function clampCenterPosition(x: number, y: number) {
   };
 }
 
+// ── HiddenStar — living solar easter egg trigger ───────────────────────────
+// A distant sun pulsing with Red/Blue/Purple energy. Tap to reset the long animation.
 function HiddenStar({ onActivate }: { onActivate: () => void }) {
   return (
     <button
       type="button"
       onClick={onActivate}
       aria-label="cosmic relay"
+      title="⟳"
       style={{
         position: 'absolute',
-        top: '8%',
-        right: '6%',
-        width: 22,
-        height: 22,
+        top: '7%',
+        right: '5%',
+        width: 36,
+        height: 36,
         padding: 0,
         border: 'none',
         background: 'transparent',
         cursor: 'pointer',
         zIndex: 30,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <span
-        style={{
+      {/* Outer corona — slow tricolor rotation */}
+      <span style={{
+        position: 'absolute',
+        inset: -8,
+        borderRadius: '50%',
+        background: 'conic-gradient(rgba(229,62,62,0.18), rgba(59,130,246,0.18), rgba(139,92,246,0.22), rgba(229,62,62,0.18))',
+        animation: 'hs-corona-spin 8s linear infinite',
+        filter: 'blur(4px)',
+      }} />
+      {/* Mid glow ring */}
+      <span style={{
+        position: 'absolute',
+        inset: -2,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,220,140,0.35) 0%, rgba(255,160,40,0.15) 50%, transparent 75%)',
+        animation: 'hs-pulse 2.4s ease-in-out infinite',
+      }} />
+      {/* Star rays — 8 thin spikes */}
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
+        <span key={i} style={{
           position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'rgba(240,235,255,0.88)',
-          fontSize: 14,
-          textShadow: '0 0 8px rgba(255,255,255,0.8), 0 0 22px rgba(139,92,246,0.7)',
-          animation: 'sl-star-glint 3.8s ease-in-out infinite',
-        }}
-      >
-        ✦
-      </span>
+          width: i % 2 === 0 ? 22 : 14,
+          height: 1.5,
+          background: `rgba(255, ${180 + i * 8}, ${80 + i * 12}, ${0.35 - i * 0.02})`,
+          borderRadius: 1,
+          transformOrigin: 'left center',
+          transform: `rotate(${deg}deg) translateX(7px)`,
+          animation: `hs-ray-pulse 2.4s ease-in-out ${i * 0.15}s infinite`,
+          filter: 'blur(0.5px)',
+        }} />
+      ))}
+      {/* Core star — warm white with orange tint */}
+      <span style={{
+        position: 'relative',
+        zIndex: 2,
+        width: 10,
+        height: 10,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, #fff9f0 0%, #ffd080 50%, #ff8020 100%)',
+        boxShadow: [
+          '0 0 6px rgba(255,220,140,0.9)',
+          '0 0 14px rgba(255,160,40,0.6)',
+          '0 0 28px rgba(229,62,62,0.2)',
+          '0 0 40px rgba(59,130,246,0.15)',
+        ].join(', '),
+        animation: 'hs-core-pulse 2.4s ease-in-out infinite',
+        display: 'block',
+      }} />
+
+      <style>{`
+        @keyframes hs-corona-spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes hs-pulse {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50%       { opacity: 1;   transform: scale(1.18); }
+        }
+        @keyframes hs-core-pulse {
+          0%, 100% { transform: scale(1);    box-shadow: 0 0 6px rgba(255,220,140,0.9), 0 0 14px rgba(255,160,40,0.6); }
+          50%       { transform: scale(1.15); box-shadow: 0 0 10px rgba(255,220,140,1), 0 0 24px rgba(255,160,40,0.8), 0 0 40px rgba(255,80,20,0.3); }
+        }
+        @keyframes hs-ray-pulse {
+          0%, 100% { opacity: 0.3; transform: rotate(var(--rot, 0deg)) translateX(7px) scaleX(1); }
+          50%       { opacity: 0.7; transform: rotate(var(--rot, 0deg)) translateX(7px) scaleX(1.3); }
+        }
+      `}</style>
     </button>
   );
 }
@@ -658,12 +910,6 @@ export default function SignalLost() {
           15%{opacity:1}
           60%{opacity:0.6}
           100%{opacity:0}
-        }
-        @keyframes sl-star-glint {
-          0%,100%{opacity:0.35;transform:scale(0.92)}
-          40%{opacity:0.95;transform:scale(1.08)}
-          55%{opacity:0.55;transform:scale(0.98)}
-          70%{opacity:1;transform:scale(1.14)}
         }
       `}</style>
     </div>

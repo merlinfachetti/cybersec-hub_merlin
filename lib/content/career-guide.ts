@@ -156,7 +156,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     hours: 14,
     desc: 'Cobertura gratuita, objetiva e muito alinhada ao blueprint do Security+. Excelente para montar base teorica sem pagar de entrada.',
     bestFor:
-      'Quem quer base geral de cyber e vai fazer Security+ ou nivelar fundamentos rapidamente.',
+      'Anyone building a general cyber foundation or preparing for Security+, or leveling up fundamentals quickly.',
     caution:
       'Nao substitui labs nem simulados; funciona melhor em conjunto com prática e questoes.',
     url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/',
@@ -167,13 +167,13 @@ export const STUDY_RESOURCES: GuideResource[] = [
     title: 'Google Cybersecurity Certificate',
     provider: 'Google / Coursera',
     type: 'COURSE',
-    cert: 'Fundamentos',
+    cert: 'Foundations',
     level: 'ENTRY',
     category: 'DEFENSIVE_SECURITY',
     cost: 49,
     rating: 4.6,
     hours: 150,
-    desc: 'Programa estruturado para iniciantes absolutos com Linux, SQL, redes, conceitos de SOC e resposta a incidentes.',
+    desc: 'Structured program for absolute beginners covering Linux, SQL, networking, SOC concepts, and incident response fundamentals.',
     bestFor: 'Mudanca de carreira sem base previa em TI ou segurança.',
     caution:
       'Bom para orientação e disciplina, mas sozinho não vira sinal tecnico tao forte quanto labs e certs profissionais.',
@@ -185,14 +185,14 @@ export const STUDY_RESOURCES: GuideResource[] = [
     title: 'TryHackMe - Pre Security',
     provider: 'TryHackMe',
     type: 'LAB',
-    cert: 'Fundamentos',
+    cert: 'Foundations',
     level: 'ENTRY',
     category: 'DEFENSIVE_SECURITY',
     cost: 0,
     rating: 4.8,
     hours: 40,
     desc: 'Trilha interativa cobrindo rede, web, Linux e fundamentos de segurança com ritmo amigavel para iniciantes.',
-    bestFor: 'Quem aprende melhor praticando em pequenos blocos.',
+    bestFor: 'Learners who do better with hands-on, bite-sized practice over passive reading.',
     caution:
       'Parte mais forte e profunda exige assinatura; use como porta de entrada, nao como unica fonte.',
     url: 'https://tryhackme.com/path/outline/presecurity',
@@ -209,9 +209,9 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.7,
     hours: 20,
-    desc: 'Treinamento oficial de Splunk para aprender busca, dashboards e leitura de logs com uma stack amplamente usada em SOC.',
+    desc: 'Official Splunk training to learn search, dashboards, and log analysis using one of the most widely deployed SIEM stacks in SOC environments.',
     bestFor:
-      'SOC analyst junior, blue team e devs migrando para observabilidade e detecção.',
+      'Junior SOC analysts, blue team practitioners, and devs transitioning into observability and detection.',
     caution:
       'Treina a ferramenta, mas nao substitui casos reais de triagem e resposta.',
     url: 'https://www.splunk.com/en_us/training/free-courses/splunk-fundamentals-1.html',
@@ -228,7 +228,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.8,
     hours: 12,
-    desc: 'CTF de blue team focado em investigação e busca em logs. Excelente para transformar teoria de SIEM em prática.',
+    desc: 'Blue team CTF focused on log investigation and threat hunting with Splunk. Excellent for turning SIEM theory into hands-on practice.',
     bestFor:
       'Quem ja entendeu o básico de Splunk e quer começar a investigar artefatos reais.',
     caution:
@@ -404,7 +404,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     bestFor:
       'Career changers e iniciantes que precisam de um primeiro selo confiavel e uma trilha curta de fundamentos.',
     caution:
-      'Se você já tem boa base em TI, redes ou desenvolvimento, pode não ser a melhor alocação de tempo antes de Security+ ou estudos por função.',
+      'If you already have a solid IT, networking, or development background, it may not be the best time investment before Security+ or role-specific studies.',
     marketSignal:
       'Bom sinal inicial e de confianca, mas raramente e o diferencial principal em vagas tecnicas.',
     studyHours: '30-50h',
@@ -421,8 +421,8 @@ export const CERTIFICATIONS: GuideCertification[] = [
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 199 }],
     objectives: [
       'Cobrir principios de segurança e risco',
-      'Entender controles de acesso e proteção de ativos',
-      'Introduzir operações de segurança e resposta a incidentes',
+      'Understand access controls and asset protection',
+      'Introduce security operations and incident response',
     ],
     topics: [
       'Security Principles',
@@ -457,7 +457,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     category: 'DEFENSIVE_SECURITY',
     description:
       'Baseline generalista muito respeitada para quem quer entrar em cybersecurity, especialmente SOC, consultoria, suporte avancado e ambientes regulados.',
-    bestFor: 'Primeira certificação profissional para base ampla em segurança.',
+    bestFor: 'First professional certification for broad security foundations.',
     caution:
       'Não é certificação pratica; precisa ser combinada com labs, logs, cloud ou web para gerar skill operacional real.',
     marketSignal:
@@ -524,7 +524,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     bestFor:
       'Mudanca de carreira sem bagagem tecnica forte e quem prefere trilha bem estruturada.',
     caution:
-      'Melhor como fundação do que como prova final de prontidão técnica.',
+      'Better as a foundation than as a final proof of technical readiness.',
     marketSignal:
       'Bom ponto de partida curricular, mas o peso maior continua vindo de labs, portfólio e certs reconhecidas por função.',
     studyHours: '120-180h',
@@ -695,7 +695,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'INTERMEDIATE',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Certificação prática com foco em metodologia ofensiva, relatório e execução realista em ambiente controlado.',
+      'Practical certification focused on offensive methodology, professional reporting, and realistic execution in a controlled environment.',
     bestFor:
       'Quem quer sair de labs junior é provar capacidade mais prática em pentest.',
     caution:
@@ -751,11 +751,11 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'INTERMEDIATE',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Certificação conhecida de ethical hacking com cobertura ampla e boa visibilidade em ambientes de compliance, treinamento corporativo e alguns contextos governamentais.',
+      'Well-known ethical hacking certification with broad coverage and strong visibility in compliance environments, corporate training, and some government contexts.',
     bestFor:
       'Quem precisa do reconhecimento de marca em ambientes regulados ou onde o CEH aparece explicitamente no job description.',
     caution:
-      'Não costuma ser a primeira recomendação quando o objetivo principal é provar profundidade prática em pentest.',
+      'Not usually the first recommendation when the main goal is demonstrating practical pentest depth.',
     marketSignal:
       'Sinal de marca forte em parte do mercado, mas menos convincente tecnicamente que certs hands-on para ofensiva.',
     studyHours: '100-160h',
@@ -1126,7 +1126,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 575 }],
     objectives: [
       'Conectar segurança com governança, risco e programas',
-      'Preparar para liderança de operação e estratégia',
+      'Prepare for operations leadership and strategy',
       'Fortalecer trilha sênior em GRC e management',
     ],
     topics: [
@@ -1169,7 +1169,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     toRole: 'SOC Analyst Junior / Blue Team Junior',
     team: 'blue',
     aliases: ['foundations-to-soc', 'soc', 'blue', 'beginner', 'entry', 'junior'],
-    desc: 'Entrada realista para quem quer trabalhar com monitoramento, triagem e defesa',
+    desc: 'Realistic entry point for those who want to work with monitoring, triage, and defense',
     icon: '🛡️',
     goal: 'Construir base, ganhar contexto operacional e chegar pronto para vagas junior de SOC/blue team',
     totalHours: '220-340h',
@@ -1296,7 +1296,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '80-120h',
         cost: '$425',
         duration: '6-10 semanas',
-        why: 'CySA+ faz sentido depois que a pessoa ja viu alerta, log, hunting ou vulnerabilidade. A certificação encaixa bem quando você quer subir de base generalista para defensiva.',
+        why: 'CySA+ makes sense after hands-on exposure to alerts, logs, threat hunting, or vulnerabilities. It fits well when moving up from generalist to defensive specialist.',
         topics: [
           'Threat hunting',
           'Vulnerability management',
@@ -1335,7 +1335,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     toRole: 'CyberSec Analyst / Security Engineer de entrada',
     team: 'hybrid',
     aliases: ['it-to-cyber-transition', 'transition', 'career-switch', 'career-transition', 'switcher'],
-    desc: 'Migração orientada ao mercado para quem já vem de outra area de TI e quer entrar em Cyber com menos retrabalho',
+    desc: 'Market-oriented transition for IT professionals moving into Cyber with minimal backtracking',
     icon: '🧭',
     goal: 'Aproveitar repertorio previo de TI para entrar em Cyber de forma mais rapida, realista e empregavel',
     totalHours: '180-300h',
@@ -1353,7 +1353,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '30-60h',
         cost: 'baixo',
         duration: '2-4 semanas',
-        why: 'Profissionais de TI já trazem bagagem em rede, sistemas, cloud ou automação. O primeiro passo é identificar o que falta em ameaças, IAM, IR e controles, sem voltar ao básico que você já domina.',
+        why: 'IT professionals bring existing background in networking, systems, cloud, or automation. The first step is identifying the gaps in threats, IAM, IR, and controls — without revisiting basics you already know.',
         topics: [
           'Threat landscape',
           'IAM',
@@ -1424,7 +1424,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '40-90h',
         cost: 'variavel',
         duration: '4-8 semanas',
-        why: 'A transição fica mais convincente quando você aponta para um papel real. Infra tende a conversar bem com blue/cloud; devops e dev tendem a acelerar em appsec e security engineering.',
+        why: 'The transition is more convincing when you point to a real target role. Infra-leaning paths pair well with blue/cloud; devops and dev backgrounds tend to accelerate in AppSec and security engineering.',
         topics: [
           'SIEM',
           'AppSec',
@@ -1510,7 +1510,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     totalHours: '240-380h',
     totalCost: '$0-$1,100',
     realityCheck:
-      'Para devs, certificação ajuda, mas o diferencial real costuma ser secure coding, cloud, threat modeling, revisão de vulnerabilidades e portfólio técnico.',
+      'For devs, certifications help, but the real differentiator tends to be secure coding, cloud, threat modeling, vulnerability review, and a technical portfolio.',
     steps: [
       {
         order: 1,
@@ -1523,7 +1523,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '60-90h',
         cost: '$404',
         duration: '4-8 semanas',
-        why: 'Para devs, o ganho maior não é aprender tecnologia de novo, e sim ganhar linguagem de risco, controle, IAM, arquitetura e operações para conversar com times de segurança.',
+        why: 'For devs, the biggest gain is not learning new technology — it is gaining risk, control, IAM, architecture, and operations language to collaborate with security teams.',
         topics: [
           'Risk',
           'IAM',
@@ -1558,7 +1558,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '80-140h',
         cost: 'gratis',
         duration: '6-12 semanas',
-        why: 'Devs ganham vantagem real quando entendem autenticação, autorizacao, business logic flaws, SSRF, deserializacao e secure design na prática.',
+        why: 'Developers gain real advantage when they understand authentication, authorization, business logic flaws, SSRF, deserialization, and secure design in practice.',
         topics: [
           'Burp Suite',
           'Auth flaws',
@@ -1671,7 +1671,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     toRole: 'Pentester Junior / Mid-Level / Red Team',
     team: 'red',
     aliases: ['pentest-red-team', 'pentest', 'red', 'offensive', 'intermediate'],
-    desc: 'Trilha ofensiva prática, sem pular etapas e sem depender de certificação teorica como prova de habilidade',
+    desc: 'Hands-on offensive track, no skipped steps and no dependency on theoretical certifications as proof of skill',
     icon: '🎯',
     goal: 'Construir base ofensiva realista e chegar a uma credencial hands-on forte',
     totalHours: '260-460h',
@@ -1689,7 +1689,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '60-100h',
         cost: 'baixo',
         duration: '4-8 semanas',
-        why: 'Antes de qualquer certificação ofensiva, você precisa conseguir enumerar, entender servicos, testar web e operar Linux com autonomia.',
+        why: 'Before any offensive certification, you need to be able to enumerate, understand services, test web applications, and operate Linux autonomously.',
         topics: [
           'Linux',
           'Networking',
@@ -1700,7 +1700,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         resources: [
           {
             name: 'TryHackMe Pre Security',
-            type: 'Fundação',
+            type: 'Foundation',
             url: 'https://tryhackme.com/path/outline/presecurity',
             free: true,
           },
@@ -1712,7 +1712,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           },
         ],
         outcome:
-          'Preparação para escolher a primeira cert ofensiva com menos atrito',
+          'Preparation to choose your first offensive cert with less friction',
         href: '/resources?search=pentest',
         linkLabel: 'Ver recursos',
       },
@@ -1762,7 +1762,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '120-220h',
         cost: '$499+',
         duration: '8-14 semanas',
-        why: 'Aqui você escolhe entre uma trilha pratica com bastante foco em entrega profissional e AD (PNPT) ou profundidade tecnica com o ecossistema HTB (CPTS).',
+        why: 'Here you choose between a track focused on professional delivery and AD (PNPT) or deep technical proficiency with the HTB ecosystem (CPTS).',
         topics: [
           'Active Directory',
           'Web exploitation',
@@ -1800,7 +1800,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '250-400h',
         cost: 'bundle OffSec',
         duration: '3-6 meses',
-        why: 'OSCP faz sentido quando a pessoa já está decididamente na trilha ofensiva e com muita hora de lab. Antes disso, costuma ser um salto caro demais e improdutivo.',
+        why: 'OSCP makes sense when you are firmly on the offensive path with serious lab hours behind you. Before that, it tends to be an expensive and unproductive leap.',
         topics: [
           'Enumeration',
           'AD',
@@ -1862,7 +1862,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '40-60h',
         cost: 'variavel',
         duration: '3-4 semanas',
-        why: 'Antes de buscar uma cert senior, vale consolidar lacunas de arquitetura, cloud, software security e operação para não estudar os dominios no vácuo.',
+        why: 'Before pursuing a senior cert, it is worth closing gaps in architecture, cloud, software security, and operations — so you are not studying domains in a vacuum.',
         topics: [
           'Architecture',
           'Risk',
@@ -1899,7 +1899,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '180-280h',
         cost: '$749',
         duration: '8-14 semanas',
-        why: 'CISSP e excelente quando você ja precisa sinalizar senioridade, amplitude e confianca para arquitetura, consultoria e gestao de programas.',
+        why: 'CISSP is excellent when you already need to signal seniority, breadth, and confidence for architecture, consulting, and program management roles.',
         topics: [
           'Risk',
           'Architecture',
@@ -1935,7 +1935,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '120-180h',
         cost: '$575+',
         duration: '6-10 semanas',
-        why: 'CISM complementa muito bem quem já está liderando risco, programa, operação ou governança e precisa linguagem ainda mais conectada ao negocio.',
+        why: 'CISM pairs well with those already leading risk, programs, operations, or governance who need language and frameworks more directly connected to business outcomes.',
         topics: [
           'Governance',
           'Risk management',
