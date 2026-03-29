@@ -35,6 +35,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 function CertDetailContent({ slug }: { slug: string }) {
+  const { locale } = useI18n();
   const cert = CERTIFICATION_MAP[slug];
 
   const S = {

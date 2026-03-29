@@ -11,22 +11,15 @@ import {
   resolveCareerPath,
 } from '@/lib/content/career-guide';
 
-const LEVELS = [
-  { value: 'all', label: locale === 'PT_BR' ? 'Todos os níveis' : 'All levels' },
-  { value: 'ENTRY', label: 'Entry', color: '#22c55e' },
-  { value: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
-  { value: 'ADVANCED', label: 'Advanced', color: '#f59e0b' },
-  { value: 'EXPERT', label: 'Expert', color: '#ef4444' },
-];
-
 const LEVEL_ORDER = ['ENTRY', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'];
 
+// Static CATEGORIES for color/value lookup (labels are locale-aware inside component)
 const CATEGORIES = [
-  { value: 'all', label: locale === 'PT_BR' ? 'Todas as categorias' : 'All categories' },
-  { value: 'DEFENSIVE_SECURITY', label: 'Defensive Security', color: '#3b82f6' },
-  { value: 'OFFENSIVE_SECURITY', label: 'Offensive Security', color: '#ef4444' },
-  { value: 'GOVERNANCE_RISK', label: 'Governance & Risk', color: '#8b5cf6' },
-  { value: 'CLOUD_SECURITY', label: 'Cloud Security', color: '#06b6d4' },
+  { value: 'all',                  label: 'All',                  color: '#8b5cf6' },
+  { value: 'DEFENSIVE_SECURITY',   label: 'Defensive Security',   color: '#3b82f6' },
+  { value: 'OFFENSIVE_SECURITY',   label: 'Offensive Security',   color: '#ef4444' },
+  { value: 'GOVERNANCE_RISK',      label: 'Governance & Risk',    color: '#8b5cf6' },
+  { value: 'CLOUD_SECURITY',       label: 'Cloud Security',       color: '#06b6d4' },
   { value: 'APPLICATION_SECURITY', label: 'Application Security', color: '#22c55e' },
 ];
 
@@ -343,7 +336,25 @@ function CertCard({
 }
 
 function CertificationsPageInner() {
-  const searchParams = useSearchParams();  const { t, locale } = useI18n();
+  const searchParams = useSearchParams();
+  const { t, locale } = useI18n();
+
+  const LEVELS = [
+    { value: 'all', label: locale === 'PT_BR' ? 'Todos os níveis' : 'All levels' },
+    { value: 'ENTRY', label: 'Entry', color: '#22c55e' },
+    { value: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
+    { value: 'ADVANCED', label: 'Advanced', color: '#f59e0b' },
+    { value: 'EXPERT', label: 'Expert', color: '#ef4444' },
+  ];
+
+  const CATEGORIES = [
+    { value: 'all', label: locale === 'PT_BR' ? 'Todas as categorias' : 'All categories' },
+    { value: 'DEFENSIVE_SECURITY', label: 'Defensive Security', color: '#3b82f6' },
+    { value: 'OFFENSIVE_SECURITY', label: 'Offensive Security', color: '#ef4444' },
+    { value: 'GOVERNANCE_RISK', label: 'Governance & Risk', color: '#8b5cf6' },
+    { value: 'CLOUD_SECURITY', label: 'Cloud Security', color: '#06b6d4' },
+    { value: 'APPLICATION_SECURITY', label: 'Application Security', color: '#22c55e' },
+  ];
 
   const recommendedPath = useMemo(
     () => resolveCareerPath(searchParams.get('path')),

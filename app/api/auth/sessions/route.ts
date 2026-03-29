@@ -59,7 +59,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json({
       current: session.sessionId,
-      sessions: sessions.map(s => ({
+      sessions: sessions.map((s: { id: string; createdAt: Date; expiresAt: Date }) => ({
         id: s.id,
         isCurrent: s.id === session.sessionId,
         createdAt: s.createdAt,

@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SignalLost from '@/components/signal-lost';
+import { LocaleToggle } from '@/components/locale-toggle';
+import { useI18n } from '@/lib/i18n';
+import { useSearchParams } from 'next/navigation';
+import { touchSessionActivity } from '@/lib/session-activity';
 import { initCosmosBg as initLoginBg } from '@/lib/cosmos-bg';
 
 

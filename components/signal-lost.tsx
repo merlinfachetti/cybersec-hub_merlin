@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { touchSessionActivity } from '@/lib/session-activity';
 import { initCosmosBg as initBg } from '@/lib/cosmos-bg';
-
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type GateState = 'idle' | 'armed' | 'dragging' | 'locked' | 'charging' | 'burst' | 'auth';

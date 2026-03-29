@@ -61,6 +61,7 @@ function resolvePathId(hint?: string | null): PathId {
 }
 
 function RoadmapPageContent() {
+  const { locale } = useI18n();
   const searchParams = useSearchParams();
   const queryPathId = resolvePathId(searchParams.get('path'));
   const [activeTab, setActiveTab] = useState<'paths' | 'all'>('paths');
