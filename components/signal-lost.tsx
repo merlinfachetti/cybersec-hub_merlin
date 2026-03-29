@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Login canvas — same as desktop auth (blue nebula, core, rings) ─────────
-function initLoginBg(canvas: HTMLCanvasElement, mobile = false) {
+function initLoginBg(canvas: HTMLCanvasElement, mobile = false, centerRef?: { current: {x:number,y:number} }) {
   const ctx = canvas.getContext('2d')!;
   let W = 0, H = 0, cx = 0, cy = 0;
   type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
@@ -17,7 +17,7 @@ function initLoginBg(canvas: HTMLCanvasElement, mobile = false) {
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    // Desktop: original center (H*0.42). Mobile: align with scanner at screen center.
+    // Desktop: original center. Mobile: will be updated live from centerRef.
     cx = W / 2; cy = mobile ? H * 0.50 : H * 0.42;
     stars = Array.from({ length: Math.min(Math.floor((W * H) / 2800), 320) }, () => ({
       x: Math.random() * W, y: Math.random() * H,
@@ -52,8 +52,13 @@ function initLoginBg(canvas: HTMLCanvasElement, mobile = false) {
 
   function drawCore(t: number) {
     const p = 0.92 + 0.08 * Math.sin(t * 0.001);
-    const base = Math.min(W, H) * (mobile ? 0.08 : 0.15);
-    // Mobile: reduced opacity so core doesn't overpower content above/below
+    const base = Math.min(W, H) * 0.15; // original size for both mobile and desktop
+    // Mobile: read live scanner position from ref for exact alignment
+    if (mobile && centerRef?.current && centerRef.current.y > 0) {
+      cx = centerRef.current.x;
+      cy = centerRef.current.y;
+    }
+    // Mobile: softer bloom so content stays readable
     const mo = mobile ? 0.55 : 1.0;
     for (const l of [
       { r: base * 5.5 * p, c: `rgba(100,130,255,${0.05 * mo})`, c2: `rgba(70,100,255,${0.015 * mo})` },
@@ -251,6 +256,7 @@ function HiddenStar({ onActivate }: { onActivate: () => void }) {
 // ── Main component ─────────────────────────────────────────────────────────
 export default function SignalLost() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const bloomCenterRef = useRef<{x: number, y: number}>({ x: 0, y: 0 });
   const [gateState, setGateState] = useState<GateState>('idle');
   const [logoPos, setLogoPos] = useState({ x: 0, y: 0 });
   const [scannerPos, setScannerPos] = useState({ x: 0, y: 0 });
@@ -313,7 +319,7 @@ export default function SignalLost() {
   }, [resetGate]);
 
   useEffect(() => {
-    if (canvasRef.current) return initLoginBg(canvasRef.current, true);
+    if (canvasRef.current) return initLoginBg(canvasRef.current, true, bloomCenterRef);
   }, []);
 
   // Bloquear context menu e seleção nativa do browser no mobile
@@ -338,7 +344,11 @@ export default function SignalLost() {
     const updateScannerPos = () => {
       if (scannerRef.current) {
         const rect = scannerRef.current.getBoundingClientRect();
-        setScannerPos({ x: rect.left + rect.width/2, y: rect.top + rect.height/2 });
+        const x = rect.left + rect.width/2;
+        const y = rect.top + rect.height/2;
+        setScannerPos({ x, y });
+        // Keep bloom center in sync with scanner (read live by canvas each frame)
+        bloomCenterRef.current = { x, y };
       }
     };
     updateScannerPos();
