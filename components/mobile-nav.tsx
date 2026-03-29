@@ -3,19 +3,20 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Award, Map, BookOpen, BarChart2, User, Radio } from 'lucide-react';
-import { ThemeToggle } from './theme-toggle';
-
-const LINKS = [
-  { href: '/home',           icon: Home,     label: 'Hub'     },
-  { href: '/certifications', icon: Award,    label: 'Certs'   },
-  { href: '/roadmap',        icon: Map,      label: 'Roadmap' },
-  { href: '/resources',      icon: BookOpen, label: 'Recursos'},
-  { href: '/market',         icon: BarChart2,label: 'Mercado' },
-  { href: '/profile',        icon: User,     label: 'Perfil'  },
-];
+import { useI18n } from '@/lib/i18n';
 
 export function MobileNav() {
   const path = usePathname();
+  const { t } = useI18n();
+
+  const LINKS = [
+    { href: '/home',           icon: Home,     label: t('nav.home').slice(0,4)    },
+    { href: '/certifications', icon: Award,    label: 'Certs'                     },
+    { href: '/roadmap',        icon: Map,      label: t('nav.roadmap')            },
+    { href: '/resources',      icon: BookOpen, label: t('nav.resources').slice(0,6) },
+    { href: '/market',         icon: BarChart2,label: t('nav.market')             },
+    { href: '/profile',        icon: User,     label: t('nav.profile')            },
+  ];
 
   return (
     <nav style={{
@@ -34,13 +35,14 @@ export function MobileNav() {
             flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
             gap: 3, padding: '4px 2px', textDecoration: 'none',
             color: active ? '#8b5cf6' : 'rgba(155,176,198,0.45)',
-            transition: 'color 150ms',
+            transition: 'color 150ms', position: 'relative',
           }}>
             <Icon size={20} strokeWidth={active ? 2.2 : 1.8} />
             <span style={{
               fontFamily: '"JetBrains Mono", monospace',
               fontSize: 9, letterSpacing: '0.04em',
               fontWeight: active ? 600 : 400,
+              whiteSpace: 'nowrap',
             }}>
               {label}
             </span>
@@ -54,15 +56,10 @@ export function MobileNav() {
           </Link>
         );
       })}
-      {/* Theme toggle no fim */}
-      <div style={{ paddingLeft: 6, paddingRight: 4, flexShrink: 0 }}>
-        <ThemeToggle />
-      </div>
     </nav>
   );
 }
 
-// Bottom padding para evitar que conteúdo fique atrás da nav
 export function MobileNavSpacer() {
   return <div className="md:hidden" style={{ height: 72 }} />;
 }

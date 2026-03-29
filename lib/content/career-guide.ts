@@ -130,13 +130,13 @@ export const CAREER_STAGE_META: Record<
   },
   MID: {
     label: 'Mid-Level',
-    market: 'Pleno / especializacao funcional',
+    market: 'Pleno / especialização funcional',
     color: '#3b82f6',
     bg: 'rgba(59,130,246,0.12)',
   },
   SENIOR: {
     label: 'Senior-Level',
-    market: 'Senior / arquitetura / lideranca',
+    market: 'Senior / arquitetura / liderança',
     color: '#f59e0b',
     bg: 'rgba(245,158,11,0.12)',
   },
@@ -158,7 +158,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     bestFor:
       'Quem quer base geral de cyber e vai fazer Security+ ou nivelar fundamentos rapidamente.',
     caution:
-      'Nao substitui labs nem simulados; funciona melhor em conjunto com pratica e questoes.',
+      'Nao substitui labs nem simulados; funciona melhor em conjunto com prática e questoes.',
     url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/',
     tags: ['sec+', 'security+', 'free', 'video', 'fundamentos'],
   },
@@ -174,9 +174,9 @@ export const STUDY_RESOURCES: GuideResource[] = [
     rating: 4.6,
     hours: 150,
     desc: 'Programa estruturado para iniciantes absolutos com Linux, SQL, redes, conceitos de SOC e resposta a incidentes.',
-    bestFor: 'Mudanca de carreira sem base previa em TI ou seguranca.',
+    bestFor: 'Mudanca de carreira sem base previa em TI ou segurança.',
     caution:
-      'Bom para orientacao e disciplina, mas sozinho nao vira sinal tecnico tao forte quanto labs e certs profissionais.',
+      'Bom para orientação e disciplina, mas sozinho não vira sinal tecnico tao forte quanto labs e certs profissionais.',
     url: 'https://www.coursera.org/professional-certificates/google-cybersecurity',
     tags: ['google', 'coursera', 'beginner', 'soc', 'linux', 'sql'],
   },
@@ -191,7 +191,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.8,
     hours: 40,
-    desc: 'Trilha interativa cobrindo rede, web, Linux e fundamentos de seguranca com ritmo amigavel para iniciantes.',
+    desc: 'Trilha interativa cobrindo rede, web, Linux e fundamentos de segurança com ritmo amigavel para iniciantes.',
     bestFor: 'Quem aprende melhor praticando em pequenos blocos.',
     caution:
       'Parte mais forte e profunda exige assinatura; use como porta de entrada, nao como unica fonte.',
@@ -211,7 +211,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     hours: 20,
     desc: 'Treinamento oficial de Splunk para aprender busca, dashboards e leitura de logs com uma stack amplamente usada em SOC.',
     bestFor:
-      'SOC analyst junior, blue team e devs migrando para observabilidade e deteccao.',
+      'SOC analyst junior, blue team e devs migrando para observabilidade e detecção.',
     caution:
       'Treina a ferramenta, mas nao substitui casos reais de triagem e resposta.',
     url: 'https://www.splunk.com/en_us/training/free-courses/splunk-fundamentals-1.html',
@@ -228,9 +228,9 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.8,
     hours: 12,
-    desc: 'CTF de blue team focado em investigacao e busca em logs. Excelente para transformar teoria de SIEM em pratica.',
+    desc: 'CTF de blue team focado em investigação e busca em logs. Excelente para transformar teoria de SIEM em prática.',
     bestFor:
-      'Quem ja entendeu o basico de Splunk e quer comecar a investigar artefatos reais.',
+      'Quem ja entendeu o básico de Splunk e quer começar a investigar artefatos reais.',
     caution:
       'Pode frustrar iniciantes absolutos sem noção de logs, eventos e fluxo de triagem.',
     url: 'https://bots.splunk.com/',
@@ -247,7 +247,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 14,
     rating: 4.7,
     hours: 60,
-    desc: 'Trilha pratica de SOC com SIEM, triagem, hunting e resposta. Boa ponte entre Security+ e trabalho defensivo mais tecnico.',
+    desc: 'Trilha pratica de SOC com SIEM, triagem, hunting e resposta. Boa ponte entre Security+ e trabalho defensivo mais técnico.',
     bestFor:
       'Quem quer sair do estudo conceitual e ganhar repertorio para SOC e blue team.',
     caution: 'Funciona melhor depois de base em rede, Windows e logs.',
@@ -265,11 +265,11 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.9,
     hours: 80,
-    desc: 'Uma das melhores plataformas gratuitas para aprender web exploitation, autenticacao, authorization flaws e logica de aplicacao.',
+    desc: 'Uma das melhores plataformas gratuitas para aprender web exploitation, autenticação, authorization flaws e logica de aplicação.',
     bestFor:
-      'Devs migrando para AppSec, pentesters web e engenheiros de seguranca focados em aplicacoes.',
+      'Devs migrando para AppSec, pentesters web e engenheiros de segurança focados em aplicacoes.',
     caution:
-      'Parte do valor vem da insistencia; nao e trilha curta nem passiva.',
+      'Parte do valor vem da insistencia; não é trilha curta nem passiva.',
     url: 'https://portswigger.net/web-security',
     tags: ['portswigger', 'burp', 'appsec', 'web', 'free', 'labs'],
   },
@@ -284,11 +284,11 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.8,
     hours: 30,
-    desc: 'Referencia metodologica para testes em aplicacoes web e para organizar checklists de avaliacao.',
+    desc: 'Referencia metodológica para testes em aplicações web e para organizar checklists de avaliacao.',
     bestFor:
       'Quem ja pratica web security e quer estrutura de metodologia e cobertura.',
     caution:
-      'Nao e o melhor ponto de entrada sozinho; rende mais depois de labs e casos praticos.',
+      'Não é o melhor ponto de entrada sozinho; rende mais depois de labs e casos práticos.',
     url: 'https://owasp.org/www-project-web-security-testing-guide/',
     tags: ['owasp', 'web', 'guide', 'appsec', 'free'],
   },
@@ -303,11 +303,11 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.7,
     hours: 20,
-    desc: 'Sequencia guiada de maquinas introdutorias para enumeracao, exploracao basica e pensamento ofensivo.',
+    desc: 'Sequencia guiada de maquinas introdutorias para enumeração, exploração basica e pensamento ofensivo.',
     bestFor:
-      'Quem ja tem fundamentos minimos de Linux e rede e quer entrar em ofensiva sem pular direto para maquinas aleatorias.',
+      'Quem já tem fundamentos minimos de Linux e rede e quer entrar em ofensiva sem pular direto para maquinas aleatorias.',
     caution:
-      'Nao e ideal como primeira experiencia tecnica se a pessoa ainda nao sabe o basico de terminal, IP e servicos.',
+      'Não é ideal como primeira experiencia tecnica se a pessoa ainda nao sabe o básico de terminal, IP e servicos.',
     url: 'https://www.hackthebox.com/starting-point',
     tags: ['htb', 'hackthebox', 'pentest', 'free', 'labs'],
   },
@@ -322,9 +322,9 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 30,
     rating: 4.9,
     hours: 25,
-    desc: 'Curso pratico e direto para ofensiva com bom equilibrio entre metodologia, AD, web e escrita de relatorio.',
+    desc: 'Curso prático e direto para ofensiva com bom equilibrio entre metodologia, AD, web e escrita de relatório.',
     bestFor:
-      'Transicao para pentest com foco em habilidade pratica, nao so memorizacao.',
+      'Transicao para pentest com foco em habilidade prática, não só memorização.',
     caution:
       'Nao substitui muita hora de lab; use como guia e depois repita tecnica em ambientes proprios.',
     url: 'https://academy.tcm-sec.com/p/practical-ethical-hacking-the-complete-course',
@@ -343,7 +343,7 @@ export const STUDY_RESOURCES: GuideResource[] = [
     hours: 200,
     desc: 'Walkthroughs detalhados de maquinas com foco em raciocinio, enumeração e encadeamento de pistas.',
     bestFor:
-      'Quem ja esta estudando boxes e quer observar metodologia de quem tem boa disciplina ofensiva.',
+      'Quem já está estudando boxes e quer observar metodologia de quem tem boa disciplina ofensiva.',
     caution:
       'Consumo passivo demais pode virar ilusao de progresso; assista depois de tentar sozinho.',
     url: 'https://www.youtube.com/@ippsec',
@@ -360,11 +360,11 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.8,
     hours: 25,
-    desc: 'Serie excelente para revisar dominios do CISSP com visao macro e conexoes entre conceitos.',
+    desc: 'Serie excelente para revisar dominios do CISSP com visão macro e conexões entre conceitos.',
     bestFor:
-      'Quem ja esta estudando CISSP e quer consolidar estrutura mental do exame.',
+      'Quem já está estudando CISSP e quer consolidar estrutura mental do exame.',
     caution:
-      'Revisao nao substitui leitura profunda do conteudo oficial e pratica de questoes.',
+      'Revisão nao substitui leitura profunda do conteudo oficial e pratica de questoes.',
     url: 'https://www.youtube.com/@DestinationCertification',
     tags: ['cissp', 'isc2', 'leadership', 'youtube', 'free'],
   },
@@ -379,9 +379,9 @@ export const STUDY_RESOURCES: GuideResource[] = [
     cost: 0,
     rating: 4.6,
     hours: 30,
-    desc: 'Rota oficial de aprendizagem para IAM, monitoramento, KMS, deteccao e seguranca em servicos AWS.',
+    desc: 'Rota oficial de aprendizagem para IAM, monitoramento, KMS, detecção e segurança em servicos AWS.',
     bestFor:
-      'Engenheiros que ja trabalham com AWS e querem consolidar seguranca na stack.',
+      'Engenheiros que ja trabalham com AWS e querem consolidar segurança na stack.',
     caution:
       'Tem melhor retorno quando a pessoa ja conhece servicos core da AWS no dia a dia.',
     url: 'https://skillbuilder.aws/',
@@ -400,11 +400,11 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ENTRY',
     category: 'DEFENSIVE_SECURITY',
     description:
-      'Credencial de entrada com treinamento oficial gratuito e baixo atrito para comecar. Boa para quem esta trocando de area e quer uma primeira validacao formal sem entrar direto em um exame mais amplo.',
+      'Credencial de entrada com treinamento oficial gratuito e baixo atrito para começar. Boa para quem está trocando de area e quer uma primeira validação formal sem entrar direto em um exame mais amplo.',
     bestFor:
       'Career changers e iniciantes que precisam de um primeiro selo confiavel e uma trilha curta de fundamentos.',
     caution:
-      'Se voce ja tem boa base em TI, redes ou desenvolvimento, pode nao ser a melhor alocacao de tempo antes de Security+ ou estudos por funcao.',
+      'Se você já tem boa base em TI, redes ou desenvolvimento, pode não ser a melhor alocação de tempo antes de Security+ ou estudos por função.',
     marketSignal:
       'Bom sinal inicial e de confianca, mas raramente e o diferencial principal em vagas tecnicas.',
     studyHours: '30-50h',
@@ -417,12 +417,12 @@ export const CERTIFICATIONS: GuideCertification[] = [
     requiresRenewal: true,
     officialUrl: 'https://www.isc2.org/certifications/cc',
     recommendedExperience:
-      'Nenhuma experiencia formal exigida; ajuda ter vocabulario basico de TI.',
+      'Nenhuma experiencia formal exigida; ajuda ter vocabulario básico de TI.',
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 199 }],
     objectives: [
-      'Cobrir principios de seguranca e risco',
-      'Entender controles de acesso e protecao de ativos',
-      'Introduzir operacoes de seguranca e resposta a incidentes',
+      'Cobrir principios de segurança e risco',
+      'Entender controles de acesso e proteção de ativos',
+      'Introduzir operações de segurança e resposta a incidentes',
     ],
     topics: [
       'Security Principles',
@@ -457,9 +457,9 @@ export const CERTIFICATIONS: GuideCertification[] = [
     category: 'DEFENSIVE_SECURITY',
     description:
       'Baseline generalista muito respeitada para quem quer entrar em cybersecurity, especialmente SOC, consultoria, suporte avancado e ambientes regulados.',
-    bestFor: 'Primeira certificacao profissional para base ampla em seguranca.',
+    bestFor: 'Primeira certificação profissional para base ampla em segurança.',
     caution:
-      'Nao e certificacao pratica; precisa ser combinada com labs, logs, cloud ou web para gerar skill operacional real.',
+      'Não é certificação pratica; precisa ser combinada com labs, logs, cloud ou web para gerar skill operacional real.',
     marketSignal:
       'Forte sinal entry-level e muito util em vagas com filtro de RH, governo e times generalistas.',
     studyHours: '80-120h',
@@ -524,9 +524,9 @@ export const CERTIFICATIONS: GuideCertification[] = [
     bestFor:
       'Mudanca de carreira sem bagagem tecnica forte e quem prefere trilha bem estruturada.',
     caution:
-      'Melhor como fundacao do que como prova final de prontidao tecnica.',
+      'Melhor como fundação do que como prova final de prontidão técnica.',
     marketSignal:
-      'Bom ponto de partida curricular, mas o peso maior continua vindo de labs, portfolio e certs reconhecidas por funcao.',
+      'Bom ponto de partida curricular, mas o peso maior continua vindo de labs, portfólio e certs reconhecidas por função.',
     studyHours: '120-180h',
     searchCost: '~$49/mes',
     examDuration: 0,
@@ -540,7 +540,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     recommendedExperience: 'Nenhuma experiencia previa exigida.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 49 }],
     objectives: [
-      'Introduzir fundamentos de seguranca, redes, Linux e SQL',
+      'Introduzir fundamentos de segurança, redes, Linux e SQL',
       'Apresentar tarefas de SOC, triagem e resposta a incidentes',
       'Criar disciplina de estudo para iniciantes',
     ],
@@ -576,18 +576,18 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ENTRY',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Entrada pratica para ofensiva com foco em metodologia, enumeracao e exploração basica em laboratorio.',
+      'Entrada pratica para ofensiva com foco em metodologia, enumeração e exploração basica em laboratorio.',
     bestFor:
       'Quem quer seguir trilha ofensiva depois de aprender rede, Linux e fundamentos web.',
     caution:
-      'Nao e a melhor primeira certificacao para quem ainda esta decidindo entre blue team, governance e security engineering.',
+      'Não é a melhor primeira certificação para quem ainda esta decidindo entre blue team, governance e security engineering.',
     marketSignal:
       'Bom sinal tecnico inicial para ofensiva; melhor visto quando acompanhado de labs e progressao posterior.',
     studyHours: '60-100h',
     searchCost: '~$200+',
     examDuration: 1440,
     numberOfQuestions: 0,
-    passingScoreLabel: 'Exame pratico',
+    passingScoreLabel: 'Exame prático',
     validityLabel: 'Sem expirar',
     validityYears: 0,
     requiresRenewal: false,
@@ -595,7 +595,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     recommendedExperience: 'Base em Linux, redes, HTTP e linha de comando.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 200 }],
     objectives: [
-      'Executar reconhecimento, scanning e exploracao basica',
+      'Executar reconhecimento, scanning e exploração basica',
       'Entender fluxo de um pentest introdutorio',
       'Ganhar confianca com hands-on em ambiente controlado',
     ],
@@ -638,7 +638,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'INTERMEDIATE',
     category: 'DEFENSIVE_SECURITY',
     description:
-      'Certificacao defensiva intermediaria focada em analise, vulnerabilidades, deteccao, triagem e resposta.',
+      'Certificação defensiva intermediaria focada em análise, vulnerabilidades, detecção, triagem e resposta.',
     bestFor:
       'SOC analyst, defender, vulnerability analyst e times de blue team em crescimento.',
     caution:
@@ -659,8 +659,8 @@ export const CERTIFICATIONS: GuideCertification[] = [
       'Seguranca operacional ou SOC ajuda bastante; CompTIA recomenda experiencia previa.',
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 425 }],
     objectives: [
-      'Aprofundar deteccao, threat hunting e vulnerabilidade',
-      'Conectar teoria a fluxos de analise e resposta',
+      'Aprofundar detecção, threat hunting e vulnerabilidade',
+      'Conectar teoria a fluxos de análise e resposta',
       'Fortalecer trilha defensiva apos a base generalista',
     ],
     topics: [
@@ -695,28 +695,28 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'INTERMEDIATE',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Certificacao pratica com foco em metodologia ofensiva, relatorio e execucao realista em ambiente controlado.',
+      'Certificação prática com foco em metodologia ofensiva, relatório e execução realista em ambiente controlado.',
     bestFor:
-      'Quem quer sair de labs junior e provar capacidade mais pratica em pentest.',
+      'Quem quer sair de labs junior é provar capacidade mais prática em pentest.',
     caution:
-      'Tem boa credibilidade tecnica, mas reconhecimento de mercado ainda e mais irregular que OSCP em filtros tradicionais de RH.',
+      'Tem boa credibilidade técnica, mas reconhecimento de mercado ainda e mais irregular que OSCP em filtros tradicionais de RH.',
     marketSignal:
-      'Forte entre praticantes e hiring managers mais tecnicos; especialmente boa para portfolio de transicao.',
+      'Forte entre praticantes e hiring managers mais tecnicos; especialmente boa para portfólio de transição.',
     studyHours: '100-160h',
     searchCost: '$499',
     examDuration: 7200,
     numberOfQuestions: 0,
-    passingScoreLabel: 'Exame pratico + relatorio',
+    passingScoreLabel: 'Exame prático + relatório',
     validityLabel: 'Sem expirar',
     validityYears: 0,
     requiresRenewal: false,
     officialUrl: 'https://certifications.tcm-sec.com/pnpt/',
     recommendedExperience:
-      'Base previa em redes, Linux, AD basico e labs ofensivos.',
+      'Base previa em redes, Linux, AD básico e labs ofensivos.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 499 }],
     objectives: [
       'Executar um fluxo ofensivo mais completo e comunicavel',
-      'Treinar enumeracao, AD, relatorio e raciocinio',
+      'Treinar enumeração, AD, relatório e raciocinio',
       'Conectar estudo tecnico com entrega profissional',
     ],
     topics: [
@@ -751,11 +751,11 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'INTERMEDIATE',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Certificacao conhecida de ethical hacking com cobertura ampla e boa visibilidade em ambientes de compliance, treinamento corporativo e alguns contextos governamentais.',
+      'Certificação conhecida de ethical hacking com cobertura ampla e boa visibilidade em ambientes de compliance, treinamento corporativo e alguns contextos governamentais.',
     bestFor:
       'Quem precisa do reconhecimento de marca em ambientes regulados ou onde o CEH aparece explicitamente no job description.',
     caution:
-      'Nao costuma ser a primeira recomendacao quando o objetivo principal e provar profundidade pratica em pentest.',
+      'Não costuma ser a primeira recomendação quando o objetivo principal é provar profundidade prática em pentest.',
     marketSignal:
       'Sinal de marca forte em parte do mercado, mas menos convincente tecnicamente que certs hands-on para ofensiva.',
     studyHours: '100-160h',
@@ -769,7 +769,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     officialUrl:
       'https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/',
     recommendedExperience:
-      'Base em seguranca e alguma familiaridade com redes e web.',
+      'Base em segurança e alguma familiaridade com redes e web.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 1199 }],
     objectives: [
       'Cobrir metodologia de ethical hacking de forma ampla',
@@ -831,7 +831,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 979 }],
     objectives: [
       'Validar metodologia de pentest em contexto enterprise',
-      'Cobrir reconhecimento, exploitation e pos-exploracao',
+      'Cobrir reconhecimento, exploitation e pos-exploração',
       'Trabalhar em paralelo com material tecnico de alto nivel',
     ],
     topics: [
@@ -867,13 +867,13 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ADVANCED',
     category: 'CLOUD_SECURITY',
     description:
-      'Credencial forte para cloud security em ambientes AWS, especialmente para IAM, logging, KMS, deteccao e desenho seguro.',
+      'Credencial forte para cloud security em ambientes AWS, especialmente para IAM, logging, KMS, detecção e desenho seguro.',
     bestFor:
       'Security engineer, cloud engineer e platform engineers que ja operam AWS de verdade.',
     caution:
-      'Nao e uma certificacao avancada generica para toda carreira em seguranca; brilha quando a stack e AWS.',
+      'Não é uma certificação avancada generica para toda carreira em segurança; brilha quando a stack e AWS.',
     marketSignal:
-      'Bom sinal funcional para times cloud-native e engenharia de seguranca focada em AWS.',
+      'Bom sinal funcional para times cloud-native e engenharia de segurança focada em AWS.',
     studyHours: '100-160h',
     searchCost: '$300',
     examDuration: 170,
@@ -888,7 +888,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
       'Experiencia pratica com IAM, CloudTrail, GuardDuty, KMS, VPC e monitoramento AWS.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 300 }],
     objectives: [
-      'Consolidar seguranca em identidade, monitoramento e protecao de dados na AWS',
+      'Consolidar segurança em identidade, monitoramento e proteção de dados na AWS',
       'Ajudar a validar experiencia de cloud security para times de engenharia',
       'Conectar conhecimento de plataforma com controles defensivos',
     ],
@@ -924,7 +924,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ADVANCED',
     category: 'OFFENSIVE_SECURITY',
     description:
-      'Exame pratico e profundo do ecossistema HTB, muito forte para desenvolvimento tecnico ofensivo e escrita de relatorio.',
+      'Exame prático e profundo do ecossistema HTB, muito forte para desenvolvimento tecnico ofensivo e escrita de relatório.',
     bestFor:
       'Quem quer maturidade tecnica alta em ofensiva e gosta do estilo HTB Academy.',
     caution:
@@ -935,7 +935,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     searchCost: '~$490+',
     examDuration: 10080,
     numberOfQuestions: 0,
-    passingScoreLabel: 'Exame pratico + relatorio',
+    passingScoreLabel: 'Exame prático + relatório',
     validityLabel: 'Sem expirar',
     validityYears: 0,
     requiresRenewal: false,
@@ -946,7 +946,7 @@ export const CERTIFICATIONS: GuideCertification[] = [
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 490 }],
     objectives: [
       'Fortalecer profundidade ofensiva real em laboratorio',
-      'Treinar raciocinio, escrita e cadeia de exploracao',
+      'Treinar raciocinio, escrita e cadeia de exploração',
       'Funcionar como ponte forte para vagas ofensivas tecnicas',
     ],
     topics: [
@@ -988,19 +988,19 @@ export const CERTIFICATIONS: GuideCertification[] = [
     caution:
       'Investimento alto de tempo e dinheiro; impacto e muito menor se a meta principal nao for pentest ou red team.',
     marketSignal:
-      'Um dos sinais praticos mais fortes para ofensiva, especialmente em mercados internacionais.',
+      'Um dos sinais práticos mais fortes para ofensiva, especialmente em mercados internacionais.',
     studyHours: '250-400h',
     searchCost: 'bundle OffSec',
     examDuration: 1440,
     numberOfQuestions: 0,
-    passingScoreLabel: 'Exame pratico + relatorio',
+    passingScoreLabel: 'Exame prático + relatório',
     validityLabel: 'Consulte politica atual',
     validityYears: 0,
     requiresRenewal: false,
     officialUrl:
       'https://help.offsec.com/hc/en-us/articles/12483872278932-PEN-200-FAQ',
     recommendedExperience:
-      'Linux, redes, web basico, AD, scripting e muita rotina de lab.',
+      'Linux, redes, web básico, AD, scripting e muita rotina de lab.',
     costs: [{ region: 'GLOBAL', currency: 'USD', examCost: 1499 }],
     objectives: [
       'Validar capacidade hands-on de ofensiva sob pressao',
@@ -1046,13 +1046,13 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ADVANCED',
     category: 'GOVERNANCE_RISK',
     description:
-      'Credencial sênior de amplitude para arquitetura, lideranca tecnica, consultoria e programas de seguranca.',
+      'Credencial sênior de amplitude para arquitetura, liderança técnica, consultoria e programas de segurança.',
     bestFor:
       'Profissionais experientes indo para arquitetura, consultoria senior, liderança técnica e programas amplos de segurança.',
     caution:
-      'Nao e alvo de iniciante. O valor cresce muito quando voce ja tem anos de experiencia para contextualizar os dominios.',
+      'Não é alvo de iniciante. O valor cresce muito quando você já tem anos de experiencia para contextualizar os dominios.',
     marketSignal:
-      'Fortissimo para senioridade, amplitude e confianca de lideranca, especialmente fora da trilha puramente ofensiva.',
+      'Fortissimo para senioridade, amplitude e confianca de liderança, especialmente fora da trilha puramente ofensiva.',
     studyHours: '180-280h',
     searchCost: '$749',
     examDuration: 180,
@@ -1067,8 +1067,8 @@ export const CERTIFICATIONS: GuideCertification[] = [
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 749 }],
     objectives: [
       'Cobrir os oito dominios de forma ampla e integrada',
-      'Validar maturidade para desenhar e liderar programas de seguranca',
-      'Servir como credencial de senioridade para arquitetura e governanca',
+      'Validar maturidade para desenhar e liderar programas de segurança',
+      'Servir como credencial de senioridade para arquitetura e governança',
     ],
     topics: [
       'Security and Risk Management',
@@ -1105,13 +1105,13 @@ export const CERTIFICATIONS: GuideCertification[] = [
     level: 'ADVANCED',
     category: 'GOVERNANCE_RISK',
     description:
-      'Credencial de gestão e governança para quem lidera risco, programas de seguranca e operacao em interface forte com o negocio.',
+      'Credencial de gestão e governança para quem lidera risco, programas de segurança e operação em interface forte com o negocio.',
     bestFor:
       'Gestores, leaders de programa, GRC e profissionais sênior que precisam conectar segurança com governança e negocio.',
     caution:
       'Nao substitui vivencia tecnica; agrega mais depois de experiencia operacional real.',
     marketSignal:
-      'Muito respeitada para gestão, GRC e lideranca de programa; menos orientada a execução tecnica do dia a dia.',
+      'Muito respeitada para gestão, GRC e liderança de programa; menos orientada a execução tecnica do dia a dia.',
     studyHours: '120-180h',
     searchCost: '$575+',
     examDuration: 240,
@@ -1122,11 +1122,11 @@ export const CERTIFICATIONS: GuideCertification[] = [
     requiresRenewal: true,
     officialUrl: 'https://www.isaca.org/credentialing/cism',
     recommendedExperience:
-      'ISACA exige experiencia relevante em gestao de seguranca; excelente apos anos de pratica.',
+      'ISACA exige experiencia relevante em gestao de segurança; excelente apos anos de prática.',
     costs: [{ region: 'NORTH_AMERICA', currency: 'USD', examCost: 575 }],
     objectives: [
-      'Conectar seguranca com governanca, risco e programas',
-      'Preparar para lideranca de operacao e estrategia',
+      'Conectar segurança com governança, risco e programas',
+      'Preparar para liderança de operação e estratégia',
       'Fortalecer trilha sênior em GRC e management',
     ],
     topics: [
@@ -1164,7 +1164,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     rgb: '59,130,246',
     stage: 'ENTRY',
     stageLabel: 'Entry-Level',
-    audience: 'Iniciantes e career switchers sem base forte em seguranca',
+    audience: 'Iniciantes e career switchers sem base forte em segurança',
     fromRole: 'Zero a pouca experiencia em Cyber',
     toRole: 'SOC Analyst Junior / Blue Team Junior',
     team: 'blue',
@@ -1175,7 +1175,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     totalHours: '220-340h',
     totalCost: '$0-$850',
     realityCheck:
-      'A trilha mais contratavel para iniciantes costuma ser defensiva. O diferencial real vem de logs, labs, triagem e comunicacao, nao so do exame.',
+      'A trilha mais contratavel para iniciantes costuma ser defensiva. O diferencial real vem de logs, labs, triagem e comunicação, não só do exame.',
     steps: [
       {
         order: 1,
@@ -1189,10 +1189,10 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         duration: '4-8 semanas',
         why: 'Quem esta começando do zero aprende mais rapido quando combina estrutura guiada com pratica leve em Linux, rede e web. Isso reduz a chance de decorar termos sem contexto.',
         topics: [
-          'Linux basico',
+          'Linux básico',
           'Redes',
           'HTTP',
-          'Fundamentos de seguranca',
+          'Fundamentos de segurança',
           'Vocabulário de SOC',
         ],
         resources: [
@@ -1265,7 +1265,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           'Search',
           'Dashboards',
           'Triagem',
-          'Casos de investigacao',
+          'Casos de investigação',
         ],
         resources: [
           {
@@ -1296,7 +1296,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '80-120h',
         cost: '$425',
         duration: '6-10 semanas',
-        why: 'CySA+ faz sentido depois que a pessoa ja viu alerta, log, hunting ou vulnerabilidade. A certificacao encaixa bem quando voce quer subir de base generalista para defensiva.',
+        why: 'CySA+ faz sentido depois que a pessoa ja viu alerta, log, hunting ou vulnerabilidade. A certificação encaixa bem quando você quer subir de base generalista para defensiva.',
         topics: [
           'Threat hunting',
           'Vulnerability management',
@@ -1319,7 +1319,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           },
         ],
         outcome:
-          'SOC analyst mais forte, blue team junior/pleno e roles de deteccao',
+          'SOC analyst mais forte, blue team junior/pleno e roles de detecção',
       },
     ],
   },
@@ -1335,13 +1335,13 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     toRole: 'CyberSec Analyst / Security Engineer de entrada',
     team: 'hybrid',
     aliases: ['it-to-cyber-transition', 'transition', 'career-switch', 'career-transition', 'switcher'],
-    desc: 'Migracao orientada ao mercado para quem ja vem de outra area de TI e quer entrar em Cyber com menos retrabalho',
+    desc: 'Migração orientada ao mercado para quem já vem de outra area de TI e quer entrar em Cyber com menos retrabalho',
     icon: '🧭',
     goal: 'Aproveitar repertorio previo de TI para entrar em Cyber de forma mais rapida, realista e empregavel',
     totalHours: '180-300h',
     totalCost: '$0-$900',
     realityCheck:
-      'Quem ja vem de TI nao precisa recomeçar do zero. O maior ganho costuma vir de traduzir experiencia anterior em linguagem de risco, deteccao, controle e evidencias praticas para vaga.',
+      'Quem já vem de TI não precisa recomeçar do zero. O maior ganho costuma vir de traduzir experiencia anterior em linguagem de risco, detecção, controle e evidencias praticas para vaga.',
     steps: [
       {
         order: 1,
@@ -1353,7 +1353,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '30-60h',
         cost: 'baixo',
         duration: '2-4 semanas',
-        why: 'Profissionais de TI ja trazem bagagem em rede, sistemas, cloud ou automacao. O primeiro passo e identificar o que falta em ameacas, IAM, IR e controles, sem voltar ao basico que voce ja domina.',
+        why: 'Profissionais de TI já trazem bagagem em rede, sistemas, cloud ou automação. O primeiro passo é identificar o que falta em ameaças, IAM, IR e controles, sem voltar ao básico que você já domina.',
         topics: [
           'Threat landscape',
           'IAM',
@@ -1390,7 +1390,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '70-110h',
         cost: '$404',
         duration: '5-9 semanas',
-        why: 'Security+ costuma ser o melhor tradutor entre experiencia tecnica previa e expectativa de mercado para uma primeira vaga ou migracao formal para Cyber.',
+        why: 'Security+ costuma ser o melhor tradutor entre experiencia tecnica previa e expectativa de mercado para uma primeira vaga ou migração formal para Cyber.',
         topics: [
           'Threats',
           'IAM',
@@ -1412,7 +1412,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
             free: false,
           },
         ],
-        outcome: 'Base reconhecida para migracao e entrevistas iniciais',
+        outcome: 'Base reconhecida para migração e entrevistas iniciais',
       },
       {
         order: 3,
@@ -1424,7 +1424,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '40-90h',
         cost: 'variavel',
         duration: '4-8 semanas',
-        why: 'A transicao fica mais convincente quando voce aponta para um papel real. Infra tende a conversar bem com blue/cloud; devops e dev tendem a acelerar em appsec e security engineering.',
+        why: 'A transição fica mais convincente quando você aponta para um papel real. Infra tende a conversar bem com blue/cloud; devops e dev tendem a acelerar em appsec e security engineering.',
         topics: [
           'SIEM',
           'AppSec',
@@ -1452,13 +1452,13 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
             free: true,
           },
         ],
-        outcome: 'Narrativa mais forte para a vaga que voce realmente quer disputar',
+        outcome: 'Narrativa mais forte para a vaga que você realmente quer disputar',
         href: '/resources',
         linkLabel: 'Explorar trilhas',
       },
       {
         order: 4,
-        name: 'Validar por portfolio ou cert funcional',
+        name: 'Validar por portfólio ou cert funcional',
         acronym: 'PROVE',
         provider: 'Splunk / CompTIA / AWS',
         level: 'INTERMEDIATE',
@@ -1466,7 +1466,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '40-80h',
         cost: 'variavel',
         duration: '4-8 semanas',
-        why: 'Depois da base, vale provar aderencia ao caminho escolhido: CySA+ para blue team, AWS Security para cloud ou portfolio forte de AppSec para security engineering.',
+        why: 'Depois da base, valé provar aderencia ao caminho escolhido: CySA+ para blue team, AWS Security para cloud ou portfólio forte de AppSec para security engineering.',
         topics: [
           'Portfolio',
           'Case studies',
@@ -1488,7 +1488,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
             free: true,
           },
         ],
-        outcome: 'Transicao com prova de aderencia ao mercado, nao so com teoria',
+        outcome: 'Transicao com prova de aderencia ao mercado, não só com teoria',
       },
     ],
   },
@@ -1499,18 +1499,18 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     rgb: '6,182,212',
     stage: 'MID',
     stageLabel: 'Mid-Level',
-    audience: 'Desenvolvedores, devops e platform engineers migrando para seguranca',
+    audience: 'Desenvolvedores, devops e platform engineers migrando para segurança',
     fromRole: 'Dev / DevOps / Platform',
     toRole: 'Security Engineer / AppSec Engineer',
     team: 'hybrid',
     aliases: ['dev-to-security-engineer', 'dev-security', 'security-engineer', 'appsec', 'engineering'],
-    desc: 'Transicao para AppSec, cloud security e engenharia de seguranca sem perder o background de desenvolvimento',
+    desc: 'Transicao para AppSec, cloud security e engenharia de segurança sem perder o background de desenvolvimento',
     icon: '🔀',
-    goal: 'Usar base de software para migrar para seguranca com mais rapidez e mais aderencia a engenharia',
+    goal: 'Usar base de software para migrar para segurança com mais rapidez e mais aderencia a engenharia',
     totalHours: '240-380h',
     totalCost: '$0-$1,100',
     realityCheck:
-      'Para devs, certificacao ajuda, mas o diferencial real costuma ser secure coding, cloud, threat modeling, revisao de vulnerabilidades e portfolio tecnico.',
+      'Para devs, certificação ajuda, mas o diferencial real costuma ser secure coding, cloud, threat modeling, revisão de vulnerabilidades e portfólio técnico.',
     steps: [
       {
         order: 1,
@@ -1523,7 +1523,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '60-90h',
         cost: '$404',
         duration: '4-8 semanas',
-        why: 'Para devs, o ganho maior nao e aprender tecnologia de novo, e sim ganhar linguagem de risco, controle, IAM, arquitetura e operacoes para conversar com times de seguranca.',
+        why: 'Para devs, o ganho maior não é aprender tecnologia de novo, e sim ganhar linguagem de risco, controle, IAM, arquitetura e operações para conversar com times de segurança.',
         topics: [
           'Risk',
           'IAM',
@@ -1546,7 +1546,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           },
         ],
         outcome:
-          'Base comum para transicao e melhor leitura de vagas de security engineering',
+          'Base comum para transição e melhor leitura de vagas de security engineering',
       },
       {
         order: 2,
@@ -1558,7 +1558,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '80-140h',
         cost: 'gratis',
         duration: '6-12 semanas',
-        why: 'Devs ganham vantagem real quando entendem autenticacao, autorizacao, business logic flaws, SSRF, deserializacao e secure design na pratica.',
+        why: 'Devs ganham vantagem real quando entendem autenticação, autorizacao, business logic flaws, SSRF, deserializacao e secure design na prática.',
         topics: [
           'Burp Suite',
           'Auth flaws',
@@ -1596,7 +1596,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '100-160h',
         cost: '$300',
         duration: '6-10 semanas',
-        why: 'Muitos caminhos de security engineering hoje passam por IAM, logging, encryption, guardrails e deteccao em cloud. Em stack AWS, essa credencial encaixa muito melhor que perseguir ofensiva por moda.',
+        why: 'Muitos caminhos de security engineering hoje passam por IAM, logging, encryption, guardrails e detecção em cloud. Em stack AWS, essa credencial encaixa muito melhor que perseguir ofensiva por moda.',
         topics: [
           'IAM',
           'KMS',
@@ -1653,7 +1653,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
             free: false,
           },
         ],
-        outcome: 'Trilha mais aderente ao papel real que voce quer assumir',
+        outcome: 'Trilha mais aderente ao papel real que você quer assumir',
         href: '/resources',
         linkLabel: 'Explorar recursos',
       },
@@ -1666,18 +1666,18 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     rgb: '239,68,68',
     stage: 'MID',
     stageLabel: 'Mid-Level',
-    audience: 'Quem quer ofensiva pratica e pretende construir profundidade tecnica',
+    audience: 'Quem quer ofensiva prática e pretende construir profundidade técnica',
     fromRole: 'Base tecnica pronta para ofensiva',
     toRole: 'Pentester Junior / Mid-Level / Red Team',
     team: 'red',
     aliases: ['pentest-red-team', 'pentest', 'red', 'offensive', 'intermediate'],
-    desc: 'Trilha ofensiva pratica, sem pular etapas e sem depender de certificacao teorica como prova de habilidade',
+    desc: 'Trilha ofensiva prática, sem pular etapas e sem depender de certificação teorica como prova de habilidade',
     icon: '🎯',
     goal: 'Construir base ofensiva realista e chegar a uma credencial hands-on forte',
     totalHours: '260-460h',
     totalCost: '$200-$2,000+',
     realityCheck:
-      'No mercado ofensivo, o que pesa mesmo e prova pratica: labs, writeups, report writing, autonomia de enumeracao e algumas certs hands-on bem escolhidas.',
+      'No mercado ofensivo, o que pesa mesmo e prova pratica: labs, writeups, report writing, autonomia de enumeração e algumas certs hands-on bem escolhidas.',
     steps: [
       {
         order: 1,
@@ -1689,7 +1689,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '60-100h',
         cost: 'baixo',
         duration: '4-8 semanas',
-        why: 'Antes de qualquer certificacao ofensiva, voce precisa conseguir enumerar, entender servicos, testar web e operar Linux com autonomia.',
+        why: 'Antes de qualquer certificação ofensiva, você precisa conseguir enumerar, entender servicos, testar web e operar Linux com autonomia.',
         topics: [
           'Linux',
           'Networking',
@@ -1700,7 +1700,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         resources: [
           {
             name: 'TryHackMe Pre Security',
-            type: 'Fundacao',
+            type: 'Fundação',
             url: 'https://tryhackme.com/path/outline/presecurity',
             free: true,
           },
@@ -1712,7 +1712,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           },
         ],
         outcome:
-          'Preparacao para escolher a primeira cert ofensiva com menos atrito',
+          'Preparação para escolher a primeira cert ofensiva com menos atrito',
         href: '/resources?search=pentest',
         linkLabel: 'Ver recursos',
       },
@@ -1727,7 +1727,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '60-100h',
         cost: '~$200+',
         duration: '4-8 semanas',
-        why: 'eJPT continua sendo uma boa porta de entrada se o objetivo e validar ofensiva inicial com exame pratico em vez de multipla escolha.',
+        why: 'eJPT continua sendo uma boa porta de entrada se o objetivo e validar ofensiva inicial com exame prático em vez de multipla escolha.',
         topics: [
           'Host discovery',
           'Scanning',
@@ -1762,7 +1762,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '120-220h',
         cost: '$499+',
         duration: '8-14 semanas',
-        why: 'Aqui voce escolhe entre uma trilha pratica com bastante foco em entrega profissional e AD (PNPT) ou profundidade tecnica com o ecossistema HTB (CPTS).',
+        why: 'Aqui você escolhe entre uma trilha pratica com bastante foco em entrega profissional e AD (PNPT) ou profundidade tecnica com o ecossistema HTB (CPTS).',
         topics: [
           'Active Directory',
           'Web exploitation',
@@ -1800,7 +1800,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '250-400h',
         cost: 'bundle OffSec',
         duration: '3-6 meses',
-        why: 'OSCP faz sentido quando a pessoa ja esta decididamente na trilha ofensiva e com muita hora de lab. Antes disso, costuma ser um salto caro demais e improdutivo.',
+        why: 'OSCP faz sentido quando a pessoa já está decididamente na trilha ofensiva e com muita hora de lab. Antes disso, costuma ser um salto caro demais e improdutivo.',
         topics: [
           'Enumeration',
           'AD',
@@ -1839,14 +1839,14 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
     rgb: '245,158,11',
     stage: 'SENIOR',
     stageLabel: 'Senior-Level',
-    audience: 'Profissionais com experiencia real que precisam sinalizar amplitude, decisao e lideranca',
+    audience: 'Profissionais com experiencia real que precisam sinalizar amplitude, decisao e liderança',
     fromRole: 'Security Engineer / Lead / Consultant experiente',
     toRole: 'Security Architect / Security Manager / Leadership',
     team: 'purple',
     aliases: ['architecture-leadership', 'advanced', 'senior', 'leadership', 'architect', 'purple'],
-    desc: 'Trilha para senioridade, arquitetura, governanca e lideranca',
+    desc: 'Trilha para senioridade, arquitetura, governança e liderança',
     icon: '🏗️',
-    goal: 'Traduzir experiencia pratica em credenciais de amplitude e decisao',
+    goal: 'Traduzir experiencia prática em credenciais de amplitude e decisao',
     totalHours: '220-360h',
     totalCost: '$575-$1,500',
     realityCheck:
@@ -1862,7 +1862,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '40-60h',
         cost: 'variavel',
         duration: '3-4 semanas',
-        why: 'Antes de buscar uma cert senior, vale consolidar lacunas de arquitetura, cloud, software security e operacao para nao estudar os dominios no vacuo.',
+        why: 'Antes de buscar uma cert senior, vale consolidar lacunas de arquitetura, cloud, software security e operação para não estudar os dominios no vácuo.',
         topics: [
           'Architecture',
           'Risk',
@@ -1884,7 +1884,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
             free: true,
           },
         ],
-        outcome: 'Melhor prontidao para CISSP e arquitetura mais ampla',
+        outcome: 'Melhor prontidão para CISSP e arquitetura mais ampla',
         href: '/resources?search=cissp',
         linkLabel: 'Ver recursos',
       },
@@ -1899,7 +1899,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '180-280h',
         cost: '$749',
         duration: '8-14 semanas',
-        why: 'CISSP e excelente quando voce ja precisa sinalizar senioridade, amplitude e confianca para arquitetura, consultoria e gestao de programas.',
+        why: 'CISSP e excelente quando você ja precisa sinalizar senioridade, amplitude e confianca para arquitetura, consultoria e gestao de programas.',
         topics: [
           'Risk',
           'Architecture',
@@ -1922,7 +1922,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
           },
         ],
         outcome:
-          'Arquitetura, consultoria senior, lead security engineer e programa de seguranca',
+          'Arquitetura, consultoria senior, lead security engineer e programa de segurança',
       },
       {
         order: 3,
@@ -1935,7 +1935,7 @@ export const CAREER_PATHS: Record<string, CareerPath> = {
         hours: '120-180h',
         cost: '$575+',
         duration: '6-10 semanas',
-        why: 'CISM complementa muito bem quem ja esta liderando risco, programa, operacao ou governanca e precisa linguagem ainda mais conectada ao negocio.',
+        why: 'CISM complementa muito bem quem já está liderando risco, programa, operação ou governança e precisa linguagem ainda mais conectada ao negocio.',
         topics: [
           'Governance',
           'Risk management',

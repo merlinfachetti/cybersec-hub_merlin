@@ -219,7 +219,7 @@ function ResourcesPageInner() {
           >
             Cada card mostra quando o recurso realmente ajuda e quando ele pode
             ser usado fora de hora. Isso evita montar trilhas bonitas no papel,
-            mas ruins para a pratica.
+            mas ruins para a prática.
           </p>
         </div>
 

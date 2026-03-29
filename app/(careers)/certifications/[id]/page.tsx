@@ -95,7 +95,7 @@ function CertDetailContent({ slug }: { slug: string }) {
   const meta = LEVEL_META[cert.level] ?? LEVEL_META.ENTRY;
   const durationLabel =
     cert.examDuration >= 1440
-      ? `${Math.round(cert.examDuration / 1440)}d pratico`
+      ? `${Math.round(cert.examDuration / 1440)}d prático`
       : cert.examDuration > 0
         ? `${cert.examDuration} min`
         : 'Formato modular';
@@ -309,10 +309,10 @@ function CertDetailContent({ slug }: { slug: string }) {
               label: 'Formato de exame',
               value: cert.numberOfQuestions > 0
                 ? `${cert.numberOfQuestions} questoes`
-                : 'Exame pratico',
+                : 'Exame prático',
             },
             {
-              label: 'Duracao',
+              label: 'Duração',
               value: durationLabel,
             },
             {
