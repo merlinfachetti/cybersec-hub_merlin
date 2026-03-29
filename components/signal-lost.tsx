@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { touchSessionActivity } from '@/lib/session-activity';
 
 // ── Login canvas — same as desktop auth (blue nebula, core, rings) ─────────
-function initLoginBg(canvas: HTMLCanvasElement) {
+function initLoginBg(canvas: HTMLCanvasElement, mobile = false) {
   const ctx = canvas.getContext('2d')!;
   let W = 0, H = 0, cx = 0, cy = 0;
   type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
@@ -17,7 +17,8 @@ function initLoginBg(canvas: HTMLCanvasElement) {
   function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    cx = W / 2; cy = -H * 0.05;
+    // Desktop: original center (H*0.42). Mobile: align with scanner at screen center.
+    cx = W / 2; cy = mobile ? H * 0.50 : H * 0.42;
     stars = Array.from({ length: Math.min(Math.floor((W * H) / 2800), 320) }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.7 + 0.3,
@@ -51,19 +52,22 @@ function initLoginBg(canvas: HTMLCanvasElement) {
 
   function drawCore(t: number) {
     const p = 0.92 + 0.08 * Math.sin(t * 0.001);
-    const base = Math.min(W, H) * 0.15;
+    const base = Math.min(W, H) * (mobile ? 0.08 : 0.15);
+    // Mobile: reduced opacity so core doesn't overpower content above/below
+    const mo = mobile ? 0.55 : 1.0;
     for (const l of [
-      { r: base * 3.8 * p, c: 'rgba(100,130,255,0.04)', c2: 'rgba(70,100,255,0.01)' },
-      { r: base * 2.2 * p, c: 'rgba(140,170,255,0.09)', c2: 'rgba(100,140,255,0.03)' },
-      { r: base * 1.4 * p, c: 'rgba(195,210,255,0.20)', c2: 'rgba(155,180,255,0.08)' },
-      { r: base * 0.7 * p, c: 'rgba(230,240,255,0.38)', c2: 'rgba(200,220,255,0.14)' },
+      { r: base * 5.5 * p, c: `rgba(100,130,255,${0.05 * mo})`, c2: `rgba(70,100,255,${0.015 * mo})` },
+      { r: base * 3.2 * p, c: `rgba(140,170,255,${0.12 * mo})`, c2: `rgba(100,140,255,${0.04 * mo})` },
+      { r: base * 1.9 * p, c: `rgba(195,210,255,${0.26 * mo})`, c2: `rgba(155,180,255,${0.10 * mo})` },
+      { r: base * 0.9 * p, c: `rgba(230,240,255,${0.45 * mo})`, c2: `rgba(200,220,255,${0.18 * mo})` },
     ]) {
       const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, l.r);
       gr.addColorStop(0, l.c); gr.addColorStop(0.5, l.c2); gr.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
     }
     const gc = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.22);
-    gc.addColorStop(0, 'rgba(255,255,255,0.72)'); gc.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+    gc.addColorStop(0, mobile ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.72)');
+    gc.addColorStop(0.5, mobile ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.3)');
     gc.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = gc; ctx.fillRect(0, 0, W, H);
   }
@@ -309,7 +313,7 @@ export default function SignalLost() {
   }, [resetGate]);
 
   useEffect(() => {
-    if (canvasRef.current) return initLoginBg(canvasRef.current);
+    if (canvasRef.current) return initLoginBg(canvasRef.current, true);
   }, []);
 
   // Bloquear context menu e seleção nativa do browser no mobile
@@ -744,7 +748,7 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
   }, []);
 
   useEffect(() => {
-    if (canvasRef.current) return initLoginBg(canvasRef.current);
+    if (canvasRef.current) return initLoginBg(canvasRef.current, true);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
