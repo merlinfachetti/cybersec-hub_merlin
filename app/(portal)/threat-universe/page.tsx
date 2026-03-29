@@ -305,63 +305,16 @@ function initUniverse(
         ctx.fillRect(x - 0.8 * zoom, y - flareLen * 0.4, 1.6 * zoom, flareLen * 0.8);
       }
 
-      // ── Labels with frosted pill backdrop ─────────────────────────────
-      const fs = Math.max(9, Math.min(13, 11 * zoom));
-      const labelY = y + scaled * pulse + fs + 4;
-
-      // Only draw labels when node is legible (not too small, not filtered)
-      if (alpha > 0.15 && scaled * zoom > 4) {
-        // Measure text to size the pill
-        ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
-        const labelW = ctx.measureText(node.label).width;
-        const sublabelW = node.sublabel ? ctx.measureText(node.sublabel).width * 0.85 : 0;
-        const pillW = Math.max(labelW, sublabelW) + 14;
-        const pillH = node.sublabel ? fs * 2.4 : fs * 1.6;
-        const pillX = x - pillW / 2;
-
-        // Frosted dark pill — high contrast background
-        ctx.save();
-        ctx.globalAlpha = alpha * 0.92;
-
-        // Pill shadow for depth
-        ctx.shadowColor = tc.main;
-        ctx.shadowBlur = isSelected || isHovered ? 8 : 4;
-
-        // Pill body — deep dark with slight team color tint
-        const pillGrad = ctx.createLinearGradient(pillX, labelY - fs * 0.2, pillX, labelY + pillH);
-        pillGrad.addColorStop(0, `rgba(4, 3, 14, 0.88)`);
-        pillGrad.addColorStop(1, `rgba(6, 4, 20, 0.95)`);
-        ctx.fillStyle = pillGrad;
-        ctx.beginPath();
-        ctx.roundRect(pillX, labelY - fs * 0.85, pillW, pillH, 5);
-        ctx.fill();
-
-        // Pill border — team color
-        ctx.strokeStyle = `rgba(${
-          node.team === 'red' ? '229,62,62' :
-          node.team === 'blue' ? '59,130,246' : '139,92,246'
-        },${(isSelected || isHovered ? 0.7 : 0.35) * alpha})`;
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        ctx.shadowBlur = 0;
-
-        // Label text — bright white (not orange, which bleeds into dark bg)
-        ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillStyle = `rgba(245, 240, 255, ${alpha})`;
-        ctx.fillText(node.label, x, labelY);
-
-        if (node.sublabel) {
-          ctx.font = `500 ${fs * 0.82}px "Inter", sans-serif`;
-          ctx.fillStyle = `rgba(${
-            node.team === 'red' ? '255,110,90' :
-            node.team === 'blue' ? '100,180,255' : '180,150,255'
-          },${alpha * 0.9})`;
-          ctx.fillText(node.sublabel, x, labelY + fs * 1.3);
-        }
-
-        ctx.restore();
+      // ── Labels — original style, direct text, no pill ─────────────────
+      const fs = Math.max(9, 10 * zoom);
+      ctx.font = `800 ${fs}px "Space Grotesk", sans-serif`;
+      ctx.fillStyle = `rgba(255,140,40,${alpha * 0.95})`;
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, x, y + scaled * pulse + fs + 3);
+      if (node.sublabel) {
+        ctx.font = `500 ${fs * 0.85}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(34,197,94,${alpha * 0.75})`;
+        ctx.fillText(node.sublabel, x, y + scaled * pulse + fs * 2 + 4);
       }
     }
   }
@@ -604,6 +557,20 @@ function PortalPageInner() {
   useInactivity(30 * 60 * 1000, () => {
     window.location.href = '/api/auth/signout?reason=timeout';
   });
+
+  // TU is always dark — lock immediately on mount, restore on leave
+  // This prevents the white flash when navigating from light-mode hub
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.className;
+    // Apply dark instantly (before paint)
+    html.classList.remove('light');
+    html.classList.add('dark');
+    return () => {
+      // Restore whatever class the user had before entering TU
+      html.className = prev;
+    };
+  }, []);
 
   const modeConfig = {
     red:    { label: t('tu.attack'),  tag: t('tu.attackSub'),  color: '#e53e3e', border: 'rgba(229,62,62,0.5)',  glow: '0 0 20px rgba(229,62,62,0.4)' },
@@ -945,14 +912,8 @@ function PortalPageInner() {
                     </div>
                   </div>
 
-                  {/* Theme + Language */}
-                  <div style={{ padding: '6px 12px 4px', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 4, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 11, color: 'rgba(180,175,220,0.55)', fontFamily: '"Inter",sans-serif' }}>
-                        {locale === 'PT_BR' ? 'Tema' : 'Theme'}
-                      </span>
-                      <ThemeToggle />
-                    </div>
+                  {/* Language only — TU is always dark mode */}
+                  <div style={{ padding: '6px 12px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <span style={{ fontSize: 11, color: 'rgba(180,175,220,0.55)', fontFamily: '"Inter",sans-serif' }}>
                         {locale === 'PT_BR' ? 'Idioma' : 'Language'}

@@ -114,7 +114,139 @@ function initBg(canvas: HTMLCanvasElement) {
   return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
 }
 
-// ── Types ──────────────────────────────────────────────────────────────────
+// ── Login canvas — same as desktop auth (blue nebula, core, rings) ─────────
+function initLoginBg(canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext('2d')!;
+  let W = 0, H = 0, cx = 0, cy = 0;
+  type Star = { x: number; y: number; r: number; a: number; ts: number; to: number };
+  type Dust = { x: number; y: number; r: number; vx: number; vy: number; a: number };
+  let stars: Star[] = [];
+  let dust: Dust[] = [];
+  let animId: number;
+  let lastT = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W / 2; cy = H * 0.42;
+    stars = Array.from({ length: Math.min(Math.floor((W * H) / 2800), 320) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.3, a: Math.random() * 0.7 + 0.3,
+      ts: Math.random() * 0.02 + 0.005, to: Math.random() * Math.PI * 2,
+    }));
+    dust = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.4,
+      vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.1,
+      a: Math.random() * 0.3 + 0.1,
+    }));
+  }
+
+  function drawBg() {
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.8);
+    g.addColorStop(0, '#12132a'); g.addColorStop(0.3, '#0d0e1f');
+    g.addColorStop(0.7, '#090a14'); g.addColorStop(1, '#050508');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    for (const cl of [
+      { x: cx - W * 0.1, y: cy - H * 0.05, r: W * 0.45, c: [80, 60, 180], a: 0.09 },
+      { x: cx + W * 0.05, y: cy, r: W * 0.35, c: [40, 80, 200], a: 0.08 },
+      { x: W * 0.85, y: H * 0.15, r: W * 0.35, c: [200, 70, 50], a: 0.07 },
+      { x: W * 0.1, y: H * 0.85, r: W * 0.3, c: [190, 60, 40], a: 0.06 },
+    ] as const) {
+      const ng = ctx.createRadialGradient(cl.x, cl.y, 0, cl.x, cl.y, cl.r);
+      ng.addColorStop(0, `rgba(${cl.c.join(',')},${cl.a})`);
+      ng.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = ng; ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  function drawCore(t: number) {
+    const p = 0.92 + 0.08 * Math.sin(t * 0.001);
+    const base = Math.min(W, H) * 0.15;
+    for (const l of [
+      { r: base * 5.5 * p, c: 'rgba(100,130,255,0.05)', c2: 'rgba(70,100,255,0.015)' },
+      { r: base * 3.2 * p, c: 'rgba(140,170,255,0.12)', c2: 'rgba(100,140,255,0.04)' },
+      { r: base * 1.9 * p, c: 'rgba(195,210,255,0.26)', c2: 'rgba(155,180,255,0.10)' },
+      { r: base * 0.9 * p, c: 'rgba(230,240,255,0.45)', c2: 'rgba(200,220,255,0.18)' },
+    ]) {
+      const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, l.r);
+      gr.addColorStop(0, l.c); gr.addColorStop(0.5, l.c2); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    }
+    const gc = ctx.createRadialGradient(cx, cy, 0, cx, cy, base * 0.22);
+    gc.addColorStop(0, 'rgba(255,255,255,1)'); gc.addColorStop(0.5, 'rgba(255,255,255,0.6)');
+    gc.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gc; ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawRings(t: number) {
+    ctx.save(); ctx.translate(cx, cy);
+    for (const r of [
+      { rx: 0.28, ry: 0.10, rot: -0.15, a: 0.14 },
+      { rx: 0.38, ry: 0.14, rot: -0.10, a: 0.10 },
+      { rx: 0.50, ry: 0.18, rot: -0.05, a: 0.07 },
+      { rx: 0.65, ry: 0.24, rot:  0.00, a: 0.04 },
+    ]) {
+      const p2 = 1 + 0.012 * Math.sin(t * 0.0005 + r.rx * 10);
+      ctx.save(); ctx.rotate(r.rot);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, W * r.rx * p2, H * r.ry * p2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(170,190,230,${r.a})`; ctx.lineWidth = 1; ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function drawRays(t: number) {
+    const maxLen = Math.min(W, H) * 0.55;
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.globalCompositeOperation = 'screen';
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 + t * 0.00005;
+      const len = maxLen * (0.4 + 0.3 * Math.sin(t * 0.0008 + i * 1.5));
+      const g = ctx.createLinearGradient(0, 0, Math.cos(angle) * len, Math.sin(angle) * len);
+      g.addColorStop(0, 'rgba(200,215,255,0.07)'); g.addColorStop(1, 'rgba(200,215,255,0)');
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle - 0.014) * len, Math.sin(angle - 0.014) * len);
+      ctx.lineTo(Math.cos(angle + 0.014) * len, Math.sin(angle + 0.014) * len);
+      ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over'; ctx.restore();
+  }
+
+  function drawStars(t: number) {
+    for (const s of stars) {
+      const tw = 0.5 + 0.5 * Math.sin(t * s.ts + s.to);
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(220,225,255,${s.a * (0.6 + 0.4 * tw)})`; ctx.fill();
+    }
+  }
+
+  function drawDust(t: number) {
+    for (const p of dust) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+      if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,195,230,${p.a * (0.7 + 0.3 * Math.sin(t * 0.003 + p.x))})`; ctx.fill();
+    }
+  }
+
+  function render(t: number) {
+    if (t - lastT < 25) { animId = requestAnimationFrame(render); return; }
+    lastT = t;
+    ctx.clearRect(0, 0, W, H);
+    drawBg(); drawStars(t); drawRays(t); drawCore(t); drawRings(t); drawDust(t);
+    animId = requestAnimationFrame(render);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  animId = requestAnimationFrame(render);
+  return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
+}
+
+
 type GateState = 'idle' | 'armed' | 'dragging' | 'locked' | 'charging' | 'burst' | 'auth';
 
 const TEAMS = [
@@ -142,19 +274,19 @@ function clampCenterPosition(x: number, y: number) {
 
 // ── HiddenStar — living solar easter egg trigger ───────────────────────────
 // A distant sun pulsing with Red/Blue/Purple energy. Tap to reset the long animation.
+// ── HiddenStar — distant nebula star, organic soft pulse ──────────────────
 function HiddenStar({ onActivate }: { onActivate: () => void }) {
   return (
     <button
       type="button"
       onClick={onActivate}
       aria-label="cosmic relay"
-      title="⟳"
       style={{
         position: 'absolute',
-        top: '7%',
-        right: '5%',
-        width: 36,
-        height: 36,
+        top: '8%',
+        right: '6%',
+        width: 28,
+        height: 28,
         padding: 0,
         border: 'none',
         background: 'transparent',
@@ -165,71 +297,58 @@ function HiddenStar({ onActivate }: { onActivate: () => void }) {
         justifyContent: 'center',
       }}
     >
-      {/* Outer corona — slow tricolor rotation */}
+      {/* Outermost diffuse halo — nebula-like, very soft */}
       <span style={{
         position: 'absolute',
-        inset: -8,
+        inset: -14,
         borderRadius: '50%',
-        background: 'conic-gradient(rgba(229,62,62,0.18), rgba(59,130,246,0.18), rgba(139,92,246,0.22), rgba(229,62,62,0.18))',
-        animation: 'hs-corona-spin 8s linear infinite',
-        filter: 'blur(4px)',
+        background: 'radial-gradient(circle, rgba(200,180,255,0.08) 0%, rgba(140,100,255,0.04) 45%, transparent 70%)',
+        animation: 'hs-halo 5.2s ease-in-out infinite',
       }} />
-      {/* Mid glow ring */}
+      {/* Middle bloom — the "atmosphere" */}
+      <span style={{
+        position: 'absolute',
+        inset: -6,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(220,200,255,0.18) 0%, rgba(160,120,255,0.08) 50%, transparent 75%)',
+        animation: 'hs-bloom 3.8s ease-in-out infinite',
+        filter: 'blur(2px)',
+      }} />
+      {/* Inner warm glow */}
       <span style={{
         position: 'absolute',
         inset: -2,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(255,220,140,0.35) 0%, rgba(255,160,40,0.15) 50%, transparent 75%)',
-        animation: 'hs-pulse 2.4s ease-in-out infinite',
+        background: 'radial-gradient(circle, rgba(255,240,200,0.55) 0%, rgba(220,180,255,0.2) 55%, transparent 80%)',
+        animation: 'hs-bloom 3.8s ease-in-out 0.6s infinite',
+        filter: 'blur(1px)',
       }} />
-      {/* Star rays — 8 thin spikes */}
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
-        <span key={i} style={{
-          position: 'absolute',
-          width: i % 2 === 0 ? 22 : 14,
-          height: 1.5,
-          background: `rgba(255, ${180 + i * 8}, ${80 + i * 12}, ${0.35 - i * 0.02})`,
-          borderRadius: 1,
-          transformOrigin: 'left center',
-          transform: `rotate(${deg}deg) translateX(7px)`,
-          animation: `hs-ray-pulse 2.4s ease-in-out ${i * 0.15}s infinite`,
-          filter: 'blur(0.5px)',
-        }} />
-      ))}
-      {/* Core star — warm white with orange tint */}
+      {/* Core — tiny, white-hot center */}
       <span style={{
         position: 'relative',
         zIndex: 2,
-        width: 10,
-        height: 10,
+        width: 5,
+        height: 5,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, #fff9f0 0%, #ffd080 50%, #ff8020 100%)',
-        boxShadow: [
-          '0 0 6px rgba(255,220,140,0.9)',
-          '0 0 14px rgba(255,160,40,0.6)',
-          '0 0 28px rgba(229,62,62,0.2)',
-          '0 0 40px rgba(59,130,246,0.15)',
-        ].join(', '),
-        animation: 'hs-core-pulse 2.4s ease-in-out infinite',
+        background: 'radial-gradient(circle, #ffffff 0%, #e8d8ff 60%, rgba(200,160,255,0) 100%)',
+        boxShadow: '0 0 4px rgba(255,255,255,0.9), 0 0 10px rgba(200,180,255,0.5)',
+        animation: 'hs-core 3.8s ease-in-out infinite',
         display: 'block',
       }} />
 
       <style>{`
-        @keyframes hs-corona-spin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
+        @keyframes hs-halo {
+          0%,100% { opacity:0.4; transform:scale(1); }
+          50%      { opacity:0.8; transform:scale(1.22); }
         }
-        @keyframes hs-pulse {
-          0%, 100% { opacity: 0.6; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.18); }
+        @keyframes hs-bloom {
+          0%,100% { opacity:0.55; transform:scale(0.92); }
+          50%      { opacity:1;   transform:scale(1.12); }
         }
-        @keyframes hs-core-pulse {
-          0%, 100% { transform: scale(1);    box-shadow: 0 0 6px rgba(255,220,140,0.9), 0 0 14px rgba(255,160,40,0.6); }
-          50%       { transform: scale(1.15); box-shadow: 0 0 10px rgba(255,220,140,1), 0 0 24px rgba(255,160,40,0.8), 0 0 40px rgba(255,80,20,0.3); }
-        }
-        @keyframes hs-ray-pulse {
-          0%, 100% { opacity: 0.3; transform: rotate(var(--rot, 0deg)) translateX(7px) scaleX(1); }
-          50%       { opacity: 0.7; transform: rotate(var(--rot, 0deg)) translateX(7px) scaleX(1.3); }
+        @keyframes hs-core {
+          0%,100% { opacity:0.7; transform:scale(0.9); }
+          40%      { opacity:1;   transform:scale(1.2); box-shadow:0 0 6px rgba(255,255,255,1),0 0 16px rgba(200,180,255,0.7); }
+          60%      { opacity:0.85; transform:scale(1.05); }
         }
       `}</style>
     </button>
@@ -736,7 +855,7 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
   }, []);
 
   useEffect(() => {
-    if (canvasRef.current) return initBg(canvasRef.current);
+    if (canvasRef.current) return initLoginBg(canvasRef.current);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
