@@ -1,6 +1,7 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
+import { DeviceOrientationGuard } from '@/components/device-orientation-guard';
 import { ErrorModal } from '@/components/error-modal';
 
 // Light mode is handled entirely in app/globals.css via html.light selectors.
@@ -16,6 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       {children}
+      <DeviceOrientationGuard />
       <ErrorModal />
     </ThemeProvider>
   );

@@ -109,6 +109,13 @@ canvas,[style*="animation"],.secure-dot {
 .light h1, .light h2 { color: var(--ds-title-hero) !important; }
 .light h3, .light h4 { color: var(--ds-title-section) !important; }
 
+.light [data-page='auth'] h1,
+.light [data-page='auth'] h2,
+.light [data-auth-brand],
+.light [data-auth-title] {
+  color: #f0eeff !important;
+}
+
 /* MonoLabel pattern: small uppercase tracking mono text */
 .ds-mono-label {
   font-family: "JetBrains Mono", monospace;

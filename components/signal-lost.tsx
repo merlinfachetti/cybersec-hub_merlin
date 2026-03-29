@@ -541,7 +541,7 @@ export default function SignalLost() {
             </div>
           </div>
 
-          <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBERSEC HUB</span>
+          <span data-auth-brand style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', color: '#ffffff', marginTop: 4 }}>CYBERSEC HUB</span>
           <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: '#6a6a8a', letterSpacing: '.1em' }}>signal &gt; noise</span>
 
           {/* Hold hint */}
@@ -746,14 +746,14 @@ function AuthReveal({ onReset }: { onReset: () => void }) {
               filter: 'drop-shadow(0 0 14px rgba(255,120,20,0.9)) drop-shadow(0 0 28px rgba(255,80,0,0.5))',
             }} />
           </div>
-          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, letterSpacing: '.14em', color: '#f0eeff' }}>CYBERSEC HUB</div>
+          <div data-auth-brand style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 15, letterSpacing: '.14em', color: '#f0eeff' }}>CYBERSEC HUB</div>
           <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.7)', letterSpacing: '.1em', marginTop: 4 }}>● SECURE CHANNEL ESTABLISHED</div>
         </div>
 
         {/* Auth card */}
         <div style={{ background: 'rgba(10,6,30,0.8)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 16, padding: '24px 20px', backdropFilter: 'blur(20px)', boxShadow: '0 0 0 1px rgba(139,92,246,0.08), 0 24px 64px rgba(0,0,0,0.6)' }}>
 
-          <div style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16, letterSpacing: '.12em', color: '#f0eeff', textAlign: 'center', marginBottom: 4 }}>IDENTIFY</div>
+          <div data-auth-title style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 16, letterSpacing: '.12em', color: '#f0eeff', textAlign: 'center', marginBottom: 4 }}>IDENTIFY</div>
           <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(139,92,246,0.5)', textAlign: 'center', letterSpacing: '.08em', marginBottom: 20 }}>admin mobile node · authenticate to proceed</div>
 
           {error && (

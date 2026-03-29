@@ -305,7 +305,8 @@ export default function LoginClient() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'center' }}>
               <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700,
-                fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff', lineHeight: 1 }}>
+                fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff', lineHeight: 1 }}
+                data-auth-brand>
                 CYBERSEC HUB
               </span>
               <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9,
@@ -332,7 +333,7 @@ export default function LoginClient() {
         <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100vh', padding: '50px 24px 56px' }}>
           <div className="cp-glass cp-animate-in" style={{ width: '100%', maxWidth: 380, padding: '22px 28px 18px', display: 'flex', flexDirection: 'column' }}>
 
-            <h1 style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 20, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', textAlign: 'center', color: '#ffffff', marginBottom: 16, textShadow: '0 0 20px rgba(200,210,255,0.15)' }}>
+            <h1 data-auth-title style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 20, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', textAlign: 'center', color: '#ffffff', marginBottom: 16, textShadow: '0 0 20px rgba(200,210,255,0.15)' }}>
               IDENTIFY
             </h1>
 

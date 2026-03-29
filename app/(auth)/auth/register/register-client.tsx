@@ -179,7 +179,7 @@ export default function RegisterClient() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <img src="/logo.png" alt="CYBERSEC HUB" style={{ width: 36, height: 36, objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(139,92,246,0.7))' }} />
             <div>
-              <div style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff' }}>CYBERSEC HUB</div>
+              <div data-auth-brand style={{ fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.16em', color: '#f0eeff' }}>CYBERSEC HUB</div>
               <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em' }}>signal &gt; noise</div>
             </div>
           </div>
