@@ -2,7 +2,23 @@ import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
 import './globals.css';
 
+function resolveMetadataBase(): URL {
+  const publicUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+
+  if (publicUrl) {
+    return new URL(publicUrl);
+  }
+
+  if (vercelUrl) {
+    return new URL(`https://${vercelUrl}`);
+  }
+
+  return new URL('http://localhost:3000');
+}
+
 export const metadata: Metadata = {
+  metadataBase: resolveMetadataBase(),
   title: {
     default: 'CYBERSEC HUB',
     template: '%s | CYBERSEC HUB',
@@ -23,6 +39,12 @@ export const metadata: Metadata = {
     title: 'CYBERSEC HUB',
     description: 'Threat Intelligence & Cybersecurity Learning Platform',
     images: [{ url: '/logo-512.png', width: 512, height: 512 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CYBERSEC HUB',
+    description: 'Threat Intelligence & Cybersecurity Learning Platform',
+    images: ['/logo-512.png'],
   },
 };
 

@@ -37,6 +37,8 @@ DATABASE_URL="postgresql://..."
 NEXT_PUBLIC_APP_URL="https://seu-dominio.vercel.app"
 ```
 
+`NEXT_PUBLIC_APP_URL` deve apontar para o domínio canônico de produção. O layout usa esse valor para `metadataBase`, Open Graph e Twitter cards.
+
 4. Configure Build Settings:
    - Framework: Next.js
    - Node.js Version: `22.x`
