@@ -7,6 +7,8 @@ import { MerlinModal } from '@/components/merlin-modal';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { LocaleToggle } from '@/components/locale-toggle';
+import { useI18n } from '@/lib/i18n';
 import SignalLost from '@/components/signal-lost';
 
 // ── Node data (matching mock exactly) ─────────────────────────────────────
@@ -292,7 +294,12 @@ function initUniverse(
     return null;
   }
 
+  let lastT = 0;
+
   function render(t: number) {
+    // Throttle to ~40fps — canvas doesn't need 60fps, saves CPU/battery
+    if (t - lastT < 24) { animId = requestAnimationFrame(render); return; }
+    lastT = t;
     ctx.clearRect(0, 0, W, H);
     drawBg(); drawStars(t); drawOrbits(); drawCenter(t); drawNodes(t);
     animId = requestAnimationFrame(render);
@@ -357,6 +364,7 @@ interface UserProfile {
 
 function PortalPageInner() {
   const router = useRouter();
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const universeRef = useRef<ReturnType<typeof initUniverse> | null>(null);
 
@@ -498,9 +506,9 @@ function PortalPageInner() {
   });
 
   const modeConfig = {
-    red:    { label: 'ATTACK',  tag: 'RED TEAM',    color: '#e53e3e', border: 'rgba(229,62,62,0.5)',    glow: '0 0 20px rgba(229,62,62,0.4)' },
-    blue:   { label: 'DEFEND',  tag: 'BLUE TEAM',   color: '#3b82f6', border: 'rgba(59,130,246,0.5)',   glow: '0 0 20px rgba(59,130,246,0.4)' },
-    purple: { label: 'IMPROVE', tag: 'PURPLE TEAM', color: '#8b5cf6', border: 'rgba(139,92,246,0.5)',   glow: '0 0 20px rgba(139,92,246,0.4)' },
+    red:    { label: t('tu.attack'),  tag: t('tu.attackSub'),  color: '#e53e3e', border: 'rgba(229,62,62,0.5)',  glow: '0 0 20px rgba(229,62,62,0.4)' },
+    blue:   { label: t('tu.defend'),  tag: t('tu.defendSub'),  color: '#3b82f6', border: 'rgba(59,130,246,0.5)', glow: '0 0 20px rgba(59,130,246,0.4)' },
+    purple: { label: t('tu.improve'), tag: t('tu.improveSub'), color: '#8b5cf6', border: 'rgba(139,92,246,0.5)', glow: '0 0 20px rgba(139,92,246,0.4)' },
   };
 
   // Panel colors follow ACTIVE MODE (not node team)
@@ -579,7 +587,7 @@ function PortalPageInner() {
           {/* ── Center: Title + Study Status ── */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
             <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
-              Threat Universe
+              {t('tu.title')}
             </span>
             {/* Study status tag — hover tooltip + clicável */}
             {/* Wrapper position:relative + largura explícita para tooltip se posicionar corretamente */}
@@ -600,7 +608,7 @@ function PortalPageInner() {
                 >
                   <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 5px #22c55e', flexShrink: 0 }} />
                   <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(34,197,94,0.9)', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
-                    2h Study · RISK: LOW
+                    {t('tu.today')} 2h {t('tu.study')} · {t('tu.risk')} {t('tu.low')}
                   </span>
                   <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 8, color: 'rgba(34,197,94,0.5)' }}>→</span>
                 </div>
@@ -629,13 +637,13 @@ function PortalPageInner() {
                   <div style={{ position: 'absolute', top: -5, left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 8, height: 8, background: 'rgba(8,6,20,0.97)', border: '1px solid rgba(34,197,94,0.25)', borderBottom: 'none', borderRight: 'none' }} />
 
                   <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.8)', letterSpacing: '0.1em', marginBottom: 8 }}>
-                    STATUS DO DIA
+                    {t('tu.today').toUpperCase().replace(':', '')} STATUS
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {/* Horas de estudo */}
+                    {/* Study hours */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>Estudo hoje</span>
+                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>{t('tu.study')}</span>
                       <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#f59e0b', fontWeight: 600 }}>2h / 2h</span>
                     </div>
                     {/* Progress bar */}
@@ -643,10 +651,10 @@ function PortalPageInner() {
                       <div style={{ height: '100%', width: '100%', background: 'linear-gradient(90deg, #22c55e, #4ade80)', borderRadius: 2 }} />
                     </div>
 
-                    {/* Risco */}
+                    {/* Risk */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>Nível de risco</span>
-                      <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', padding: '1px 7px', borderRadius: 4 }}>LOW</span>
+                      <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'rgba(180,175,220,0.6)' }}>{t('tu.risk').replace(':', '')}</span>
+                      <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', padding: '1px 7px', borderRadius: 4 }}>{t('tu.low').toUpperCase()}</span>
                     </div>
 
                     {/* Contexto do risco */}
@@ -660,7 +668,7 @@ function PortalPageInner() {
                       <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.8)', marginTop: 2, cursor: 'pointer', transition: 'color 150ms' }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,160,60,1)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,140,40,0.8)'; }}>
-                        → ver trilha de estudos
+                        → {t('teams.viewRoadmap')}
                       </div>
                     </Link>
                   </div>
@@ -670,8 +678,9 @@ function PortalPageInner() {
             </div>
           </div>
 
-          {/* ── Right: Search + User ── */}
+          {/* ── Right: Search + LocaleToggle + User ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '0 0 auto' }}>
+            <LocaleToggle variant="nav" />
 
 
 
@@ -923,6 +932,7 @@ function PortalPageInner() {
             </div>
           </Link>
           <ThemeToggle />
+          <LocaleToggle />
         </div>
 
         {/* Mode selector */}
@@ -930,7 +940,7 @@ function PortalPageInner() {
           {(['red','blue','purple'] as TeamColor[]).map(m => {
             const clr = m === 'red' ? '#e53e3e' : m === 'blue' ? '#3b82f6' : '#8b5cf6';
             const rgb = m === 'red' ? '229,62,62' : m === 'blue' ? '59,130,246' : '139,92,246';
-            const lbl = m === 'red' ? 'ATTACK' : m === 'blue' ? 'DEFEND' : 'IMPROVE';
+            const lbl = m === 'red' ? t('tu.attack') : m === 'blue' ? t('tu.defend') : t('tu.improve');
             const isCurrent = activeMode === m;
             return (
               <button key={m} onClick={() => setActiveMode(m)} style={{

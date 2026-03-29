@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MerlinModal } from '@/components/merlin-modal';
 import Link from 'next/link';
 import { ChevronUp } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 const FOOTER_LINKS = {
   Careers: [
@@ -98,6 +99,7 @@ export function SiteFooter() {
   const router = useRouter();
   const [showMerlin, setShowMerlin] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
@@ -107,6 +109,21 @@ export function SiteFooter() {
   }, []);
 
   const canSeeDocs = userRole === 'ADMIN' || userRole === 'DEV';
+
+  const FOOTER_LINKS_I18N = {
+    [t('footer.careers')]: [
+      { label: t('footer.certifications'), href: '/certifications' },
+      { label: t('footer.roadmap'),        href: '/roadmap' },
+      { label: t('footer.resources'),      href: '/resources' },
+      { label: t('footer.market'),         href: '/market' },
+    ],
+    [t('footer.portal')]: [
+      { label: t('nav.threatUniverse'), href: '/threat-universe' },
+      { label: t('footer.home'),        href: '/home' },
+      { label: t('nav.profile'),        href: '/profile' },
+    ],
+    ...(canSeeDocs ? { [t('footer.docs')]: [{ label: t('footer.apiRef'), href: '/docs/api' }] } : {}),
+  };
 
   return (
     <footer style={{ background: 'var(--ds-surface-strong)', borderTop: '1px solid var(--p-border)', marginTop: 'auto' }}>
@@ -120,7 +137,7 @@ export function SiteFooter() {
       >
         <ChevronUp size={14} style={{ color: 'rgba(255,140,40,0.7)', transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 300ms ease' }} />
         <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 9, color: 'rgba(255,140,40,0.5)', letterSpacing: '0.1em' }}>
-          {expanded ? 'RECOLHER' : 'EXPANDIR'}
+          {expanded ? (locale === 'PT_BR' ? 'RECOLHER' : 'COLLAPSE') : (locale === 'PT_BR' ? 'EXPANDIR' : 'EXPAND')}
         </span>
         <ChevronUp size={14} style={{ color: 'rgba(255,140,40,0.7)', transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 300ms ease' }} />
       </button>
@@ -142,8 +159,7 @@ export function SiteFooter() {
               </div>
               {/* Texto em 2 linhas */}
               <p style={{ fontSize: 12, color: 'var(--ds-body-dim)', lineHeight: 1.65, marginBottom: 14, maxWidth: 260 }}>
-                Plataforma de aprendizado em CyberSecurity<br />
-                <span style={{ color: 'rgba(139,92,246,0.7)' }}>→</span> Red, Blue e Purple Team.
+                {t('footer.tagline')}
               </p>
               {/* Team badges — interativos */}
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -151,9 +167,9 @@ export function SiteFooter() {
               </div>
             </div>
 
-            {/* Link groups — ao lado do brand no desktop */}
+            {/* Link groups */}
             <div className="footer-links-row" style={{ display: 'flex', gap: 32, flexWrap: 'nowrap', flex: 1 }}>
-              {Object.entries(FOOTER_LINKS).map(([group, links]) => (
+              {Object.entries(FOOTER_LINKS_I18N).map(([group, links]) => (
                 <FooterGroup key={group} title={group} links={links} />
               ))}
             </div>
@@ -167,7 +183,7 @@ export function SiteFooter() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <img src="/merlin.jpg" alt="Alden Merlin" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(139,92,246,0.3)', flexShrink: 0 }} />
           <span style={{ fontFamily: '"Inter", sans-serif', fontSize: 11, color: 'var(--ds-mono-dim)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Desenvolvido por{' '}
+            {locale === 'PT_BR' ? 'Desenvolvido por' : 'Built by'}{' '}
             <button onClick={() => router.push('/threat-universe?youarehere=1')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--ds-body-muted)', fontWeight: 500, fontSize: 11, fontFamily: 'inherit', textDecoration: 'underline dotted', textUnderlineOffset: 3, transition: 'color 150ms' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#a78bfa'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--ds-body-muted)'; }}>

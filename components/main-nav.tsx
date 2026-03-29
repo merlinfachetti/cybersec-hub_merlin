@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { GlobalSearch } from '@/components/global-search';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { LocaleToggle } from '@/components/locale-toggle';
 
 interface NavUser { name: string | null; email: string; role: string; }
 
@@ -279,6 +280,7 @@ export function MainNav() {
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-2">
               <GlobalSearch />
+              <LocaleToggle />
               <ThemeToggle />
               <ThreatUniverseBtn />
               <UserAvatar user={user} onLogout={handleLogout} />
@@ -308,6 +310,10 @@ export function MainNav() {
                   <DropdownMenuItem onSelect={e => e.preventDefault()} className="flex items-center justify-between cursor-default">
                     <span className="text-sm text-muted-foreground">Tema</span>
                     <ThemeToggle />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={e => e.preventDefault()} className="flex items-center justify-between cursor-default">
+                    <span className="text-sm text-muted-foreground">Idioma</span>
+                    <LocaleToggle />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

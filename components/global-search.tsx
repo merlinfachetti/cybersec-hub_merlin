@@ -58,12 +58,12 @@ const CERT_INDEX: SearchItem[] = CERTIFICATIONS.map((cert) => ({
   provider: cert.provider,
   desc: cert.marketSignal,
   meta: [
-    { label: 'Formato', value: cert.numberOfQuestions > 0 ? `${cert.numberOfQuestions} questoes` : 'Exame pratico' },
-    { label: 'Duracao', value: cert.examDuration > 0 ? `${cert.examDuration} min` : 'Modular' },
+    { label: 'Formato', value: cert.numberOfQuestions > 0 ? `${cert.numberOfQuestions} questões` : 'Exame prático' },
+    { label: 'Duração', value: cert.examDuration > 0 ? `${cert.examDuration} min` : 'Modular' },
     { label: 'Validade', value: cert.validityLabel },
   ],
   actions: [
-    { label: 'Ver certificacao', href: `/certifications/${cert.slug}`, primary: true },
+    { label: 'Ver certificação', href: `/certifications/${cert.slug}`, primary: true },
     { label: 'Abrir recursos', href: `/resources?search=${encodeURIComponent(cert.acronym)}` },
   ],
 }));

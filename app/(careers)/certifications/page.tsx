@@ -43,7 +43,7 @@ const LEVEL_META: Record<
     color: '#3b82f6',
     bg: 'rgba(59,130,246,0.1)',
     label: 'Intermediate',
-    desc: 'Especializacao funcional',
+    desc: 'Especialização funcional',
   },
   ADVANCED: {
     color: '#f59e0b',
@@ -424,7 +424,7 @@ function CertificationsPageInner() {
               lineHeight: 1.65,
             }}
           >
-            Em vez de tratar toda certificacao como igual, este catalogo mostra
+            Em vez de tratar toda certificação como igual, este catálogo mostra
             para quem cada uma faz sentido, onde ela ajuda no mercado e onde ela
             costuma ser superestimada. Revisado em {CONTENT_LAST_REVIEWED}.
           </p>

@@ -152,7 +152,7 @@ function RoadmapPageContent() {
             }}
           >
             Trilhas revisadas para refletir mais a carreira real do que uma
-            simples escada de certificacoes. Conteudo editorial revisado em{' '}
+            simples escada de certificações. Conteúdo editorial revisado em{' '}
             {CONTENT_LAST_REVIEWED}.
           </p>
         </div>
@@ -276,10 +276,10 @@ function RoadmapPageContent() {
               lineHeight: 1.65,
             }}
           >
-            Os caminhos abaixo misturam certificacao, pratica e especializacao
-            por funcao. Quando uma etapa nao e um exame, ela aparece de
-            proposito: em CyberSec, varios papeis dependem mais de portfolio,
-            laboratorios e contexto operacional do que de acumular prova.
+            Os caminhos abaixo misturam certificação, prática e especialização
+            por função. Quando uma etapa não é um exame, ela aparece de
+            propósito: em CyberSec, vários papéis dependem mais de portfólio,
+            laboratórios e contexto operacional do que de acumular prova.
           </p>
         </div>
 

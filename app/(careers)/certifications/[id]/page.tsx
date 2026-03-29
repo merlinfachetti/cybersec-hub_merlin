@@ -71,7 +71,7 @@ function CertDetailContent({ slug }: { slug: string }) {
               color: '#f0eeff',
             }}
           >
-            Certificacao nao encontrada
+            Certificação não encontrada
           </h2>
           <p style={{ color: 'rgba(155,176,198,0.5)', marginBottom: 20 }}>
             Slug: {slug}

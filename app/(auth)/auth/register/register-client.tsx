@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { touchSessionActivity } from '@/lib/session-activity';
+import { LocaleToggle } from '@/components/locale-toggle';
+import { useI18n } from '@/lib/i18n';
 
 // ── Career paths ──────────────────────────────────────────────────────────
 const PATHS = [
@@ -79,6 +81,7 @@ function Field({ label, placeholder, type = 'text', value, onChange, hint }: { l
 
 // ── Main component ────────────────────────────────────────────────────────
 export default function RegisterClient() {
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [step, setStep] = useState<Step>('identity');
   const stepIndex = (['identity', 'career', 'bio', 'credentials'] as Step[]).indexOf(step);
@@ -183,9 +186,12 @@ export default function RegisterClient() {
               <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, color: 'rgba(139,92,246,0.6)', letterSpacing: '0.12em' }}>signal &gt; noise</div>
             </div>
           </div>
-          <Link href="/auth/login" style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 10, color: 'rgba(155,176,198,0.5)', textDecoration: 'none', letterSpacing: '0.08em' }}>
-            ← Já tenho conta
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <LocaleToggle variant="auth" />
+            <Link href="/auth/login" style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 10, color: 'rgba(155,176,198,0.5)', textDecoration: 'none', letterSpacing: '0.08em' }}>
+              ← {t('register.haveAccount').replace('?', '')}
+            </Link>
+          </div>
         </header>
 
         {/* Main */}
@@ -286,13 +292,13 @@ export default function RegisterClient() {
               )}
               <button onClick={next} disabled={loading}
                 style={{ flex: 1, padding: '10px 16px', borderRadius: 8, background: 'linear-gradient(135deg, rgba(139,92,246,0.6), rgba(59,130,246,0.4))', border: '1px solid rgba(139,92,246,0.4)', cursor: loading ? 'default' : 'pointer', color: '#fff', fontSize: 13, fontFamily: '"Space Grotesk",sans-serif', fontWeight: 700, letterSpacing: '0.12em', opacity: loading ? 0.7 : 1, transition: 'all 150ms' }}>
-                {loading ? 'CRIANDO...' : step === 'credentials' ? 'CRIAR CONTA' : 'CONTINUAR →'}
+                {loading ? t('register.submitting') : step === 'credentials' ? t('register.submit') : `${t('generic.next')} →`}
               </button>
             </div>
 
             <p style={{ textAlign: 'center', fontFamily: '"JetBrains Mono",monospace', fontSize: 10, color: 'rgba(155,176,198,0.35)', marginTop: 14, letterSpacing: '0.04em' }}>
-              Já tem conta?{' '}
-              <Link href="/auth/login" style={{ color: 'rgba(139,92,246,0.7)', textDecoration: 'none' }}>Entrar</Link>
+              {t('register.haveAccount')}{' '}
+              <Link href="/auth/login" style={{ color: 'rgba(139,92,246,0.7)', textDecoration: 'none' }}>{t('register.signIn')}</Link>
             </p>
           </div>
         </main>

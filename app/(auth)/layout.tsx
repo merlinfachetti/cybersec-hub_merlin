@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '../globals.css';
+import { I18nProvider } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'CYBERSEC HUB — Identify',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <I18nProvider>
       {/* Fonts preloaded in <head> — reliable across full page navigations */}
       <link
         rel="preconnect"
@@ -30,6 +31,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       />
       <div data-page="auth">{children}</div>
-    </>
+    </I18nProvider>
   );
 }

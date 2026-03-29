@@ -76,7 +76,7 @@ export default function MarketPage() {
           <div style={{ ...S.mono, fontSize: 10, color: 'var(--ds-purple)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / MARKET ANALYSIS</div>
           <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 6 }}>Market Analysis</h1>
           <p style={{ fontSize: 13, color: 'var(--ds-body-dim)', maxWidth: 520 }}>
-            Indicadores de mercado para cybersecurity revisados editorialmente — salarios, demanda por certificacao e oportunidades por regiao.
+            Indicadores de mercado para cybersecurity revisados editorialmente — salários, demanda por certificação e oportunidades por região.
             <span style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', marginLeft: 8 }}>
               Revisado em {CONTENT_LAST_REVIEWED} · Fontes-base: (ISC)2 Workforce Study, CompTIA Research, CyberSeek, BLS OOH e LinkedIn Jobs
             </span>

@@ -162,7 +162,7 @@ function ResourcesPageInner() {
             >
               De <strong>{recommendedPath.fromRole}</strong> para{' '}
               <strong>{recommendedPath.toRole}</strong>. Os recursos abaixo fazem
-              mais sentido quando ajudam a cumprir essa migracao.
+              mais sentido quando ajudam a cumprir essa migração.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {recommendedPath.steps.slice(0, 4).map((step) => (
