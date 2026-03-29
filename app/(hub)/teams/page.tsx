@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import Link from 'next/link';
 import { Shield, Sword, Zap, ChevronRight, Target, Eye, Wrench, BookOpen } from 'lucide-react';
@@ -98,6 +99,7 @@ const TEAMS = [
 ];
 
 export default function TeamsPage() {
+  const { locale } = useI18n();
   const S = {
     mono: { fontFamily: '"JetBrains Mono", monospace' as const },
     grotesk: { fontFamily: '"Space Grotesk", sans-serif' as const },
@@ -179,7 +181,7 @@ export default function TeamsPage() {
                   el.style.background = `rgba(${team.rgb},0.1)`;
                   el.style.borderColor = `rgba(${team.rgb},0.3)`;
                 }}>
-                  <BookOpen size={13} /> Ver Roadmap <ChevronRight size={12} />
+                  <BookOpen size={13} /> {locale === 'PT_BR' ? 'Ver Roadmap' : 'View Roadmap'} <ChevronRight size={12} />
                 </Link>
               </div>
 
@@ -196,7 +198,7 @@ export default function TeamsPage() {
                 <div style={{ background: `rgba(${team.rgb},0.05)`, border: `1px solid rgba(${team.rgb},0.12)`, borderRadius: 10, padding: '16px 18px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                     <Target size={13} style={{ color: team.color }} />
-                    <span style={{ ...S.mono, fontSize: 9, color: team.color, letterSpacing: '0.1em' }}>FAZ</span>
+                    <span style={{ ...S.mono, fontSize: 9, color: team.color, letterSpacing: '0.1em' }}>{locale === 'PT_BR' ? 'FAZ' : 'DOES'}</span>
                   </div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 7 }}>
                     {team.does.map(d => (
@@ -212,7 +214,7 @@ export default function TeamsPage() {
                 <div style={{ background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.12)', borderRadius: 10, padding: '16px 18px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                     <Eye size={13} style={{ color: '#f59e0b' }} />
-                    <span style={{ ...S.mono, fontSize: 9, color: '#f59e0b', letterSpacing: '0.1em' }}>NÃO FAZ</span>
+                    <span style={{ ...S.mono, fontSize: 9, color: '#f59e0b', letterSpacing: '0.1em' }}>{locale === 'PT_BR' ? 'NÃO FAZ' : 'DOES NOT'}</span>
                   </div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 7 }}>
                     {team.doesNot.map(d => (

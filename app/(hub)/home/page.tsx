@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useInactivity } from '@/lib/use-inactivity';
+import { useI18n } from '@/lib/i18n';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
   Shield, Map, BookOpen, TrendingUp,
-  FileText, User, Zap, ChevronRight,
+  FileText, User, Users, Zap, ChevronRight,
   Radio
 } from 'lucide-react';
 
@@ -20,75 +21,6 @@ function supportsHoverInteractions() {
   return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 }
 
-const NAV_SECTIONS = [
-  {
-    id: 'universe',
-    label: 'Threat Universe',
-    sublabel: 'Portal Galático',
-    description: 'Navegar no universo de ameaças, labs e missões em modo Red/Blue/Purple.',
-    href: '/threat-universe',
-    icon: <Radio size={22} />,
-    color: '#8b5cf6',
-    rgb: '139,92,246',
-    badge: 'PORTAL',
-    featured: true,
-  },
-  {
-    id: 'certifications',
-    label: 'Certificações',
-    sublabel: 'Careers',
-    description: 'Browse certificações de cybersecurity: SEC+, CEH, CISSP, OSCP e muito mais.',
-    href: '/certifications',
-    icon: <Shield size={20} />,
-    color: '#3b82f6',
-    rgb: '59,130,246',
-    badge: 'CAREERS',
-  },
-  {
-    id: 'roadmap',
-    label: 'Roadmap',
-    sublabel: 'Careers',
-    description: 'Plano de carreira personalizado do seu perfil atual para Security Engineer.',
-    href: '/roadmap',
-    icon: <Map size={20} />,
-    color: 'var(--ds-ok)',
-    rgb: '34,197,94',
-    badge: 'CAREERS',
-  },
-  {
-    id: 'resources',
-    label: 'Recursos',
-    sublabel: 'Careers',
-    description: 'Cursos, labs, livros e materiais de estudo para cada certificação.',
-    href: '/resources',
-    icon: <BookOpen size={20} />,
-    color: 'var(--ds-warn)',
-    rgb: '245,158,11',
-    badge: 'CAREERS',
-  },
-  {
-    id: 'market',
-    label: 'Mercado',
-    sublabel: 'Careers',
-    description: 'Demanda de mercado, salários e tendências para profissionais de cybersecurity.',
-    href: '/market',
-    icon: <TrendingUp size={20} />,
-    color: '#06b6d4',
-    rgb: '6,182,212',
-    badge: 'CAREERS',
-  },
-  {
-    id: 'profile',
-    label: 'Perfil',
-    sublabel: 'Hub',
-    description: 'Seu progresso, certificações em andamento e plano de estudo.',
-    href: '/profile',
-    icon: <User size={20} />,
-    color: '#e53e3e',
-    rgb: '229,62,62',
-    badge: 'HUB',
-  },
-];
 
 
 // ── NavCard — componente isolado para usar useState (Rules of Hooks) ──────────
@@ -189,16 +121,87 @@ function NavCard({ section }: { section: {
 
 export default function HomePage() {
   const [user, setUser] = useState<UserSession | null>(null);
+  const { t, locale } = useI18n();
+
+  const NAV_SECTIONS = [
+    {
+      id: 'universe',
+      label: t('home.portal'),
+      sublabel: t('home.portal.sub'),
+      description: t('home.portal.desc'),
+      href: '/threat-universe',
+      icon: <Radio size={22} />,
+      color: '#8b5cf6', rgb: '139,92,246', badge: 'PORTAL', featured: true,
+    },
+    {
+      id: 'certifications',
+      label: t('home.certs'),
+      sublabel: 'Careers',
+      description: t('home.certs.desc'),
+      href: '/certifications',
+      icon: <Shield size={20} />,
+      color: '#3b82f6', rgb: '59,130,246', badge: 'CAREERS',
+    },
+    {
+      id: 'roadmap',
+      label: t('home.roadmap'),
+      sublabel: 'Careers',
+      description: t('home.roadmap.desc'),
+      href: '/roadmap',
+      icon: <Map size={20} />,
+      color: 'var(--ds-ok)', rgb: '34,197,94', badge: 'CAREERS',
+    },
+    {
+      id: 'resources',
+      label: t('home.resources'),
+      sublabel: 'Careers',
+      description: t('home.resources.desc'),
+      href: '/resources',
+      icon: <BookOpen size={20} />,
+      color: 'var(--ds-warn)', rgb: '245,158,11', badge: 'CAREERS',
+    },
+    {
+      id: 'market',
+      label: t('home.market'),
+      sublabel: 'Careers',
+      description: t('home.market.desc'),
+      href: '/market',
+      icon: <TrendingUp size={20} />,
+      color: '#06b6d4', rgb: '6,182,212', badge: 'CAREERS',
+    },
+    {
+      id: 'teams',
+      label: t('home.teams'),
+      sublabel: 'Hub',
+      description: t('home.teams.desc'),
+      href: '/teams',
+      icon: <Users size={20} />,
+      color: '#e53e3e', rgb: '229,62,62', badge: 'HUB',
+    },
+    {
+      id: 'profile',
+      label: t('nav.profile'),
+      sublabel: 'Hub',
+      description: t('home.roadmap.desc'),
+      href: '/profile',
+      icon: <User size={20} />,
+      color: '#22c55e', rgb: '34,197,94', badge: 'HUB',
+    },
+  ];
   const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
     const h = new Date().getHours();
-    setGreeting(h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite');
+    if (locale === 'PT_BR') {
+      setGreeting(h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite');
+    } else {
+      setGreeting(h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening');
+    }
     fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(d => d?.user && setUser(d.user))
       .catch(() => null);
-  }, []);
+  }, [locale]);
 
   const featured = NAV_SECTIONS.find(s => s.featured);
   const rest = NAV_SECTIONS.filter(s => !s.featured);
@@ -223,7 +226,7 @@ export default function HomePage() {
             {greeting}{user?.name ? `, ${user.name}` : ''}.
           </h1>
           <p style={{ fontSize: 14, color: 'var(--ds-body-muted)', maxWidth: 480 }}>
-            Escolha onde quer ir. O universo está aguardando.
+            {locale === 'PT_BR' ? 'Escolha onde quer ir. O universo está aguardando.' : 'Choose your path. The universe is waiting.'}
           </p>
         </div>
 

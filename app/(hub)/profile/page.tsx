@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -40,6 +41,7 @@ const STUDY_PLAN = [
 ];
 
 export default function ProfilePage() {
+  const { locale } = useI18n();
   const [user, setUser] = useState<UserSession | null>(null);
   const [tasks, setTasks] = useState(STUDY_PLAN);
   const [activeSection, setActiveSection] = useState<'overview' | 'plan' | 'certs' | 'posture'>('overview');
@@ -76,7 +78,7 @@ export default function ProfilePage() {
   const SECTIONS = [
     { id: 'overview', label: 'Overview' },
     { id: 'plan', label: 'Plano de Estudo' },
-    { id: 'certs', label: 'Certificações' },
+    { id: 'certs', label: locale === 'PT_BR' ? 'Certificações' : 'Certifications' },
     { id: 'posture', label: 'Postura' },
   ];
 
@@ -108,7 +110,7 @@ export default function ProfilePage() {
               </div>
             )}
             <div style={{ ...S.mono, fontSize: 9, color: 'rgba(34,197,94,0.6)', letterSpacing: '0.1em', marginTop: 6 }}>
-              ● SESSÃO ATIVA · {careerPath?.toRole ?? 'Objetivo ainda não definido'}
+              ● SESSÃO ATIVA · {careerPath?.toRole ?? locale === 'PT_BR' ? 'Objetivo ainda não definido' : 'Goal not set yet'}
             </div>
           </div>
         </div>
@@ -210,7 +212,7 @@ export default function ProfilePage() {
               <div style={{ ...S.card, padding: '16px' }}>
                 <div style={{ ...S.mono, fontSize: 9, color: 'rgba(139,92,246,0.5)', letterSpacing: '0.12em', marginBottom: 12 }}>ACESSO RÁPIDO</div>
                 {[
-                  { href: '/certifications', label: 'Browse Certificações', icon: <Award size={12} /> },
+                  { href: '/certifications', label: locale === 'PT_BR' ? 'Browse Certificações' : 'Browse Certifications', icon: <Award size={12} /> },
                   { href: `/roadmap?path=${careerPath?.id ?? 'it-to-cyber-transition'}`, label: 'Ver Roadmap', icon: <TrendingUp size={12} /> },
                   { href: `/resources?path=${careerPath?.id ?? 'it-to-cyber-transition'}`, label: 'Study Resources', icon: <BookOpen size={12} /> },
                   { href: '/threat-universe', label: '← Threat Universe', icon: <Shield size={12} /> },

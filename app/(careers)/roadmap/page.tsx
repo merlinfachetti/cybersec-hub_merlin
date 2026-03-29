@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -285,8 +286,8 @@ function RoadmapPageContent() {
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
           {[
-            { id: 'paths', label: 'Career Paths', icon: <Compass size={14} /> },
-            { id: 'all', label: 'Certification Catalog', icon: <Layers size={14} /> },
+            { id: 'paths', label: locale === 'PT_BR' ? 'Caminhos de Carreira' : 'Career Paths', icon: <Compass size={14} /> },
+            { id: 'all', label: locale === 'PT_BR' ? 'Catálogo de Certificações' : 'Certification Catalog', icon: <Layers size={14} /> },
           ].map((tab) => {
             const active = activeTab === tab.id;
             return (
@@ -1121,6 +1122,7 @@ function RoadmapPageContent() {
 }
 
 export default function RoadmapPage() {
+  const { locale } = useI18n();
   return (
     <Suspense fallback={null}>
       <RoadmapPageContent />

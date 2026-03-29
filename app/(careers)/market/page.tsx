@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { useState } from 'react';
 import { TrendingUp, DollarSign, Globe, BarChart2, Briefcase, Award } from 'lucide-react';
@@ -52,6 +53,7 @@ const DEMAND_BG: Record<string, string> = {
 type Tab = 'overview' | 'certs' | 'roles' | 'regions';
 
 export default function MarketPage() {
+  const { locale } = useI18n();
   const [tab, setTab] = useState<Tab>('overview');
 
   const S = {
@@ -62,9 +64,9 @@ export default function MarketPage() {
 
   const TABS = [
     { id: 'overview', label: 'Overview', icon: <TrendingUp size={13} /> },
-    { id: 'certs',    label: 'Por Certificação', icon: <Award size={13} /> },
+    { id: 'certs',    label: 'By Certification', icon: <Award size={13} /> },
     { id: 'roles',    label: 'Por Cargo', icon: <Briefcase size={13} /> },
-    { id: 'regions',  label: 'Por Região', icon: <Globe size={13} /> },
+    { id: 'regions',  label: 'By Region', icon: <Globe size={13} /> },
   ];
 
   return (
@@ -76,7 +78,7 @@ export default function MarketPage() {
           <div style={{ ...S.mono, fontSize: 10, color: 'var(--ds-purple)', letterSpacing: '0.14em', marginBottom: 8 }}>CAREERS / MARKET ANALYSIS</div>
           <h1 style={{ ...S.grotesk, fontWeight: 700, fontSize: 30, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 6 }}>Market Analysis</h1>
           <p style={{ fontSize: 13, color: 'var(--ds-body-dim)', maxWidth: 520 }}>
-            Indicadores de mercado para cybersecurity revisados editorialmente — salários, demanda por certificação e oportunidades por região.
+            {locale === 'PT_BR' ? 'Indicadores de mercado para cybersecurity revisados editorialmente — salários, demanda por certificação e oportunidades por região.' : 'Editorially reviewed cybersecurity market indicators — salaries, certification demand, and opportunities by region.'}
             <span style={{ ...S.mono, fontSize: 9, color: 'var(--ds-mono-dim)', marginLeft: 8 }}>
               Revisado em {CONTENT_LAST_REVIEWED} · Fontes-base: (ISC)2 Workforce Study, CompTIA Research, CyberSeek, BLS OOH e LinkedIn Jobs
             </span>
@@ -105,7 +107,7 @@ export default function MarketPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(220px,100%), 1fr))', gap: 14, marginBottom: 28 }}>
               {[
                 { label: 'Vagas em aberto global', value: MARKET_DATA.global.openJobs, sub: 'worldwide', color: 'var(--ds-danger)', icon: <Briefcase size={16} /> },
-                { label: 'Salário médio (US)', value: MARKET_DATA.global.avgSalaryUS, sub: 'security engineer', color: 'var(--ds-ok)', icon: <DollarSign size={16} /> },
+                { label: locale === 'PT_BR' ? 'Salário médio (US)' : 'Average salary (US)', value: MARKET_DATA.global.avgSalaryUS, sub: 'security engineer', color: 'var(--ds-ok)', icon: <DollarSign size={16} /> },
                 { label: 'Crescimento previsto', value: MARKET_DATA.global.growth, sub: `até ${MARKET_DATA.global.until}`, color: '#3b82f6', icon: <TrendingUp size={16} /> },
                 { label: 'Déficit de profissionais', value: MARKET_DATA.global.shortage, sub: 'baseline editorial mais recente', color: 'var(--ds-warn)', icon: <BarChart2 size={16} /> },
               ].map(s => (
@@ -122,7 +124,7 @@ export default function MarketPage() {
 
             {/* Top certs by demand */}
             <div style={{ ...S.card, padding: '20px' }}>
-              <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 16 }}>Certificações mais demandadas (EUA)</div>
+              <div style={{ ...S.grotesk, fontWeight: 700, fontSize: 15, color: 'var(--ds-title-card, #f0eeff)', marginBottom: 16 }}>{locale === 'PT_BR' ? 'Certificações mais demandadas (EUA)' : 'Most in-demand certifications (US)'}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {MARKET_DATA.certs.slice(0,5).map(c => {
                   const pct = Math.round((c.jobs / 65000) * 100);

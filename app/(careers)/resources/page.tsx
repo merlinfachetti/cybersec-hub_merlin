@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -17,24 +18,28 @@ import {
   STUDY_RESOURCES,
 } from '@/lib/content/career-guide';
 
-const TYPES = [
-  { id: 'all', label: 'Todos', icon: null },
-  { id: 'VIDEO', label: 'Video', icon: <Monitor size={12} /> },
-  { id: 'COURSE', label: 'Curso', icon: <BookOpen size={12} /> },
-  { id: 'LAB', label: 'Lab', icon: <FlaskConical size={12} /> },
-  { id: 'BOOK', label: 'Livro', icon: <FileText size={12} /> },
-  { id: 'GUIDE', label: 'Guia', icon: <FileText size={12} /> },
-];
+// TYPES moved inside component
 
-const LEVELS = [
-  { id: 'all', label: 'Todos os niveis' },
-  { id: 'ENTRY', label: 'Entry', color: '#22c55e' },
-  { id: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
-  { id: 'ADVANCED', label: 'Advanced', color: '#f59e0b' },
-];
+// LEVELS moved inside component
 
 function ResourcesPageInner() {
   const searchParams = useSearchParams();
+  const { locale } = useI18n();
+
+  const TYPES = [
+    { id: 'all', label: locale === 'PT_BR' ? 'Todos' : 'All', icon: null },
+    { id: 'VIDEO', label: 'Video', icon: <Monitor size={12} /> },
+    { id: 'COURSE', label: locale === 'PT_BR' ? 'Curso' : 'Course', icon: <BookOpen size={12} /> },
+    { id: 'LAB', label: 'Lab', icon: <FlaskConical size={12} /> },
+    { id: 'BOOK', label: locale === 'PT_BR' ? 'Livro' : 'Book', icon: <FileText size={12} /> },
+    { id: 'GUIDE', label: locale === 'PT_BR' ? 'Guia' : 'Guide', icon: <FileText size={12} /> },
+  ];
+  const LEVELS = [
+    { id: 'all', label: locale === 'PT_BR' ? 'Todos os níveis' : 'All levels' },
+    { id: 'ENTRY', label: 'Entry', color: '#22c55e' },
+    { id: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
+    { id: 'ADVANCED', label: 'Advanced', color: '#f59e0b' },
+  ];
   const [search, setSearch] = useState(() => searchParams.get('search') ?? '');
   const [freeOnly, setFreeOnly] = useState(false);
   const [type, setType] = useState('all');
@@ -104,7 +109,7 @@ function ResourcesPageInner() {
               marginBottom: 6,
             }}
           >
-            Recursos curados para aprender de verdade
+            {locale === 'PT_BR' ? 'Recursos curados para aprender de verdade' : 'Curated resources to learn for real'}
           </h1>
           <p
             style={{
@@ -541,7 +546,7 @@ function ResourcesPageInner() {
                             marginBottom: 3,
                           }}
                         >
-                          MELHOR PARA
+                          {locale === 'PT_BR' ? 'MELHOR PARA' : 'BEST FOR'}
                         </div>
                         <div
                           style={{
@@ -576,7 +581,7 @@ function ResourcesPageInner() {
                             marginBottom: 3,
                           }}
                         >
-                          CUIDADO
+                          {locale === 'PT_BR' ? 'CUIDADO' : 'WATCH OUT'}
                         </div>
                         <div
                           style={{
@@ -634,6 +639,7 @@ function ResourcesPageInner() {
 }
 
 export default function ResourcesPage() {
+  const { locale } = useI18n();
   return (
     <Suspense fallback={null}>
       <ResourcesPageInner />

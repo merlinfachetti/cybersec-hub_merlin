@@ -227,12 +227,46 @@ function initUniverse(
       ctx.beginPath(); ctx.arc(x, y, glowR, 0, Math.PI * 2);
       ctx.fill();
 
-      // ── Corpo do nó ───────────────────────────────────────────────────
+      // ── Node body ─────────────────────────────────────────────────────
       ctx.beginPath(); ctx.arc(x, y, scaled * pulse, 0, Math.PI * 2);
-      ctx.fillStyle = isSelected ? tc.main : tc.dim;
-      ctx.globalAlpha = alpha; ctx.fill();
+
+      // Radial gradient body — center brighter, edge team color
+      const bodyGrad = ctx.createRadialGradient(
+        x - scaled * 0.25, y - scaled * 0.25, 0,
+        x, y, scaled * pulse
+      );
+      if (isSelected) {
+        bodyGrad.addColorStop(0, tc.soft);
+        bodyGrad.addColorStop(0.5, tc.main);
+        bodyGrad.addColorStop(1, tc.dim.replace('0.25', '0.8'));
+      } else {
+        bodyGrad.addColorStop(0, tc.soft.replace('#', 'rgba(').replace(/^rgba\((.{6})/, (_, h) => {
+          // Parse hex to rgba — fallback to dim
+          return tc.dim.replace('0.25', String(0.55 * alpha));
+        }));
+        bodyGrad.addColorStop(0, `rgba(255,255,255,${0.18 * alpha})`);
+        bodyGrad.addColorStop(0.4, tc.main + Math.round(alpha * 0.6 * 255).toString(16).padStart(2, '0'));
+        bodyGrad.addColorStop(1, tc.dim.replace('0.25', String(0.4 * alpha)));
+      }
+      ctx.fillStyle = isSelected ? bodyGrad : tc.dim.replace('0.25', String((isFocused ? 0.45 : 0.22) * alpha));
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+
+      // Inner highlight — top-left bright spot for 3D feel
+      const hlGrad = ctx.createRadialGradient(
+        x - scaled * 0.28, y - scaled * 0.28, 0,
+        x, y, scaled * 0.85
+      );
+      hlGrad.addColorStop(0, `rgba(255,255,255,${0.28 * alpha * (isSelected ? 1 : 0.6)})`);
+      hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = hlGrad;
+      ctx.beginPath(); ctx.arc(x, y, scaled * pulse, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Border ring
       ctx.strokeStyle = tc.main;
-      ctx.lineWidth = isSelected ? 2 : 1.5;
+      ctx.lineWidth = isSelected ? 2.5 : isHovered ? 2 : 1.5;
+      ctx.globalAlpha = alpha * (isSelected || isHovered ? 1 : 0.75);
       ctx.stroke();
       ctx.globalAlpha = 1;
 
@@ -271,17 +305,63 @@ function initUniverse(
         ctx.fillRect(x - 0.8 * zoom, y - flareLen * 0.4, 1.6 * zoom, flareLen * 0.8);
       }
 
-      // ── Labels ────────────────────────────────────────────────────────
-      const fs = Math.max(9, 10 * zoom);
-      // Label — laranja negrito (domínio de conhecimento)
-      ctx.font = `800 ${fs}px "Space Grotesk", sans-serif`;
-      ctx.fillStyle = `rgba(255,140,40,${alpha * 0.95})`; ctx.textAlign = 'center';
-      ctx.fillText(node.label, x, y + scaled * pulse + fs + 3);
-      if (node.sublabel) {
-        // Sublabel — verde legível (contexto operacional)
-        ctx.font = `500 ${fs * 0.85}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(34,197,94,${alpha * 0.75})`;
-        ctx.fillText(node.sublabel, x, y + scaled * pulse + fs * 2 + 4);
+      // ── Labels with frosted pill backdrop ─────────────────────────────
+      const fs = Math.max(9, Math.min(13, 11 * zoom));
+      const labelY = y + scaled * pulse + fs + 4;
+
+      // Only draw labels when node is legible (not too small, not filtered)
+      if (alpha > 0.15 && scaled * zoom > 4) {
+        // Measure text to size the pill
+        ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
+        const labelW = ctx.measureText(node.label).width;
+        const sublabelW = node.sublabel ? ctx.measureText(node.sublabel).width * 0.85 : 0;
+        const pillW = Math.max(labelW, sublabelW) + 14;
+        const pillH = node.sublabel ? fs * 2.4 : fs * 1.6;
+        const pillX = x - pillW / 2;
+
+        // Frosted dark pill — high contrast background
+        ctx.save();
+        ctx.globalAlpha = alpha * 0.92;
+
+        // Pill shadow for depth
+        ctx.shadowColor = tc.main;
+        ctx.shadowBlur = isSelected || isHovered ? 8 : 4;
+
+        // Pill body — deep dark with slight team color tint
+        const pillGrad = ctx.createLinearGradient(pillX, labelY - fs * 0.2, pillX, labelY + pillH);
+        pillGrad.addColorStop(0, `rgba(4, 3, 14, 0.88)`);
+        pillGrad.addColorStop(1, `rgba(6, 4, 20, 0.95)`);
+        ctx.fillStyle = pillGrad;
+        ctx.beginPath();
+        ctx.roundRect(pillX, labelY - fs * 0.85, pillW, pillH, 5);
+        ctx.fill();
+
+        // Pill border — team color
+        ctx.strokeStyle = `rgba(${
+          node.team === 'red' ? '229,62,62' :
+          node.team === 'blue' ? '59,130,246' : '139,92,246'
+        },${(isSelected || isHovered ? 0.7 : 0.35) * alpha})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+
+        // Label text — bright white (not orange, which bleeds into dark bg)
+        ctx.font = `700 ${fs}px "Space Grotesk", sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = `rgba(245, 240, 255, ${alpha})`;
+        ctx.fillText(node.label, x, labelY);
+
+        if (node.sublabel) {
+          ctx.font = `500 ${fs * 0.82}px "Inter", sans-serif`;
+          ctx.fillStyle = `rgba(${
+            node.team === 'red' ? '255,110,90' :
+            node.team === 'blue' ? '100,180,255' : '180,150,255'
+          },${alpha * 0.9})`;
+          ctx.fillText(node.sublabel, x, labelY + fs * 1.3);
+        }
+
+        ctx.restore();
       }
     }
   }
@@ -369,7 +449,7 @@ interface UserProfile {
 
 function PortalPageInner() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const universeRef = useRef<ReturnType<typeof initUniverse> | null>(null);
 
@@ -532,7 +612,7 @@ function PortalPageInner() {
   };
 
   // Panel colors follow ACTIVE MODE (not node team)
-  const panelBorder = activeMode === 'red' ? 'rgba(229,62,62,0.35)' : activeMode === 'blue' ? 'rgba(59,130,246,0.35)' : 'rgba(139,92,246,0.35)';
+  const panelBorder = activeMode === 'red' ? 'rgba(229,62,62,0.55)' : activeMode === 'blue' ? 'rgba(59,130,246,0.55)' : 'rgba(139,92,246,0.55)';
   const panelIconColor = TEAM_COLORS[activeMode].main;
   const panelRgb = activeMode === 'red' ? '229,62,62' : activeMode === 'blue' ? '59,130,246' : '139,92,246';
 
@@ -698,9 +778,8 @@ function PortalPageInner() {
             </div>
           </div>
 
-          {/* ── Right: Search + LocaleToggle + User ── */}
+          {/* ── Right: Search + User ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: '0 0 auto' }}>
-            <LocaleToggle variant="nav" />
 
             {/* ── Universe Search ── */}
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -866,6 +945,22 @@ function PortalPageInner() {
                     </div>
                   </div>
 
+                  {/* Theme + Language */}
+                  <div style={{ padding: '6px 12px 4px', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 4, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 11, color: 'rgba(180,175,220,0.55)', fontFamily: '"Inter",sans-serif' }}>
+                        {locale === 'PT_BR' ? 'Tema' : 'Theme'}
+                      </span>
+                      <ThemeToggle />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 11, color: 'rgba(180,175,220,0.55)', fontFamily: '"Inter",sans-serif' }}>
+                        {locale === 'PT_BR' ? 'Idioma' : 'Language'}
+                      </span>
+                      <LocaleToggle variant="dropdown" />
+                    </div>
+                  </div>
+
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 6, paddingTop: 6 }}>
                     <button onClick={handleLogout} style={{
                       display: 'flex', alignItems: 'center', gap: 10, width: '100%',
@@ -941,9 +1036,10 @@ function PortalPageInner() {
           {/* ── Bottom panel — rich node detail ── */}
           {!panelHidden && selectedNode && (
             <div className="cp-animate-in" style={{
-              background: 'rgba(6,4,18,0.97)', backdropFilter: 'blur(24px)',
+              background: 'linear-gradient(180deg, rgba(4,2,14,0.99) 0%, rgba(6,4,18,0.99) 100%)',
+              backdropFilter: 'blur(32px) saturate(160%)',
               borderTop: `2px solid ${panelBorder}`,
-              boxShadow: `0 -4px 32px rgba(${panelRgb},0.1)`,
+              boxShadow: `0 -8px 40px rgba(${panelRgb},0.18), 0 -1px 0 rgba(${panelRgb},0.25)`,
               padding: '0', animationDelay: '0.1s', position: 'relative',
             }}>
               {/* Top accent bar */}
@@ -992,11 +1088,11 @@ function PortalPageInner() {
                 <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
                   {/* Left: description */}
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 13, color: 'rgba(220,215,240,0.75)', lineHeight: 1.65, margin: '0 0 10px' }}>
+                    <p style={{ fontSize: 13, color: 'rgba(235,230,255,0.92)', lineHeight: 1.65, margin: '0 0 10px' }}>
                       {panel.desc}
                     </p>
                     {panel.mitre && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.4)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: '"JetBrains Mono", monospace', fontSize: 10, color: 'rgba(155,176,198,0.65)' }}>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         {panel.mitre}
                       </div>
@@ -1030,7 +1126,7 @@ function PortalPageInner() {
                       padding: '8px 18px', borderRadius: 7,
                       background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                       cursor: 'pointer', fontFamily: '"Inter", sans-serif', fontSize: 12,
-                      color: 'rgba(220,215,240,0.6)', textAlign: 'center', transition: 'all 150ms',
+                      color: 'rgba(200,195,240,0.82)', textAlign: 'center', transition: 'all 150ms',
                     }}
                     onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.09)'}
                     onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
@@ -1060,7 +1156,6 @@ function PortalPageInner() {
             </div>
           </Link>
           <ThemeToggle />
-          <LocaleToggle />
         </div>
 
         {/* Mode selector */}

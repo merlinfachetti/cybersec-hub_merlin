@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { Suspense, use } from 'react';
 import Link from 'next/link';
@@ -85,7 +86,7 @@ function CertDetailContent({ slug }: { slug: string }) {
               fontWeight: 600,
             }}
           >
-            Voltar ao catalogo
+            {locale === 'PT_BR' ? 'Voltar ao catálogo' : 'Back to catalog'}
           </Link>
         </div>
       </div>
@@ -130,7 +131,7 @@ function CertDetailContent({ slug }: { slug: string }) {
           }}
         >
           <ArrowLeft size={14} />
-          Voltar ao catalogo
+          {locale === 'PT_BR' ? 'Voltar ao catálogo' : 'Back to catalog'}
         </Link>
 
         <div
@@ -377,7 +378,7 @@ function CertDetailContent({ slug }: { slug: string }) {
                     letterSpacing: '0.1em',
                   }}
                 >
-                  MELHOR PARA
+                  {locale === 'PT_BR' ? 'MELHOR PARA' : 'BEST FOR'}
                 </div>
                 <div
                   style={{
@@ -414,7 +415,7 @@ function CertDetailContent({ slug }: { slug: string }) {
                     letterSpacing: '0.1em',
                   }}
                 >
-                  CUIDADO
+                  {locale === 'PT_BR' ? 'CUIDADO' : 'WATCH OUT'}
                 </div>
                 <div
                   style={{
@@ -465,7 +466,7 @@ function CertDetailContent({ slug }: { slug: string }) {
               color: 'var(--ds-mono-dim)',
             }}
           >
-            experiencia recomendada: {cert.recommendedExperience}
+            {locale === 'PT_BR' ? 'experiência recomendada: ' : 'recommended experience: '}{cert.recommendedExperience}
           </div>
         </div>
 

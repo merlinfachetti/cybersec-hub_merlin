@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { Suspense, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -11,7 +12,7 @@ import {
 } from '@/lib/content/career-guide';
 
 const LEVELS = [
-  { value: 'all', label: 'Todos os niveis' },
+  { value: 'all', label: locale === 'PT_BR' ? 'Todos os níveis' : 'All levels' },
   { value: 'ENTRY', label: 'Entry', color: '#22c55e' },
   { value: 'INTERMEDIATE', label: 'Intermediate', color: '#3b82f6' },
   { value: 'ADVANCED', label: 'Advanced', color: '#f59e0b' },
@@ -21,7 +22,7 @@ const LEVELS = [
 const LEVEL_ORDER = ['ENTRY', 'INTERMEDIATE', 'ADVANCED', 'EXPERT'];
 
 const CATEGORIES = [
-  { value: 'all', label: 'Todas as categorias' },
+  { value: 'all', label: locale === 'PT_BR' ? 'Todas as categorias' : 'All categories' },
   { value: 'DEFENSIVE_SECURITY', label: 'Defensive Security', color: '#3b82f6' },
   { value: 'OFFENSIVE_SECURITY', label: 'Offensive Security', color: '#ef4444' },
   { value: 'GOVERNANCE_RISK', label: 'Governance & Risk', color: '#8b5cf6' },
@@ -342,7 +343,8 @@ function CertCard({
 }
 
 function CertificationsPageInner() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams();  const { t, locale } = useI18n();
+
   const recommendedPath = useMemo(
     () => resolveCareerPath(searchParams.get('path')),
     [searchParams]
@@ -521,7 +523,7 @@ function CertificationsPageInner() {
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar por papel, nome, provider ou contexto..."
+              placeholder={locale === 'PT_BR' ? 'Buscar por papel, nome, provider ou contexto...' : 'Search by role, name, provider or context...'}
               style={{
                 width: '100%',
                 border: 'none',
