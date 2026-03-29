@@ -196,7 +196,7 @@ export default function RegisterClient() {
 
         {/* Main */}
         <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100vh', padding: '56px 24px 24px' }}>
-          <div className="cp-glass cp-animate-in" style={{ width: '100%', maxWidth: 420, padding: '24px 28px 20px' }}>
+          <div className="cp-glass cp-animate-in" style={{ width: 420, minWidth: 320, maxWidth: '92vw', padding: '24px 28px 20px' }}>
 
             <StepDots current={stepIndex} />
 

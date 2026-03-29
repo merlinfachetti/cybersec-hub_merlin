@@ -299,7 +299,7 @@ export default function LoginClient() {
 
         {/* Center stage */}
         <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100vh', padding: '50px 24px 56px' }}>
-          <div className="cp-animate-in" style={{ width: '100%', maxWidth: 390, padding: '28px 32px 22px', display: 'flex', flexDirection: 'column', background: 'rgba(8,8,24,0.68)', backdropFilter: 'blur(28px) saturate(160%)', WebkitBackdropFilter: 'blur(28px) saturate(160%)', border: '1px solid rgba(160,150,255,0.16)', borderRadius: 18, boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 48px rgba(0,0,0,0.7), 0 0 80px rgba(100,80,200,0.08)' }}>
+          <div className="cp-animate-in" style={{ width: 390, minWidth: 320, maxWidth: '90vw', padding: '28px 32px 22px', display: 'flex', flexDirection: 'column', background: 'rgba(8,8,24,0.68)', backdropFilter: 'blur(28px) saturate(160%)', WebkitBackdropFilter: 'blur(28px) saturate(160%)', border: '1px solid rgba(160,150,255,0.16)', borderRadius: 18, boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 48px rgba(0,0,0,0.7), 0 0 80px rgba(100,80,200,0.08)' }}>
 
             <h1 data-auth-title style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: 20, fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', textAlign: 'center', color: '#ffffff', marginBottom: 20, textShadow: '0 0 24px rgba(180,170,255,0.18)' }}>
               {t('auth.identify')}
@@ -337,10 +337,16 @@ export default function LoginClient() {
                 <span style={{ fontSize: 13, color: '#e8e8f0', lineHeight: 1.3 }}>{t('auth.rememberDevice')} <span style={{ color: '#6a6a8a', fontSize: 11 }}>{t('auth.rememberDeviceHint')}</span></span>
               </label>
 
-              {/* Tricolor organic button */}
-              <button type="submit" disabled={loading} className="cp-tricolor-btn" style={{ opacity: loading ? 0.72 : 1 }}>
-                <span className="cp-tricolor-flow" aria-hidden="true" />
-                <span className="cp-tricolor-label">{loading ? t('auth.authenticating') : t('auth.authenticate')}</span>
+              {/* ── Tricolor living button ── */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="cp-tricolor-btn"
+                style={{ opacity: loading ? 0.72 : 1 }}
+              >
+                <span className="cp-tricolor-label">
+                  {loading ? t('auth.authenticating') : t('auth.authenticate')}
+                </span>
               </button>
             </form>
 
@@ -352,10 +358,10 @@ export default function LoginClient() {
               </a>
             </div>
 
-            {/* Handshake strip */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '6px 16px', marginTop: 14, borderRadius: 100, background: 'rgba(10,10,30,0.40)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: dotColor, boxShadow: `0 0 8px ${dotColor}`, display: 'inline-block', animation: hsState === 'active' ? 'cp-hs-pulse 1.6s ease-in-out infinite' : 'none' }} />
-              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#6a6a8a', whiteSpace: 'nowrap' }}>{hsText}</span>
+            {/* Handshake strip — fixed size to prevent layout shift */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '6px 16px', marginTop: 14, borderRadius: 100, background: 'rgba(10,10,30,0.40)', border: '1px solid rgba(255,255,255,0.08)', minHeight: 32 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: dotColor, boxShadow: `0 0 8px ${dotColor}`, display: 'inline-block', flexShrink: 0, animation: hsState === 'active' ? 'cp-hs-pulse 1.6s ease-in-out infinite' : 'none' }} />
+              <span style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 11, color: '#6a6a8a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 280 }}>{hsText}</span>
             </div>
           </div>
         </main>
@@ -404,16 +410,68 @@ export default function LoginClient() {
         input{outline:none;border:none;background:transparent;font-family:'Inter',sans-serif;color:#e8e8f0;width:100%}
         input::placeholder{color:#6a6a8a}
 
-        .cp-tricolor-btn{position:relative;width:100%;height:44px;border-radius:10px;overflow:hidden;margin-top:4px;cursor:pointer;border:none;outline:none;background:#0f0f28;isolation:isolate;display:flex;align-items:center;justify-content:center;}
-        .cp-tricolor-btn:disabled{cursor:not-allowed}
-        .cp-tricolor-flow{position:absolute;inset:-2px;border-radius:12px;background:conic-gradient(from var(--cp-angle,0deg) at 50% 50%,#e53e3e 0deg,#8b5cf6 120deg,#3b82f6 240deg,#e53e3e 360deg);filter:blur(14px);opacity:0.55;animation:cp-spin 5s linear infinite;z-index:0}
-        .cp-tricolor-btn:hover .cp-tricolor-flow{opacity:0.82;filter:blur(10px)}
-        .cp-tricolor-btn:disabled .cp-tricolor-flow{opacity:0.28;animation-play-state:paused}
-        .cp-tricolor-btn::before{content:'';position:absolute;inset:1.5px;border-radius:9px;background:rgba(10,8,28,0.88);z-index:1}
-        .cp-tricolor-label{position:relative;z-index:2;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.16em;color:#ffffff;text-shadow:0 0 12px rgba(180,160,255,0.4)}
-
-        @property --cp-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
-        @keyframes cp-spin{to{--cp-angle:360deg}}
+        .cp-tricolor-btn {
+          position: relative;
+          width: 100%;
+          height: 44px;
+          border-radius: 10px;
+          overflow: hidden;
+          margin-top: 4px;
+          cursor: pointer;
+          border: none;
+          outline: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /* Tricolor gradient — wide enough to feel like continuous motion */
+          background: linear-gradient(
+            135deg,
+            #e53e3e 0%,
+            #8b5cf6 25%,
+            #3b82f6 50%,
+            #8b5cf6 75%,
+            #e53e3e 100%
+          );
+          background-size: 400% 400%;
+          animation: cp-tricolor-shift 5s ease infinite;
+          box-shadow: 0 0 18px rgba(139,92,246,0.25);
+          transition: box-shadow 300ms ease, opacity 200ms;
+        }
+        .cp-tricolor-btn:hover {
+          animation-duration: 2.5s;
+          box-shadow: 0 0 28px rgba(139,92,246,0.45), 0 0 12px rgba(229,62,62,0.2);
+        }
+        .cp-tricolor-btn:disabled {
+          cursor: not-allowed;
+          animation-play-state: paused;
+        }
+        .cp-tricolor-btn::before {
+          content: '';
+          position: absolute;
+          inset: 1.5px;
+          border-radius: 9px;
+          background: rgba(8,6,24,0.72);
+          z-index: 1;
+          transition: background 300ms;
+        }
+        .cp-tricolor-btn:hover::before {
+          background: rgba(8,6,24,0.58);
+        }
+        .cp-tricolor-label {
+          position: relative;
+          z-index: 2;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          color: #ffffff;
+          text-shadow: 0 0 14px rgba(200,180,255,0.5);
+        }
+        @keyframes cp-tricolor-shift {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
         @keyframes cp-hs-pulse{0%,100%{opacity:1}50%{opacity:0.3}}
       `}</style>
     </>

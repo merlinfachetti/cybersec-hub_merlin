@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { GlobalSearch } from '@/components/global-search';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LocaleToggle } from '@/components/locale-toggle';
+import { useI18n } from '@/lib/i18n';
 
 interface NavUser { name: string | null; email: string; role: string; }
 
@@ -50,6 +51,7 @@ function UserAvatar({ user, onLogout }: { user: NavUser | null; onLogout: () => 
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     const h = (e: MouseEvent) => { if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false); };
@@ -84,24 +86,46 @@ function UserAvatar({ user, onLogout }: { user: NavUser | null; onLogout: () => 
       </button>
 
       {menuOpen && (
-        <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: 'var(--p-modal-bg)', border: '1px solid var(--p-border)', borderRadius: 12, padding: 6, minWidth: 200, backdropFilter: 'blur(24px)', boxShadow: '0 20px 60px rgba(0,0,0,0.35)', zIndex: 200, animation: 'cp-fade-in 0.12s ease-out both' }}>
+        <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: 'var(--p-modal-bg)', border: '1px solid var(--p-border)', borderRadius: 12, padding: 6, minWidth: 210, backdropFilter: 'blur(24px)', boxShadow: '0 20px 60px rgba(0,0,0,0.35)', zIndex: 200, animation: 'cp-fade-in 0.12s ease-out both' }}>
+          {/* User info */}
           <div style={{ padding: '10px 12px 12px', borderBottom: '1px solid var(--p-border-soft)', marginBottom: 6 }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ds-title-card)', fontFamily: '"Space Grotesk",sans-serif' }}>{user?.name ?? 'Merlin'}</div>
             <div style={{ fontSize: 10, color: 'rgba(255,140,40,0.6)', fontFamily: '"JetBrains Mono",monospace', marginTop: 3 }}>{user?.email}</div>
           </div>
+          {/* Profile link */}
           <button onClick={() => { setMenuOpen(false); router.push('/profile'); }}
             style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: '#22c55e', fontSize: 13, fontFamily: '"Inter",sans-serif', fontWeight: 600, transition: 'all 150ms', textAlign: 'left' }}
             onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(34,197,94,0.08)'; el.style.color = '#4ade80'; }}
             onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = '#22c55e'; }}>
-            <span style={{ fontWeight: 900, fontSize: 14 }}>⇒</span> Perfil
+            <span style={{ fontWeight: 900, fontSize: 14 }}>⇒</span> {t('nav.profile')}
           </button>
-          <div style={{ borderTop: '1px solid var(--p-border-soft)', marginTop: 6, paddingTop: 6 }}>
+
+          {/* ── Settings row: Theme + Language ── */}
+          <div style={{ borderTop: '1px solid var(--p-border-soft)', margin: '6px 0', padding: '8px 12px 4px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* Theme */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, color: 'var(--ds-body-dim)', fontFamily: '"Inter",sans-serif' }}>
+                {locale === 'PT_BR' ? 'Tema' : 'Theme'}
+              </span>
+              <ThemeToggle />
+            </div>
+            {/* Language */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, color: 'var(--ds-body-dim)', fontFamily: '"Inter",sans-serif' }}>
+                {locale === 'PT_BR' ? 'Idioma' : 'Language'}
+              </span>
+              <LocaleToggle variant="dropdown" />
+            </div>
+          </div>
+
+          {/* Sign out */}
+          <div style={{ borderTop: '1px solid var(--p-border-soft)', marginTop: 2, paddingTop: 6 }}>
             <button onClick={onLogout}
               style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 12px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, color: 'rgba(255,100,100,0.7)', fontSize: 13, fontFamily: '"Inter",sans-serif', transition: 'all 150ms', textAlign: 'left' }}
               onMouseEnter={e => { const el = e.currentTarget; el.style.background = 'rgba(229,62,62,0.08)'; el.style.color = '#ff7070'; }}
               onMouseLeave={e => { const el = e.currentTarget; el.style.background = 'none'; el.style.color = 'rgba(255,100,100,0.7)'; }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign out
+              {t('nav.logout')}
             </button>
           </div>
         </div>
@@ -114,6 +138,7 @@ function UserAvatar({ user, onLogout }: { user: NavUser | null; onLogout: () => 
 export function MainNav() {
   const pathname = usePathname();
   const [user, setUser] = useState<NavUser | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
@@ -126,12 +151,12 @@ export function MainNav() {
     window.location.href = '/api/auth/signout'; };
 
   const routes = [
-    { href: '/home',           label: 'Home',         active: pathname === '/home' },
-    { href: '/certifications', label: 'Certificações', active: pathname.startsWith('/certifications') },
-    { href: '/roadmap',        label: 'Roadmap',      active: pathname === '/roadmap' },
-    { href: '/resources',      label: 'Recursos',     active: pathname === '/resources' },
-    { href: '/market',         label: 'Mercado',      active: pathname === '/market' },
-    { href: '/teams',          label: 'Cyber Times',  active: pathname.startsWith('/teams') },
+    { href: '/home',           label: t('nav.home'),          active: pathname === '/home' },
+    { href: '/certifications', label: t('nav.certifications'), active: pathname.startsWith('/certifications') },
+    { href: '/roadmap',        label: t('nav.roadmap'),        active: pathname === '/roadmap' },
+    { href: '/resources',      label: t('nav.resources'),      active: pathname === '/resources' },
+    { href: '/market',         label: t('nav.market'),         active: pathname === '/market' },
+    { href: '/teams',          label: 'Cyber Teams',           active: pathname.startsWith('/teams') },
   ];
 
   return (
@@ -147,6 +172,12 @@ export function MainNav() {
           padding: 5px 10px;
           white-space: nowrap;
           transition: color 200ms ease;
+          /* Prevent layout shift when label length changes between locales */
+          min-width: 68px;
+          text-align: center;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
 
         /* Underline: nasce do centro, vai até ~50% da largura do link no hover */
@@ -280,8 +311,6 @@ export function MainNav() {
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-2">
               <GlobalSearch />
-              <LocaleToggle />
-              <ThemeToggle />
               <ThreatUniverseBtn />
               <UserAvatar user={user} onLogout={handleLogout} />
             </div>
@@ -306,15 +335,6 @@ export function MainNav() {
                     <Link href="/profile" className="w-full" style={{ color: '#22c55e', fontWeight: 600 }}>⇒ Perfil</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={handleLogout} className="text-red-400 cursor-pointer">Sign out</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={e => e.preventDefault()} className="flex items-center justify-between cursor-default">
-                    <span className="text-sm text-muted-foreground">Tema</span>
-                    <ThemeToggle />
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={e => e.preventDefault()} className="flex items-center justify-between cursor-default">
-                    <span className="text-sm text-muted-foreground">Idioma</span>
-                    <LocaleToggle />
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
