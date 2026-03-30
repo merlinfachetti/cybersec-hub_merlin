@@ -257,6 +257,7 @@ function HiddenStar({ onActivate }: { onActivate: () => void }) {
 export default function SignalLost() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bloomCenterRef = useRef<{x: number, y: number}>({ x: 0, y: 0 });
+  const scannerPosRef = useRef({ x: 0, y: 0 });
   const [gateState, setGateState] = useState<GateState>('idle');
   const [logoPos, setLogoPos] = useState({ x: 0, y: 0 });
   const [scannerPos, setScannerPos] = useState({ x: 0, y: 0 });
@@ -312,6 +313,8 @@ export default function SignalLost() {
   }, []);
 
   const restoreFullGate = useCallback(() => {
+    // Clear seen flag so the full drag interaction is available again
+    localStorage.removeItem(STORAGE_KEY);
     localStorage.setItem(COMPACT_KEY, 'false');
     setCompactMode(false);
     setShowAuthReveal(false);
@@ -339,7 +342,7 @@ export default function SignalLost() {
     };
   }, []);
 
-  // Position scanner at center — defer to after paint so layout is computed
+  // Position scanner — measure after paint, and re-measure when compactMode changes
   useEffect(() => {
     const updateScannerPos = () => {
       if (scannerRef.current) {
@@ -348,13 +351,14 @@ export default function SignalLost() {
         const y = rect.top + rect.height/2;
         setScannerPos({ x, y });
         bloomCenterRef.current = { x, y };
+        scannerPosRef.current = { x, y };
       }
     };
-    // Run after first paint so flex layout is fully computed
+    // Defer to after paint so flex layout is fully computed
     const raf = requestAnimationFrame(updateScannerPos);
     window.addEventListener('resize', updateScannerPos);
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', updateScannerPos); };
-  }, []);
+  }, [compactMode]);
 
   // ── Compact mode: tap & hold 0.8s ──────────────────────────────────────
   const startCompactHold = useCallback(() => {
@@ -418,9 +422,10 @@ export default function SignalLost() {
     const nextPos = clampCenterPosition(e.clientX, e.clientY);
     setLogoPos(nextPos);
 
-    // Check proximity to scanner (snap zone ~80px)
-    const dx = nextPos.x - scannerPos.x;
-    const dy = nextPos.y - scannerPos.y;
+    // Always read fresh scanner position from ref
+    const sp = scannerPosRef.current;
+    const dx = nextPos.x - sp.x;
+    const dy = nextPos.y - sp.y;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist < 80) {
@@ -433,25 +438,25 @@ export default function SignalLost() {
       setStatusText('scanning for secure token...');
       setScannerColor('#f59e0b');
     }
-  }, [isDragging, scannerPos]);
+  }, [isDragging]);
 
   const onPointerUp = useCallback((e: PointerEvent) => {
     if (!isDragging || stateRef.current !== 'armed') return;
 
     const nextPos = clampCenterPosition(e.clientX, e.clientY);
-    const dx = nextPos.x - scannerPos.x;
-    const dy = nextPos.y - scannerPos.y;
+    // Always read fresh scanner position from ref — avoids stale closure bug
+    const sp = scannerPosRef.current;
+    const dx = nextPos.x - sp.x;
+    const dy = nextPos.y - sp.y;
     const dist = Math.sqrt(dx*dx + dy*dy);
 
     if (dist < 80) {
-      // SNAP + LOCK
-      setLogoPos({ x: scannerPos.x, y: scannerPos.y });
+      setLogoPos({ x: sp.x, y: sp.y });
       triggerLockSequence();
     } else {
-      // Too far — reset
       resetGate();
     }
-  }, [isDragging, resetGate, scannerPos]);
+  }, [isDragging, resetGate]);
 
   useEffect(() => {
     window.addEventListener('pointermove', onPointerMove, { passive: false });
